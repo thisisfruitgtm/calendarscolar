@@ -1,0 +1,649 @@
+'use client'
+
+import { useState, useMemo } from 'react'
+import { Event } from '@prisma/client'
+import { Calendar as CalendarIcon, Sun, Leaf, TreePine, List, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+
+interface LandingCalendarProps {
+  events: Event[]
+  schoolYear: string
+  showCalendarDayNumbers?: boolean
+}
+
+type ViewType = 'list' | 'calendar'
+
+function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('ro-RO', {
+    day: 'numeric',
+    month: 'long',
+  }).format(new Date(date))
+}
+
+function formatFullDate(date: Date): string {
+  return new Intl.DateTimeFormat('ro-RO', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date(date))
+}
+
+function getEventIcon(type: string) {
+  switch (type) {
+    case 'VACATION':
+      return Sun
+    case 'HOLIDAY':
+      return Leaf
+    case 'SEMESTER_START':
+    case 'SEMESTER_END':
+      return CalendarIcon
+    case 'LAST_DAY':
+      return TreePine
+    default:
+      return CalendarIcon
+  }
+}
+
+function getEventIconColor(type: string) {
+  switch (type) {
+    case 'VACATION':
+      return 'text-amber-600'
+    case 'HOLIDAY':
+      return 'text-rose-600'
+    case 'SEMESTER_START':
+      return 'text-emerald-600'
+    case 'SEMESTER_END':
+    case 'LAST_DAY':
+      return 'text-violet-600'
+    default:
+      return 'text-slate-600'
+  }
+}
+
+function getEventBorderColor(type: string) {
+  switch (type) {
+    case 'VACATION':
+      return 'border-amber-200'
+    case 'HOLIDAY':
+      return 'border-rose-200'
+    case 'SEMESTER_START':
+      return 'border-emerald-200'
+    case 'SEMESTER_END':
+    case 'LAST_DAY':
+      return 'border-violet-200'
+    default:
+      return 'border-slate-200'
+  }
+}
+
+function getEventTextColor(type: string) {
+  return 'text-slate-900'
+}
+
+function getEventColor(type: string) {
+  switch (type) {
+    case 'VACATION':
+      return 'bg-amber-200 border-amber-200'
+    case 'HOLIDAY':
+      return 'bg-rose-200 border-rose-200'
+    case 'SEMESTER_START':
+      return 'bg-emerald-200 border-emerald-200'
+    case 'SEMESTER_END':
+    case 'LAST_DAY':
+      return 'bg-violet-200 border-violet-200'
+    default:
+      return 'bg-white border-slate-200'
+  }
+}
+
+function getEventLabel(type: string) {
+  switch (type) {
+    case 'VACATION':
+      return 'Vacanță'
+    case 'HOLIDAY':
+      return 'Zi liberă'
+    case 'SEMESTER_START':
+      return 'Început semestru'
+    case 'SEMESTER_END':
+      return 'Sfârșit semestru'
+    case 'LAST_DAY':
+      return 'Ultima zi'
+    default:
+      return 'Eveniment'
+  }
+}
+
+function getEventForDate(
+  date: Date,
+  allEvents: Array<{
+    id: string
+    startDate: Date
+    endDate: Date | null
+    type: string
+    title: string
+    description?: string | null
+  }>
+): {
+  id: string
+  startDate: Date
+  endDate: Date | null
+  type: string
+  title: string
+  description?: string | null
+} | null {
+  const dateStr = date.toDateString()
+  for (const event of allEvents) {
+    const start = new Date(event.startDate)
+    const end = event.endDate ? new Date(event.endDate) : start
+    const current = new Date(start)
+    while (current <= end) {
+      if (current.toDateString() === dateStr) {
+        return event
+      }
+      current.setDate(current.getDate() + 1)
+    }
+  }
+  return null
+}
+
+function getDaysInMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate()
+}
+
+function getFirstDayOfMonth(year: number, month: number): number {
+  const day = new Date(year, month, 1).getDay()
+  return day === 0 ? 6 : day - 1 // Monday = 0
+}
+
+function getDayName(date: Date): string {
+  return new Intl.DateTimeFormat('ro-RO', {
+    weekday: 'short',
+  }).format(date)
+}
+
+function CalendarDay({ 
+  day, 
+  date, 
+  event, 
+  isToday, 
+  getEventColor,
+  isCurrentMonth = true,
+  showCalendarDayNumbers = false
+}: {
+  day: number
+  date: Date
+  event: {
+    id: string
+    startDate: Date
+    endDate: Date | null
+    type: string
+    title: string
+    description?: string | null
+  } | null
+  isToday: boolean
+  getEventColor: (type: string) => string
+  isCurrentMonth?: boolean
+  showCalendarDayNumbers?: boolean
+}) {
+  const [showTooltip, setShowTooltip] = useState(false)
+  
+  const colorClasses = event ? getEventColor(event.type) : ''
+  const borderColor = colorClasses.includes('border-amber') ? 'border-amber-200'
+    : colorClasses.includes('border-rose') ? 'border-rose-200'
+    : colorClasses.includes('border-emerald') ? 'border-emerald-200'
+    : colorClasses.includes('border-violet') ? 'border-violet-200'
+    : 'border-slate-200'
+  
+  const bgColor = colorClasses.includes('border-amber') ? 'bg-amber-200' 
+    : colorClasses.includes('border-rose') ? 'bg-rose-200'
+    : colorClasses.includes('border-emerald') ? 'bg-emerald-200'
+    : colorClasses.includes('border-violet') ? 'bg-violet-200'
+    : isToday ? 'bg-blue-200' : 'bg-white'
+  
+  if (!isCurrentMonth) {
+    return <div className="w-full h-10" />
+  }
+
+  const textColor = colorClasses.includes('text-amber') ? 'text-amber-700 font-medium'
+    : colorClasses.includes('text-rose') ? 'text-rose-700 font-medium'
+    : colorClasses.includes('text-emerald') ? 'text-emerald-700 font-medium'
+    : colorClasses.includes('text-violet') ? 'text-violet-700 font-medium'
+    : isToday ? 'text-blue-700 font-bold' : 'text-slate-900 font-normal'
+
+  const Icon = event ? getEventIcon(event.type) : null
+  const iconColor = event ? getEventIconColor(event.type) : ''
+
+  if (!event) {
+    return (
+      <div
+        className={`w-full ${showCalendarDayNumbers ? 'h-16' : 'h-10'} flex items-center justify-center text-sm rounded-md border ${bgColor} ${borderColor} ${textColor} ${isToday ? 'ring-2 ring-blue-500 ring-offset-1' : ''} transition-colors`}
+      >
+        {showCalendarDayNumbers ? (
+          <div className="text-lg font-bold">{day}</div>
+        ) : (
+          day
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div 
+      className="relative group w-full"
+      onMouseEnter={() => setShowTooltip(true)}
+      onMouseLeave={() => setShowTooltip(false)}
+      onTouchStart={() => setShowTooltip(!showTooltip)}
+    >
+      <div
+        className={`w-full ${showCalendarDayNumbers ? 'h-16' : 'h-10'} flex items-center justify-center text-sm rounded-md border ${bgColor} ${borderColor} ${textColor} ${isToday ? 'ring-2 ring-blue-500 ring-offset-1' : ''} cursor-pointer hover:shadow-lg hover:scale-105 transition-all`}
+      >
+        {showCalendarDayNumbers ? (
+          <div className="text-lg font-bold">{day}</div>
+        ) : (
+          Icon ? (
+            <Icon className={`h-5 w-5 ${iconColor}`} />
+          ) : (
+            day
+          )
+        )}
+      </div>
+      {showTooltip && (
+        <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-900 text-white text-xs rounded-lg shadow-xl whitespace-nowrap max-w-xs pointer-events-none">
+          <div className="font-semibold mb-1">{event.title}</div>
+          {event.description && (
+            <div className="text-slate-300 text-[11px] whitespace-normal max-w-[200px]">
+              {event.description}
+            </div>
+          )}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1">
+            <div className="w-2 h-2 bg-slate-900 rotate-45"></div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function MonthCalendar({ 
+  year, 
+  month, 
+  monthName,
+  allEvents,
+  getEventColor,
+  showCalendarDayNumbers = false
+}: { 
+  year: number
+  month: number
+  monthName: string
+  allEvents: Array<{
+    id: string
+    startDate: Date
+    endDate: Date | null
+    type: string
+    title: string
+    description?: string | null
+  }>
+  getEventColor: (type: string) => string
+  showCalendarDayNumbers?: boolean
+}) {
+  const daysInMonth = getDaysInMonth(year, month)
+  const firstDay = getFirstDayOfMonth(year, month)
+  const weekDays = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
+  const today = new Date()
+  
+  const prevMonth = month === 0 ? 11 : month - 1
+  const prevYear = month === 0 ? year - 1 : year
+  const daysInPrevMonth = getDaysInMonth(prevYear, prevMonth)
+  
+  const days: Array<{ day: number; date: Date; isCurrentMonth: boolean }> = []
+  
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const day = daysInPrevMonth - i
+    const date = new Date(prevYear, prevMonth, day)
+    days.push({ day, date, isCurrentMonth: false })
+  }
+  
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day)
+    days.push({ day, date, isCurrentMonth: true })
+  }
+  
+  const remainingDays = 42 - days.length
+  const nextMonth = month === 11 ? 0 : month + 1
+  const nextYear = month === 11 ? year + 1 : year
+  for (let day = 1; day <= remainingDays; day++) {
+    const date = new Date(nextYear, nextMonth, day)
+    days.push({ day, date, isCurrentMonth: false })
+  }
+
+  const weeksToShow = Math.ceil((daysInMonth + firstDay) / 7)
+  const totalDays = weeksToShow * 7
+  const daysToShow = days.slice(0, totalDays)
+
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-col gap-1">
+        <div className="flex gap-1">
+          {weekDays.map((day, idx) => (
+            <div 
+              key={`${day}-${idx}`} 
+              className="flex-1 text-center text-xs font-bold text-slate-600 py-1 uppercase"
+            >
+              {day}
+            </div>
+          ))}
+        </div>
+        {Array.from({ length: weeksToShow }, (_, weekIndex) => (
+          <div key={weekIndex} className="flex gap-1">
+            {daysToShow.slice(weekIndex * 7, (weekIndex + 1) * 7).map(({ day, date, isCurrentMonth }, index) => {
+              const event = getEventForDate(date, allEvents)
+              const isToday = 
+                date.getDate() === today.getDate() &&
+                date.getMonth() === today.getMonth() &&
+                date.getFullYear() === today.getFullYear()
+              
+              return (
+                <div key={`${date.getTime()}-${index}`} className="flex-1">
+                  <CalendarDay
+                    day={day}
+                    date={date}
+                    event={event}
+                    isToday={isToday}
+                    getEventColor={getEventColor}
+                    isCurrentMonth={isCurrentMonth}
+                    showCalendarDayNumbers={showCalendarDayNumbers}
+                  />
+                </div>
+              )
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function CalendarView({ 
+  allEvents, 
+  schoolYear,
+  getEventColor,
+  showCalendarDayNumbers = false,
+  currentMonthIndex,
+  onMonthChange
+}: { 
+  allEvents: Array<{
+    id: string
+    startDate: Date
+    endDate: Date | null
+    type: string
+    title: string
+    description?: string | null
+  }>
+  schoolYear: string
+  getEventColor: (type: string) => string
+  showCalendarDayNumbers?: boolean
+  currentMonthIndex: number
+  onMonthChange: (index: number) => void
+}) {
+  const [startYear, endYear] = schoolYear.split('-').map(Number)
+  
+  const months = [
+    { name: 'Septembrie', year: startYear, month: 8 },
+    { name: 'Octombrie', year: startYear, month: 9 },
+    { name: 'Noiembrie', year: startYear, month: 10 },
+    { name: 'Decembrie', year: startYear, month: 11 },
+    { name: 'Ianuarie', year: endYear, month: 0 },
+    { name: 'Februarie', year: endYear, month: 1 },
+    { name: 'Martie', year: endYear, month: 2 },
+    { name: 'Aprilie', year: endYear, month: 3 },
+    { name: 'Mai', year: endYear, month: 4 },
+    { name: 'Iunie', year: endYear, month: 5 },
+  ]
+
+  const currentMonth = months[currentMonthIndex]
+  const canGoPrevious = currentMonthIndex > 0
+  const canGoNext = currentMonthIndex < months.length - 1
+
+  return (
+    <div className="space-y-4">
+      {/* Month Navigation */}
+      <div className="flex items-center justify-center gap-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onMonthChange(currentMonthIndex - 1)}
+          disabled={!canGoPrevious}
+          className="shrink-0"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        
+        <div className="text-lg font-semibold text-slate-900 min-w-[200px] text-center">
+          {currentMonth.name} {currentMonth.year}
+        </div>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onMonthChange(currentMonthIndex + 1)}
+          disabled={!canGoNext}
+          className="shrink-0"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Single Month Calendar */}
+      <div className="flex justify-center">
+        <div className="w-full max-w-lg">
+          <MonthCalendar
+            year={currentMonth.year}
+            month={currentMonth.month}
+            monthName={currentMonth.name}
+            allEvents={allEvents}
+            getEventColor={getEventColor}
+            showCalendarDayNumbers={showCalendarDayNumbers}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function LandingCalendar({ events, schoolYear, showCalendarDayNumbers = false }: LandingCalendarProps) {
+  const [view, setView] = useState<ViewType>('list')
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(0)
+
+  const allEvents = events.map((e) => ({ 
+    ...e, 
+    startDate: new Date(e.startDate),
+    endDate: e.endDate ? new Date(e.endDate) : null,
+  })).sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+
+  return (
+    <section className="rounded-2xl bg-white p-6 shadow-sm lg:p-8 relative z-20">
+      <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between relative z-30">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-900 lg:text-3xl">
+            Calendarul Anului Școlar {schoolYear}
+          </h2>
+          <p className="mt-2 text-slate-600">
+            Toate evenimentele importante pentru anul școlar
+          </p>
+        </div>
+        <div className="flex justify-center lg:inline-flex lg:items-center gap-0.5 rounded-lg border border-slate-200 bg-slate-50 p-0.5 relative z-40">
+          <Button
+            variant={view === 'list' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setView('list')}
+            className="gap-2 rounded-md shrink-0 m-0 relative z-50"
+            type="button"
+          >
+            <List className="h-4 w-4" />
+            Listă
+          </Button>
+          <Button
+            variant={view === 'calendar' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setView('calendar')}
+            className="gap-2 rounded-md shrink-0 m-0 relative z-50"
+            type="button"
+          >
+            <CalendarIcon className="h-4 w-4" />
+            Calendar
+          </Button>
+        </div>
+      </div>
+
+      {view === 'list' ? (
+        <>
+          <div className="space-y-4">
+            {allEvents.map((event) => {
+              const Icon = getEventIcon(event.type)
+              const iconColor = getEventIconColor(event.type)
+              const borderColor = getEventBorderColor(event.type)
+              const textColor = getEventTextColor(event.type)
+              const eventDate = new Date(event.startDate)
+              const dayNumber = showCalendarDayNumbers ? eventDate.getDate() : null
+              
+              const isPromo = ('isAd' in event && event.isAd) || event.type === 'PROMO'
+              const hasCustomBackground = isPromo && (('backgroundColor' in event && event.backgroundColor) || ('backgroundImage' in event && event.backgroundImage))
+              
+              return (
+                <article 
+                  key={event.id}
+                  className={`relative rounded-xl p-4 transition-all hover:shadow-md overflow-hidden ${hasCustomBackground ? '' : `bg-white border-2 ${borderColor}`}`}
+                  style={{
+                    ...(hasCustomBackground && 'backgroundImage' in event && event.backgroundImage ? {
+                      backgroundImage: `url(${event.backgroundImage})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      minHeight: '120px',
+                    } as React.CSSProperties : {}),
+                    ...(hasCustomBackground && (!('backgroundImage' in event && event.backgroundImage)) && 'backgroundColor' in event && event.backgroundColor ? {
+                      backgroundColor: event.backgroundColor as string,
+                      minHeight: '120px',
+                    } as React.CSSProperties : {}),
+                  } as React.CSSProperties}
+                >
+                  {hasCustomBackground && 'backgroundImage' in event && event.backgroundImage ? (
+                    <div className="absolute inset-0 bg-black/60 rounded-xl" />
+                  ) : null}
+                  
+                  <div className={`relative flex ${isPromo && hasCustomBackground ? '' : 'items-center gap-4'} z-10`}>
+                    {!(isPromo && hasCustomBackground) && (
+                      <div
+                        className={`flex flex-col items-center justify-center shrink-0 rounded-md bg-white`}
+                        style={{
+                          aspectRatio: '1 / 1',
+                          width: showCalendarDayNumbers ? '4rem' : '4rem',
+                          height: showCalendarDayNumbers ? '4rem' : '4rem',
+                          minWidth: '5rem',
+                          minHeight: '5rem',
+                        }}
+                      >
+                        {showCalendarDayNumbers ? (
+                          <>
+                            <div className="text-[11px] font-semibold uppercase leading-tight opacity-80">
+                              {eventDate.toLocaleString('ro-RO', { month: 'short' })}
+                            </div>
+                            <div className="text-4xl font-bold leading-none">
+                              {dayNumber}
+                            </div>
+                            <div className="text-[11px] font-medium capitalize leading-tight opacity-70">
+                              {eventDate.toLocaleString('ro-RO', { weekday: 'long' })}
+                            </div>
+                          </>
+                        ) : (
+                          <Icon className={`h-6 w-6 ${iconColor}`} />
+                        )}
+                      </div>
+                    )}
+                    
+                    <div className={`flex-1 min-w-0 ${hasCustomBackground ? 'text-white' : ''}`}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-xs font-medium uppercase tracking-wider ${hasCustomBackground ? 'text-white opacity-90' : `opacity-75 ${textColor}`}`}>
+                          {isPromo ? 'PROMO' : getEventLabel(event.type)}
+                        </span>
+                      </div>
+                      
+                      <h3 className={`font-semibold ${hasCustomBackground ? 'text-white' : textColor}`}>
+                        {event.title}
+                      </h3>
+                      
+                      <p className={`mt-1 text-sm ${hasCustomBackground ? 'text-white opacity-90' : `opacity-90 ${textColor}`}`}>
+                        {event.endDate 
+                          ? `${formatDate(event.startDate)} - ${formatDate(event.endDate)}`
+                          : formatFullDate(event.startDate)
+                        }
+                      </p>
+                      
+                      {event.description && (
+                        <p className={`mt-2 text-sm ${hasCustomBackground ? 'text-white opacity-80' : `opacity-75 ${textColor}`}`}>
+                          {event.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+
+          <div className="mt-8 rounded-xl bg-slate-50 p-4">
+            <h3 className="mb-3 text-sm font-semibold text-slate-700">Legendă</h3>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { type: 'VACATION', label: 'Vacanță' },
+                { type: 'HOLIDAY', label: 'Zi liberă' },
+                { type: 'SEMESTER_START', label: 'Început' },
+                { type: 'LAST_DAY', label: 'Sfârșit' },
+              ].map(({ type, label }) => (
+                <span 
+                  key={type}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${getEventColor(type)}`}
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="mb-6 rounded-xl bg-slate-50 p-4">
+            <h3 className="mb-3 text-sm font-semibold text-slate-700">Legendă</h3>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { type: 'VACATION', label: 'Vacanță' },
+                { type: 'HOLIDAY', label: 'Zi liberă' },
+                { type: 'SEMESTER_START', label: 'Început semestru' },
+                { type: 'LAST_DAY', label: 'Sfârșit' },
+              ].map(({ type, label }) => (
+                <span 
+                  key={type}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${getEventColor(type)}`}
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+          <CalendarView 
+            allEvents={allEvents.map(e => ({
+              ...e,
+              description: 'description' in e ? e.description : null
+            }))} 
+            schoolYear={schoolYear}
+            getEventColor={getEventColor}
+            showCalendarDayNumbers={showCalendarDayNumbers}
+            currentMonthIndex={currentMonthIndex}
+            onMonthChange={setCurrentMonthIndex}
+          />
+        </>
+      )}
+    </section>
+  )
+}
+

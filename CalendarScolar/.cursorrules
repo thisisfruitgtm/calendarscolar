@@ -1,0 +1,64 @@
+# CalendarScolar - Code Standards & Security
+
+## TypeScript
+- Strict mode enabled, no `any` types
+- Use type inference where possible
+- Prefer interfaces for public APIs, types for unions/intersections
+- Always type function parameters and return types
+
+## React/Next.js
+- Server Components by default, use 'use client' only when necessary
+- Prefer Server Actions over API routes for mutations
+- Use async/await for all async operations
+- Error boundaries on all major sections
+- Proper loading states and error handling
+
+## Security
+- Zod validation on ALL user inputs (API routes, Server Actions, forms)
+- Rate limiting on API routes (use middleware)
+- CSRF protection via NextAuth
+- Sanitize HTML content in descriptions (DOMPurify or similar)
+- Never expose sensitive data in client components
+- Use environment variables for all secrets
+- Hash passwords with bcrypt (minimum 10 rounds)
+- Validate file uploads (type, size, content)
+
+## Code Quality
+- Clean, readable code over clever solutions
+- Meaningful variable and function names
+- Single responsibility principle
+- DRY but don't over-abstract
+- Comment complex logic, not obvious code
+- Consistent formatting (Prettier)
+
+## Database
+- Use Prisma for all DB operations
+- Transactions for multi-step operations
+- Indexes on frequently queried fields
+- Soft deletes where appropriate (active flag)
+- Proper error handling for DB operations
+
+## API Design
+- RESTful conventions
+- Consistent error responses
+- Proper HTTP status codes
+- Rate limiting on public endpoints
+- CORS configured correctly
+
+## Logging
+- Use structured logging (pino)
+- Log errors with context
+- Don't log sensitive data
+- Appropriate log levels (error, warn, info, debug)
+
+## Testing (Future)
+- Unit tests for utilities
+- Integration tests for API routes
+- E2E tests for critical flows
+
+## Performance
+- Optimize images (Next.js Image component)
+- Lazy load components where appropriate
+- Database query optimization
+- Cache static data appropriately
+

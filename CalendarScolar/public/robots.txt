@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/auth/
+
+Sitemap: https://calendarscolar.ro/sitemap.xml
+
+
+
+
+

@@ -1,0 +1,164 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+model Event {
+  id              String    @id @default(cuid())
+  title           String
+  description     String?
+  startDate       DateTime
+  endDate         DateTime?
+  type            EventType
+  imageUrl        String?
+  isAd            Boolean   @default(false)
+  adLink          String?
+  backgroundColor String?
+  backgroundImage String?
+  active          Boolean   @default(true)
+  county          County?   @relation("EventSingleCounty", fields: [countyId], references: [id], onDelete: SetNull)
+  countyId        String?
+  counties        EventCounty[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+enum EventType {
+  VACATION
+  HOLIDAY
+  LAST_DAY
+  SEMESTER_START
+  SEMESTER_END
+  PROMO
+}
+
+model Settings {
+  id                    String   @id @default("settings")
+  adsEnabled            Boolean  @default(true)
+  calendarName          String   @default("Calendar Școlar 2025-2026")
+  schoolYear            String   @default("2025-2026")
+  showCalendarDayNumbers Boolean @default(false)
+  updatedAt             DateTime @updatedAt
+}
+
+// Grupe de vacanță (ex: Grupa A, B, C pentru vacanța de februarie)
+model VacationGroup {
+  id        String   @id @default(cuid())
+  name      String   // ex: "Grupa A", "Grupa B"
+  color     String   @default("#3B82F6") // pentru hartă
+  counties  County[]
+  periods   VacationPeriod[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Perioadele de vacanță pentru fiecare grupă
+model VacationPeriod {
+  id          String        @id @default(cuid())
+  name        String        // ex: "Vacanța de februarie 2026"
+  startDate   DateTime
+  endDate     DateTime
+  type        VacationType
+  group       VacationGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId     String
+  schoolYear  String        @default("2025-2026")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+enum VacationType {
+  WINTER      // Iarnă
+  SPRING      // Primăvară (Paște)
+  SUMMER      // Vară
+  INTERSEMESTER // Între semestre (februarie)
+}
+
+// Județele României
+model County {
+  id          String         @id @default(cuid())
+  name        String         @unique // ex: "Timiș"
+  slug        String         @unique // ex: "timis"
+  capitalCity String         // ex: "Timișoara"
+  population  Int?           // pentru SEO/content
+  group       VacationGroup? @relation(fields: [groupId], references: [id])
+  groupId     String?
+  events      Event[]        @relation("EventSingleCounty")
+  eventCounties EventCounty[]
+  subscriptions CalendarSubscription[]
+  subscriptionActions SubscriptionAction[]
+  
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Relație many-to-many între Event și County pentru reclame
+model EventCounty {
+  id        String   @id @default(cuid())
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId   String
+  county    County   @relation(fields: [countyId], references: [id], onDelete: Cascade)
+  countyId  String
+  createdAt DateTime @default(now())
+  
+  @@unique([eventId, countyId])
+  @@index([eventId])
+  @@index([countyId])
+}
+
+// Tracking pentru abonări la calendar
+model CalendarSubscription {
+  id          String   @id @default(cuid())
+  county      County   @relation(fields: [countyId], references: [id], onDelete: Cascade)
+  countyId    String
+  userAgent   String?  // Aplicația folosită (Google Calendar, Apple Calendar, etc.)
+  ipAddress   String?  // IP address (opțional, pentru statistici)
+  firstAccess DateTime  @default(now())
+  lastAccess  DateTime  @updatedAt
+  accessCount Int      @default(1)
+  
+  @@unique([countyId, userAgent])
+  @@index([countyId])
+  @@index([lastAccess])
+}
+
+// Tracking pentru click-uri pe acțiuni de subscribe
+model SubscriptionAction {
+  id          String   @id @default(cuid())
+  county      County   @relation(fields: [countyId], references: [id], onDelete: Cascade)
+  countyId    String
+  actionType  String   // 'google', 'apple', 'outlook', 'copy_url'
+  userAgent   String?  // Browser/app user agent
+  ipAddress   String?  // IP address
+  createdAt   DateTime @default(now())
+  
+  @@index([countyId])
+  @@index([actionType])
+  @@index([createdAt])
+}
