@@ -7,7 +7,9 @@ export default async function middleware(request: NextRequest) {
   
   // Don't protect admin-login route
   if (pathname === '/admin-login') {
-    return NextResponse.next()
+    const response = NextResponse.next()
+    response.headers.set('x-pathname', pathname)
+    return response
   }
   
   // Check auth for admin routes
@@ -22,6 +24,9 @@ export default async function middleware(request: NextRequest) {
   // Add security headers
   const response = NextResponse.next()
   
+  // Pass pathname to server components for maintenance check
+  response.headers.set('x-pathname', pathname)
+  
   // Security headers are added in next.config.ts, but we can add additional ones here if needed
   response.headers.set('X-Content-Type-Options', 'nosniff')
   response.headers.set('X-Frame-Options', 'SAMEORIGIN')
@@ -31,5 +36,14 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/admin-login'],
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public files (images, etc.)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
+  ],
 }
