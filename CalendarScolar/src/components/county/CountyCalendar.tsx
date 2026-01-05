@@ -113,6 +113,24 @@ function getEventColor(type: string) {
   }
 }
 
+function getLegendColor(type: string) {
+  switch (type) {
+    case 'VACATION':
+      return 'bg-white border-amber-200'
+    case 'HOLIDAY':
+      return 'bg-white border-rose-200'
+    case 'SEMESTER_START':
+      return 'bg-white border-emerald-200'
+    case 'SEMESTER_END':
+    case 'LAST_DAY':
+      return 'bg-white border-violet-200'
+    case 'PROMO':
+      return 'bg-white border-blue-200'
+    default:
+      return 'bg-white border-slate-200'
+  }
+}
+
 function getEventLabel(type: string) {
   switch (type) {
     case 'VACATION':
@@ -520,6 +538,26 @@ export function CountyCalendar({ county, events, promos = [], schoolYear, showCa
 
       {view === 'list' ? (
         <>
+          {/* Legend */}
+          <div className="mb-6">
+            <h3 className="mb-3 text-sm font-semibold text-slate-700">Legendă</h3>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { type: 'VACATION', label: 'Vacanță' },
+                { type: 'HOLIDAY', label: 'Zi liberă' },
+                { type: 'SEMESTER_START', label: 'Început semestru' },
+                { type: 'LAST_DAY', label: 'Sfârșit' },
+              ].map(({ type, label }) => (
+                <span 
+                  key={type}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${getLegendColor(type)}`}
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+          
           <div className="space-y-4">
             {allEvents.map((event, index) => {
               const EventIcon = getEventIcon(event.type)
@@ -605,31 +643,11 @@ export function CountyCalendar({ county, events, promos = [], schoolYear, showCa
               )
             })}
           </div>
-
-          {/* Legend */}
-          <div className="mt-8 rounded-xl bg-slate-50 p-4">
-            <h3 className="mb-3 text-sm font-semibold text-slate-700">Legendă</h3>
-            <div className="flex flex-wrap gap-3">
-              {[
-                { type: 'VACATION', label: 'Vacanță' },
-                { type: 'HOLIDAY', label: 'Zi liberă' },
-                { type: 'SEMESTER_START', label: 'Început' },
-                { type: 'LAST_DAY', label: 'Sfârșit' },
-              ].map(({ type, label }) => (
-                <span 
-                  key={type}
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${getEventColor(type)}`}
-                >
-                  {label}
-                </span>
-              ))}
-            </div>
-          </div>
         </>
       ) : (
         <>
           {/* Legend */}
-          <div className="mb-6 rounded-xl bg-slate-50 p-4">
+          <div className="mb-6">
             <h3 className="mb-3 text-sm font-semibold text-slate-700">Legendă</h3>
             <div className="flex flex-wrap gap-3">
               {[
@@ -640,7 +658,7 @@ export function CountyCalendar({ county, events, promos = [], schoolYear, showCa
               ].map(({ type, label }) => (
                 <span 
                   key={type}
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${getEventColor(type)}`}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${getLegendColor(type)}`}
                 >
                   {label}
                 </span>

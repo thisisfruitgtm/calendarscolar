@@ -123,3 +123,76 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Accessibility Styles */
+@layer utilities {
+  /* Font Size */
+  .font-size-normal {
+    font-size: 100%;
+  }
+  
+  .font-size-large {
+    font-size: 125%;
+  }
+  
+  .font-size-extra-large {
+    font-size: 150%;
+  }
+  
+  /* High Contrast */
+  .high-contrast {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0 0 0);
+    --primary: oklch(0.2 0.15 250);
+    --primary-foreground: oklch(1 0 0);
+    --border: oklch(0 0 0);
+    --muted-foreground: oklch(0.2 0 0);
+  }
+  
+  .high-contrast button,
+  .high-contrast a {
+    border: 2px solid oklch(0 0 0) !important;
+  }
+  
+  /* Reduce Motion */
+  .reduce-motion *,
+  .reduce-motion *::before,
+  .reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Enhanced Focus Visible */
+  .focus-visible-enhanced *:focus-visible {
+    outline: 3px solid oklch(0.45 0.15 250) !important;
+    outline-offset: 2px !important;
+    border-radius: 2px !important;
+  }
+  
+  /* Skip Link */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  
+  .skip-link:focus {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    background: oklch(0.45 0.15 250);
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    z-index: 100;
+    border-radius: 0 0 4px 0;
+  }
+}

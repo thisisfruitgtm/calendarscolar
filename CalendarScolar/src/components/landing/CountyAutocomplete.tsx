@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { MapPin, Search } from 'lucide-react'
 
@@ -33,6 +34,7 @@ export function CountyAutocomplete({
   onSelect,
   placeholder = "Caută județul tău (ex: Cluj, București, Timiș...)"
 }: CountyAutocompleteProps) {
+  const router = useRouter()
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
@@ -73,6 +75,9 @@ export function CountyAutocomplete({
   const handleSelect = (county: County) => {
     if (onSelect) {
       onSelect(county)
+    } else {
+      // Default behavior: navigate to county page
+      router.push(`/judet/${county.slug}`)
     }
     setQuery(county.name)
     setIsOpen(false)

@@ -1,5 +1,8 @@
+'use client'
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { AccessibilityMenu } from '@/components/accessibility/AccessibilityMenu'
 
 export function Header() {
   return (
@@ -7,7 +10,7 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link href="/" className="text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
+            <Link href="/" className="text-xl font-bold text-slate-900 hover:text-slate-800 transition-colors">
               CalendarȘcolar.ro
             </Link>
             <nav className="hidden md:flex items-center gap-6">
@@ -26,6 +29,7 @@ export function Header() {
             </nav>
           </div>
           <div className="flex items-center gap-4">
+            <AccessibilityMenu />
             <Button asChild variant="outline" size="sm" className="bg-white/90 backdrop-blur-sm hover:bg-white">
               <Link href="/judete">
                 Vezi Toate Județele

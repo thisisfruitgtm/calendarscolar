@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import { Event, Promo } from '@prisma/client'
 import { Calendar as CalendarIcon, Sun, Leaf, TreePine, List, ChevronLeft, ChevronRight, Megaphone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { FadeInUp } from '@/components/ui/fade-in-up'
 
 type PromoWithoutCounties = Omit<Promo, 'counties'>
 
@@ -103,6 +104,24 @@ function getEventColor(type: string) {
       return 'bg-violet-200 border-violet-200'
     case 'PROMO':
       return 'bg-blue-200 border-blue-200'
+    default:
+      return 'bg-white border-slate-200'
+  }
+}
+
+function getLegendColor(type: string) {
+  switch (type) {
+    case 'VACATION':
+      return 'bg-white border-amber-200'
+    case 'HOLIDAY':
+      return 'bg-white border-rose-200'
+    case 'SEMESTER_START':
+      return 'bg-white border-emerald-200'
+    case 'SEMESTER_END':
+    case 'LAST_DAY':
+      return 'bg-white border-violet-200'
+    case 'PROMO':
+      return 'bg-white border-blue-200'
     default:
       return 'bg-white border-slate-200'
   }
@@ -466,7 +485,34 @@ function CalendarView({
 
 export function LandingCalendar({ events, promos = [], schoolYear, showCalendarDayNumbers = false }: LandingCalendarProps) {
   const [view, setView] = useState<ViewType>('list')
-  const [currentMonthIndex, setCurrentMonthIndex] = useState(0)
+  
+  // Calculate current month index based on today's date
+  const [startYear, endYear] = schoolYear.split('-').map(Number)
+  const today = new Date()
+  const todayYear = today.getFullYear()
+  const todayMonth = today.getMonth() // 0-11
+  
+  // Find current month index or default to 0
+  const currentMonthIndexFromDate = useMemo(() => {
+    const months = [
+      { name: 'Septembrie', year: startYear, month: 8 },
+      { name: 'Octombrie', year: startYear, month: 9 },
+      { name: 'Noiembrie', year: startYear, month: 10 },
+      { name: 'Decembrie', year: startYear, month: 11 },
+      { name: 'Ianuarie', year: endYear, month: 0 },
+      { name: 'Februarie', year: endYear, month: 1 },
+      { name: 'Martie', year: endYear, month: 2 },
+      { name: 'Aprilie', year: endYear, month: 3 },
+      { name: 'Mai', year: endYear, month: 4 },
+      { name: 'Iunie', year: endYear, month: 5 },
+    ]
+    const index = months.findIndex(m => 
+      m.year === todayYear && m.month === todayMonth
+    )
+    return index >= 0 ? index : 0
+  }, [startYear, endYear, todayYear, todayMonth])
+  
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(currentMonthIndexFromDate)
 
   // Convert promos to event-like structure
   const promoEvents = promos.map(promo => ({
@@ -484,6 +530,10 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
     updatedAt: promo.updatedAt,
   }))
 
+  // Filter events to show only future ones (from today onwards)
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  todayStart.setHours(0, 0, 0, 0)
+
   const allEvents = [
     ...promoEvents,
     ...events.map((e) => ({ 
@@ -491,19 +541,29 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
       startDate: new Date(e.startDate),
       endDate: e.endDate ? new Date(e.endDate) : null,
     })),
-  ].sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+  ]
+    .filter((event) => {
+      // Keep event if it ends today or later
+      const eventEndDate = event.endDate || event.startDate
+      const eventEnd = new Date(eventEndDate)
+      eventEnd.setHours(23, 59, 59, 999)
+      return eventEnd >= todayStart
+    })
+    .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+    .slice(0, 6) // Show only first 6 events on landing page
 
   return (
-    <section className="rounded-2xl bg-white p-6 shadow-sm lg:p-8 relative z-20">
-      <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between relative z-30">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900 lg:text-3xl">
-            Calendarul Anului Școlar {schoolYear}
-          </h2>
-          <p className="mt-2 text-slate-600">
-            Toate evenimentele importante pentru anul școlar
-          </p>
-        </div>
+    <FadeInUp delay={1200} duration={700}>
+      <section className="rounded-2xl bg-white p-6 shadow-sm lg:p-8 relative z-20 mx-auto max-w-6xl">
+        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between relative z-30">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900 lg:text-3xl">
+              Calendarul Anului Școlar {schoolYear}
+            </h2>
+            <p className="mt-2 text-slate-600">
+              Toate evenimentele importante pentru anul școlar
+            </p>
+          </div>
         <div className="flex justify-center lg:inline-flex lg:items-center gap-0.5 rounded-lg border border-slate-200 bg-slate-50 p-0.5 relative z-40">
           <Button
             variant={view === 'list' ? 'default' : 'ghost'}
@@ -530,7 +590,26 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
 
       {view === 'list' ? (
         <>
-          <div className="space-y-4">
+          <div className="mb-6 max-w-4xl mx-auto">
+            <h3 className="mb-3 text-sm font-semibold text-slate-700">Legendă</h3>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { type: 'VACATION', label: 'Vacanță' },
+                { type: 'HOLIDAY', label: 'Zi liberă' },
+                { type: 'SEMESTER_START', label: 'Început semestru' },
+                { type: 'LAST_DAY', label: 'Sfârșit' },
+              ].map(({ type, label }) => (
+                <span 
+                  key={type}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${getLegendColor(type)}`}
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+          
+          <div className="space-y-4 max-w-4xl mx-auto max-h-[500px] overflow-y-auto">
             {allEvents.map((event) => {
               const EventIcon = getEventIcon(event.type)
               const iconColor = getEventIconColor(event.type)
@@ -601,29 +680,10 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
               )
             })}
           </div>
-
-          <div className="mt-8 rounded-xl bg-slate-50 p-4">
-            <h3 className="mb-3 text-sm font-semibold text-slate-700">Legendă</h3>
-            <div className="flex flex-wrap gap-3">
-              {[
-                { type: 'VACATION', label: 'Vacanță' },
-                { type: 'HOLIDAY', label: 'Zi liberă' },
-                { type: 'SEMESTER_START', label: 'Început' },
-                { type: 'LAST_DAY', label: 'Sfârșit' },
-              ].map(({ type, label }) => (
-                <span 
-                  key={type}
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${getEventColor(type)}`}
-                >
-                  {label}
-                </span>
-              ))}
-            </div>
-          </div>
         </>
       ) : (
         <>
-          <div className="mb-6 rounded-xl bg-slate-50 p-4">
+          <div className="mb-6">
             <h3 className="mb-3 text-sm font-semibold text-slate-700">Legendă</h3>
             <div className="flex flex-wrap gap-3">
               {[
@@ -634,7 +694,7 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
               ].map(({ type, label }) => (
                 <span 
                   key={type}
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${getEventColor(type)}`}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium ${getLegendColor(type)}`}
                 >
                   {label}
                 </span>
@@ -654,7 +714,8 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
           />
         </>
       )}
-    </section>
+      </section>
+    </FadeInUp>
   )
 }
 

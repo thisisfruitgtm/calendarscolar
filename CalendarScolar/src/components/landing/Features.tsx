@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Calendar, MapPin, Shield, Zap, Search, FileText } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { FadeInUp } from '@/components/ui/fade-in-up'
 
 const features = [
   {
@@ -46,34 +47,39 @@ export function Features() {
   return (
     <section className="py-12 sm:py-16 bg-white">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            De ce să folosești CalendarȘcolar?
-          </h2>
-          <p className="mt-4 text-lg leading-8 text-slate-600">
-            Imaginează-ți că știi exact când sunt vacanțele pentru județul tău, când sunt zilele libere și 
-            când începe sau se termină semestrul. Fără bătăi de cap, fără verificări pe mai multe site-uri. 
-            Tot ce ai nevoie, actualizat și verificat, într-un singur loc.
-          </p>
-        </div>
+        <FadeInUp>
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              De ce să folosești CalendarȘcolar?
+            </h2>
+            <p className="mt-4 text-lg leading-8 text-slate-600">
+              Imaginează-ți că știi exact când sunt vacanțele pentru județul tău, când sunt zilele libere și 
+              când începe sau se termină semestrul. Fără bătăi de cap, fără verificări pe mai multe site-uri. 
+              Tot ce ai nevoie, actualizat și verificat, într-un singur loc.
+            </p>
+          </div>
+        </FadeInUp>
         
         <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-8 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-          {features.map((feature) => (
-            <Card key={feature.name} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <feature.icon className={`h-8 w-8 ${feature.color}`} />
-                <CardTitle className="mt-4">{feature.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>{feature.description}</CardDescription>
-              </CardContent>
-            </Card>
+          {features.map((feature, index) => (
+            <FadeInUp key={feature.name} delay={index * 100} duration={500}>
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <feature.icon className={`h-8 w-8 ${feature.color}`} />
+                  <CardTitle className="mt-4">{feature.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardContent>
+              </Card>
+            </FadeInUp>
           ))}
         </div>
 
         {/* Vacation Groups Info */}
-        <div className="mx-auto mt-20 max-w-4xl">
-          <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 p-8 lg:p-12">
+        <FadeInUp delay={300} duration={700}>
+          <div className="mx-auto mt-20 max-w-4xl">
+            <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 p-8 lg:p-12">
             <h3 className="text-2xl font-bold text-slate-900 text-center mb-6">
               Grupele de Vacanță Intersemestrială
             </h3>
@@ -120,6 +126,7 @@ export function Features() {
             </div>
           </div>
         </div>
+        </FadeInUp>
       </div>
     </section>
   )

@@ -22,3 +22,5 @@ Acest folder conține documentația completă a proiectului.
 - [Production Checklist](./PRODUCTION_CHECKLIST.md) - Checklist pre-deploy
 - [Testing Guide](./TESTING.md) - Procedura de testare
 
+
+

@@ -36,3 +36,5 @@ export function DeletePromoButton({ id }: DeletePromoButtonProps) {
   )
 }
 
+
+

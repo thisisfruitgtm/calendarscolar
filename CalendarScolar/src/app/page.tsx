@@ -3,6 +3,7 @@ import { Features } from '@/components/landing/Features'
 import { Subscribe } from '@/components/landing/Subscribe'
 import { LandingCalendar } from '@/components/landing/LandingCalendar'
 import { getCachedActiveEvents, getCachedActivePromos, getCachedSettings, getCachedActiveCounties } from '@/lib/cache'
+import { FadeInUp } from '@/components/ui/fade-in-up'
 
 export default async function Home() {
   // Get all active events (cached)
@@ -26,12 +27,12 @@ export default async function Home() {
   const counties = await getCachedActiveCounties()
 
   return (
-    <main className="min-h-screen">
+    <div className="min-h-screen">
       <Hero />
       
       {/* Calendar Preview Section with fade */}
-      <section className="relative bg-gradient-to-b from-white via-slate-50 to-white overflow-hidden" style={{ height: '700px' }}>
-        <div className="relative mx-auto max-w-7xl px-6 lg:px-8 h-full overflow-hidden z-0">
+      <section className="relative bg-gradient-to-b from-white via-slate-50 to-white overflow-hidden py-8">
+        <div className="relative mx-auto max-w-4xl px-6 lg:px-8 z-0">
           <LandingCalendar 
             events={events}
             promos={calendarPromos}
@@ -46,18 +47,20 @@ export default async function Home() {
       
       {/* Transition section */}
       <section className="py-8 bg-white">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-lg text-slate-600 leading-relaxed">
-              Ca părinte, știi cât de important este să știi din timp când sunt vacanțele și zilele libere. 
-              Cu CalendarȘcolar poți planifica concediile, activitățile extrașcolare și să te organizezi 
-              pentru tot anul școlar 2025-2026.
-            </p>
+        <FadeInUp delay={200} duration={600}>
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-lg text-slate-600 leading-relaxed">
+                Ca părinte, știi cât de important este să știi din timp când sunt vacanțele și zilele libere. 
+                Cu CalendarȘcolar poți planifica concediile, activitățile extrașcolare și să te organizezi 
+                pentru tot anul școlar 2025-2026.
+              </p>
+            </div>
           </div>
-        </div>
+        </FadeInUp>
       </section>
       <Features />
       <Subscribe counties={counties} />
-    </main>
+    </div>
   )
 }
