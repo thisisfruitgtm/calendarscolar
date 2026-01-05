@@ -33,16 +33,18 @@ model Event {
   endDate         DateTime?
   type            EventType
   imageUrl        String?
-  isAd            Boolean   @default(false)
-  adLink          String?
   backgroundColor String?
-  backgroundImage String?
   active          Boolean   @default(true)
   county          County?   @relation("EventSingleCounty", fields: [countyId], references: [id], onDelete: SetNull)
   countyId        String?
   counties        EventCounty[]
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+  
+  @@index([startDate])
+  @@index([endDate])
+  @@index([active])
+  @@index([type])
 }
 
 enum EventType {
@@ -51,7 +53,6 @@ enum EventType {
   LAST_DAY
   SEMESTER_START
   SEMESTER_END
-  PROMO
 }
 
 model Settings {
@@ -106,6 +107,7 @@ model County {
   groupId     String?
   events      Event[]        @relation("EventSingleCounty")
   eventCounties EventCounty[]
+  promoCounties PromoCounty[]
   subscriptions CalendarSubscription[]
   subscriptionActions SubscriptionAction[]
   
@@ -161,4 +163,54 @@ model SubscriptionAction {
   @@index([countyId])
   @@index([actionType])
   @@index([createdAt])
+}
+
+// Promoții și reclame
+model Promo {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String?
+  link        String?              // affiliate/redirect link
+  
+  startDate   DateTime             // când să apară
+  endDate     DateTime
+  
+  // Display options
+  showOnCalendar  Boolean @default(true)  // apare în calendar
+  showAsBanner    Boolean @default(false) // apare ca banner pe pagină
+  backgroundColor String?
+  
+  // Targeting - dacă counties e gol, apare peste tot
+  counties    PromoCounty[]
+  
+  // Tracking
+  impressions Int      @default(0)
+  clicks      Int      @default(0)
+  
+  // Management
+  priority    Int      @default(0) // pentru ordering (mai mare = mai sus)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([startDate])
+  @@index([endDate])
+  @@index([active])
+  @@index([showOnCalendar])
+  @@index([priority])
+}
+
+// Relație many-to-many între Promo și County
+model PromoCounty {
+  id        String   @id @default(cuid())
+  promo     Promo    @relation(fields: [promoId], references: [id], onDelete: Cascade)
+  promoId   String
+  county    County   @relation(fields: [countyId], references: [id], onDelete: Cascade)
+  countyId  String
+  createdAt DateTime @default(now())
+  
+  @@unique([promoId, countyId])
+  @@index([promoId])
+  @@index([countyId])
 }

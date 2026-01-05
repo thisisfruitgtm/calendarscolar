@@ -1,17 +1,20 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { County, VacationGroup, VacationPeriod, Event } from '@prisma/client'
-import { Calendar as CalendarIcon, Sun, Leaf, TreePine, List } from 'lucide-react'
+import { County, VacationGroup, VacationPeriod, Event, Promo } from '@prisma/client'
+import { Calendar as CalendarIcon, Sun, Leaf, TreePine, List, Megaphone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 type CountyWithGroup = County & {
   group: (VacationGroup & { periods: VacationPeriod[] }) | null
 }
 
+type PromoWithoutCounties = Omit<Promo, 'counties'>
+
 interface CountyCalendarProps {
   county: CountyWithGroup
   events: Event[]
+  promos?: PromoWithoutCounties[]
   schoolYear: string
   showCalendarDayNumbers?: boolean
 }
@@ -45,6 +48,8 @@ function getEventIcon(type: string) {
       return CalendarIcon
     case 'LAST_DAY':
       return TreePine
+    case 'PROMO':
+      return Megaphone
     default:
       return CalendarIcon
   }
@@ -61,6 +66,8 @@ function getEventIconColor(type: string) {
     case 'SEMESTER_END':
     case 'LAST_DAY':
       return 'text-violet-600'
+    case 'PROMO':
+      return 'text-blue-600'
     default:
       return 'text-slate-600'
   }
@@ -77,6 +84,8 @@ function getEventBorderColor(type: string) {
     case 'SEMESTER_END':
     case 'LAST_DAY':
       return 'border-violet-200'
+    case 'PROMO':
+      return 'border-blue-200'
     default:
       return 'border-slate-200'
   }
@@ -97,6 +106,8 @@ function getEventColor(type: string) {
     case 'SEMESTER_END':
     case 'LAST_DAY':
       return 'bg-violet-200 border-violet-200'
+    case 'PROMO':
+      return 'bg-blue-200 border-blue-200'
     default:
       return 'bg-white border-slate-200'
   }
@@ -114,6 +125,8 @@ function getEventLabel(type: string) {
       return 'Sfârșit semestru'
     case 'LAST_DAY':
       return 'Ultima zi'
+    case 'PROMO':
+      return 'Promoție'
     default:
       return 'Eveniment'
   }
@@ -431,11 +444,28 @@ function CalendarView({
   )
 }
 
-export function CountyCalendar({ county, events, schoolYear, showCalendarDayNumbers = false }: CountyCalendarProps) {
+export function CountyCalendar({ county, events, promos = [], schoolYear, showCalendarDayNumbers = false }: CountyCalendarProps) {
   const [view, setView] = useState<ViewType>('list')
+
+  // Convert promos to event-like structure for unified display
+  const promoEvents = promos.map(promo => ({
+    id: promo.id,
+    title: `📢 ${promo.title}`,
+    description: promo.description,
+    startDate: new Date(promo.startDate),
+    endDate: new Date(promo.endDate),
+    type: 'PROMO' as const,
+    imageUrl: promo.imageUrl,
+    backgroundColor: promo.backgroundColor,
+    link: promo.link,
+    active: true,
+    isPromo: true,
+  }))
 
   // Combine county-specific vacation with common events
   const allEvents = [
+    // Add promos
+    ...promoEvents,
     // Add the intersemester vacation specific to this county
     ...(county.group?.periods.map((period) => ({
       id: period.id,
@@ -500,70 +530,48 @@ export function CountyCalendar({ county, events, schoolYear, showCalendarDayNumb
               const dayName = showCalendarDayNumbers ? getDayName(eventDate) : null
               const dayNumber = showCalendarDayNumbers ? eventDate.getDate() : null
               
-              // Check if this is a promo/ad with custom styling
-              const isPromo = ('isAd' in event && event.isAd) || event.type === 'PROMO'
-              const hasCustomBackground = isPromo && (('backgroundColor' in event && event.backgroundColor) || ('backgroundImage' in event && event.backgroundImage))
-              
               return (
                 <article 
                   key={event.id}
-                  className={`relative rounded-xl p-4 transition-all hover:shadow-md overflow-hidden ${hasCustomBackground ? '' : `bg-white border-2 ${borderColor}`} ${'isCountySpecific' in event && event.isCountySpecific ? 'ring-2 ring-offset-2' : ''}`}
+                  className={`relative rounded-xl p-4 transition-all hover:shadow-md overflow-hidden bg-white border-2 ${borderColor} ${'isCountySpecific' in event && event.isCountySpecific ? 'ring-2 ring-offset-2' : ''}`}
                   style={{
-                    ...(hasCustomBackground && 'backgroundImage' in event && event.backgroundImage ? {
-                      backgroundImage: `url(${event.backgroundImage})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      minHeight: '120px',
-                    } as React.CSSProperties : {}),
-                    ...(hasCustomBackground && (!('backgroundImage' in event && event.backgroundImage)) && 'backgroundColor' in event && event.backgroundColor ? {
-                      backgroundColor: event.backgroundColor as string,
-                      minHeight: '120px',
-                    } as React.CSSProperties : {}),
                     ...('isCountySpecific' in event && event.isCountySpecific 
                       ? { ['--tw-ring-color' as string]: county.group?.color } 
                       : {}),
                   } as React.CSSProperties}
                 >
-                  {/* Overlay for better text readability on images */}
-                  {hasCustomBackground && 'backgroundImage' in event && event.backgroundImage ? (
-                    <div className="absolute inset-0 bg-black/60 rounded-xl" />
-                  ) : null}
-                  
-                  <div className={`relative flex ${isPromo && hasCustomBackground ? '' : 'items-center gap-4'} z-10`}>
-                    {/* Calendar icon/date - only show if not promo with custom background */}
-                    {!(isPromo && hasCustomBackground) && (
-                      <div
-                        className={`flex flex-col items-center justify-center shrink-0 rounded-md bg-white`}
-                        style={{
-                          aspectRatio: '1 / 1',
-                          width: showCalendarDayNumbers ? '4rem' : '4rem',
-                          height: showCalendarDayNumbers ? '4rem' : '4rem',
-                          minWidth: '5rem',
-                          minHeight: '5rem',
-                        }}
-                      >
-                        {showCalendarDayNumbers ? (
-                          <>
-                            <div className="text-[11px] font-semibold uppercase leading-tight opacity-80">
-                              {eventDate.toLocaleString('ro-RO', { month: 'short' })}
-                            </div>
-                            <div className="text-4xl font-bold leading-none">
-                              {dayNumber}
-                            </div>
-                            <div className="text-[11px] font-medium capitalize leading-tight opacity-70">
-                              {eventDate.toLocaleString('ro-RO', { weekday: 'long' })}
-                            </div>
-                          </>
-                        ) : (
-                          <Icon className={`h-6 w-6 ${iconColor}`} />
-                        )}
-                      </div>
-                    )}
+                  <div className="relative flex items-center gap-4 z-10">
+                    <div
+                      className="flex flex-col items-center justify-center shrink-0 rounded-md bg-white"
+                      style={{
+                        aspectRatio: '1 / 1',
+                        width: showCalendarDayNumbers ? '4rem' : '4rem',
+                        height: showCalendarDayNumbers ? '4rem' : '4rem',
+                        minWidth: '5rem',
+                        minHeight: '5rem',
+                      }}
+                    >
+                      {showCalendarDayNumbers ? (
+                        <>
+                          <div className="text-[11px] font-semibold uppercase leading-tight opacity-80">
+                            {eventDate.toLocaleString('ro-RO', { month: 'short' })}
+                          </div>
+                          <div className="text-4xl font-bold leading-none">
+                            {dayNumber}
+                          </div>
+                          <div className="text-[11px] font-medium capitalize leading-tight opacity-70">
+                            {eventDate.toLocaleString('ro-RO', { weekday: 'long' })}
+                          </div>
+                        </>
+                      ) : (
+                        <Icon className={`h-6 w-6 ${iconColor}`} />
+                      )}
+                    </div>
                     
-                    <div className={`flex-1 min-w-0 ${hasCustomBackground ? 'text-white' : ''}`}>
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-xs font-medium uppercase tracking-wider ${hasCustomBackground ? 'text-white opacity-90' : `opacity-75 ${textColor}`}`}>
-                          {isPromo ? 'PROMO' : getEventLabel(event.type)}
+                        <span className={`text-xs font-medium uppercase tracking-wider opacity-75 ${textColor}`}>
+                          {getEventLabel(event.type)}
                         </span>
                         {'isCountySpecific' in event && event.isCountySpecific && (
                           <span 
@@ -575,11 +583,11 @@ export function CountyCalendar({ county, events, schoolYear, showCalendarDayNumb
                         )}
                       </div>
                       
-                      <h3 className={`font-semibold ${hasCustomBackground ? 'text-white' : textColor}`}>
+                      <h3 className={`font-semibold ${textColor}`}>
                         {event.title}
                       </h3>
                       
-                      <p className={`mt-1 text-sm ${hasCustomBackground ? 'text-white opacity-90' : `opacity-90 ${textColor}`}`}>
+                      <p className={`mt-1 text-sm opacity-90 ${textColor}`}>
                         {event.endDate 
                           ? `${formatDate(event.startDate)} - ${formatDate(event.endDate)}`
                           : formatFullDate(event.startDate)
@@ -587,7 +595,7 @@ export function CountyCalendar({ county, events, schoolYear, showCalendarDayNumb
                       </p>
                       
                       {event.description && (
-                        <p className={`mt-2 text-sm ${hasCustomBackground ? 'text-white opacity-80' : `opacity-75 ${textColor}`}`}>
+                        <p className={`mt-2 text-sm opacity-75 ${textColor}`}>
                           {event.description}
                         </p>
                       )}

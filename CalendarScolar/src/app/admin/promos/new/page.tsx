@@ -1,7 +1,7 @@
 import { db } from '@/lib/db'
-import { EventForm } from '@/components/admin/EventForm'
+import { PromoForm } from '@/components/admin/PromoForm'
 
-export default async function NewEventPage() {
+export default async function NewPromoPage() {
   const counties = await db.county.findMany({
     where: { active: true },
     select: { id: true, name: true },
@@ -11,13 +11,14 @@ export default async function NewEventPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">Adaugă Eveniment</h1>
-        <p className="mt-2 text-slate-600">Creează un nou eveniment în calendar</p>
+        <h1 className="text-3xl font-bold text-slate-900">Adaugă Promoție</h1>
+        <p className="mt-2 text-slate-600">Creează o nouă promoție sau reclamă</p>
       </div>
 
       <div className="rounded-md border bg-white p-6">
-        <EventForm counties={counties} />
+        <PromoForm counties={counties} />
       </div>
     </div>
   )
 }
+

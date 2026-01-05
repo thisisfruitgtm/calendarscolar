@@ -7,6 +7,7 @@
  * Use this for plain text output like ICS files
  */
 export function stripHtml(text: string): string {
+  if (!text) return ''
   return text
     .replace(/<[^>]*>/g, '')
     .replace(/&nbsp;/g, ' ')
@@ -15,6 +16,7 @@ export function stripHtml(text: string): string {
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
     .trim()
 }
 

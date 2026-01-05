@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server'
-import { getCachedCountyMinimal, getCachedActiveEvents, getCachedSettings } from '@/lib/cache'
+import { getCachedCountyMinimal, getCachedActiveEvents, getCachedActivePromos } from '@/lib/cache'
 import { db } from '@/lib/db'
 import { generateICS } from '@/lib/ics-generator'
 import { rateLimit, getClientIdentifier } from '@/lib/rate-limit'
+import { trackPromoImpression } from '@/app/actions/promos'
+import { log } from '@/lib/logger'
+
+type PromoWithCounties = Awaited<ReturnType<typeof getCachedActivePromos>>[0]
 
 function getUserAgentType(userAgent: string | null): string | null {
   if (!userAgent) return null
@@ -21,8 +25,10 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await params
+  
   try {
-    // Rate limiting: 60 requests per minute per IP (calendar apps poll frequently)
+    // Rate limiting: 60 requests per minute per IP
     const identifier = getClientIdentifier(request)
     const limit = rateLimit(identifier, 60, 60000)
     
@@ -38,8 +44,6 @@ export async function GET(
         }
       )
     }
-    
-    const { slug } = await params
     
     // Validate slug format
     if (!/^[a-z0-9-]+$/.test(slug) || slug.length > 100) {
@@ -65,7 +69,6 @@ export async function GET(
                      request.headers.get('x-real-ip') || 
                      'unknown'
     
-    // Track subscription access
     const userAgentType = getUserAgentType(userAgent)
     
     try {
@@ -88,64 +91,69 @@ export async function GET(
         },
       })
     } catch (error) {
-      // Silently fail tracking - don't break calendar feed
       console.error('Error tracking subscription:', error)
     }
 
-    // Get settings (cached)
-    const settings = await getCachedSettings()
-
-    // Get all active events with their county associations (cached)
+    // Get all active events (cached)
     const allEvents = await getCachedActiveEvents()
+    
+    // Get all active promos (cached)
+    const allPromos = await getCachedActivePromos()
 
-    // Filter events based on county:
-    // - Non-ad events: include all
-    // - Ad events with no counties: include all (for all counties)
-    // - Ad events with counties: include only if this county is in the list
-    const filteredEvents = allEvents.filter((event) => {
-      if (!event.isAd) {
-        return true // Include all non-ad events
-      }
-      
-      // If ad has no counties associated, it's for all counties
-      if (event.counties.length === 0) {
-        return true
-      }
-      
-      // Check if this county is in the ad's county list
-      return event.counties.some(ec => ec.countyId === county.id)
+    // Filter promos for this county
+    const countyPromos: PromoWithCounties[] = allPromos.filter((promo: PromoWithCounties) => {
+      // If promo has no counties, it's for all counties
+      if (promo.counties.length === 0) return true
+      // Check if this county is in the promo's list
+      return promo.counties.some((pc: { countyId: string }) => pc.countyId === county.id)
     })
 
-    // Convert dates back to Date objects (cache serializes them as strings)
-    const events = filteredEvents.map(({ counties, ...event }) => ({
+    // Track impressions for promos that will be included in ICS
+    // Do this asynchronously to not block ICS generation
+    countyPromos
+      .filter((p) => p.showOnCalendar)
+      .forEach((promo) => {
+        trackPromoImpression(promo.id).catch(() => {
+          // Silently fail - don't break ICS generation
+        })
+      })
+
+    // Convert dates
+    const events = allEvents.map(({ counties, ...event }) => ({
       ...event,
       startDate: new Date(event.startDate),
       endDate: event.endDate ? new Date(event.endDate) : null,
     }))
 
-    // Generate ICS
-    const includeAds = settings?.adsEnabled ?? true
-    const ics = generateICS(events, { includeAds })
+    const promos = countyPromos.map(({ counties, ...promo }) => ({
+      ...promo,
+      startDate: new Date(promo.startDate),
+      endDate: new Date(promo.endDate),
+    }))
 
-    // Return as calendar feed (not attachment) for subscription
+    // Generate ICS
+    const ics = generateICS(events, promos)
+
     return new NextResponse(ics, {
       headers: {
         'Content-Type': 'text/calendar; charset=utf-8',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0',
-      // CORS for calendar subscriptions (restrictive)
-      'Access-Control-Allow-Origin': '*', // Calendar apps need this
-      'Access-Control-Allow-Methods': 'GET',
-      'Access-Control-Max-Age': '86400', // 24 hours
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Max-Age': '86400',
       },
     })
   } catch (error) {
-    console.error('Error generating county ICS:', error)
+    log.error('Error generating county ICS', {
+      slug,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return NextResponse.json(
       { error: 'Failed to generate calendar' },
       { status: 500 }
     )
   }
 }
-

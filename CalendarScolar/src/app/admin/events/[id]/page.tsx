@@ -10,18 +10,6 @@ export default async function EditEventPage({
   const { id } = await params
   const event = await db.event.findUnique({
     where: { id },
-    include: {
-      counties: {
-        include: {
-          county: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-        },
-      },
-    },
   })
 
   if (!event) {
@@ -42,13 +30,7 @@ export default async function EditEventPage({
       </div>
 
       <div className="rounded-md border bg-white p-6">
-        <EventForm 
-          event={{
-            ...event,
-            counties: event.counties.map(ec => ec.county),
-          }} 
-          counties={counties} 
-        />
+        <EventForm event={event} counties={counties} />
       </div>
     </div>
   )

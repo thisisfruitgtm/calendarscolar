@@ -1,10 +1,11 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getCachedActiveCounties, getCachedCountyBySlug, getCachedActiveEvents, getCachedSettings } from '@/lib/cache'
+import { getCachedActiveCounties, getCachedCountyBySlug, getCachedActiveEvents, getCachedActivePromos, getCachedSettings } from '@/lib/cache'
 import { CountyHero } from '@/components/county/CountyHero'
 import { CountyCalendar } from '@/components/county/CountyCalendar'
 import { CountyInfo } from '@/components/county/CountyInfo'
 import { StructuredData } from '@/components/seo/StructuredData'
+import { PromoBanner } from '@/components/promo/PromoBanner'
 
 interface CountyPageProps {
   params: Promise<{ slug: string }>
@@ -84,29 +85,30 @@ export default async function CountyPage({ params }: CountyPageProps) {
     notFound()
   }
 
-  // Get all active events with their county associations (cached)
+  // Get all active events (cached)
   const allEvents = await getCachedActiveEvents()
+  
+  // Get all active promos (cached)
+  const allPromos = await getCachedActivePromos()
 
-  // Filter events based on county:
-  // - Non-ad events: include all
-  // - Ad events with no counties: include all (for all counties)
-  // - Ad events with counties: include only if this county is in the list
-  const filteredEvents = allEvents.filter((event) => {
-    if (!event.isAd) {
-      return true // Include all non-ad events
-    }
-    
-    // If ad has no counties associated, it's for all counties
-    if (event.counties.length === 0) {
-      return true
-    }
-    
-    // Check if this county is in the ad's county list
-    return event.counties.some(ec => ec.countyId === county.id)
+  // Filter promos for this county
+  type PromoWithCounties = typeof allPromos[0]
+  const countyPromos = allPromos.filter((promo: PromoWithCounties) => {
+    if (promo.counties.length === 0) return true
+    return promo.counties.some((pc: { countyId: string }) => pc.countyId === county.id)
   })
 
+  // Separate banner and calendar promos
+  const bannerPromos = countyPromos
+    .filter((p: PromoWithCounties) => p.showAsBanner)
+    .map(({ counties, ...promo }: PromoWithCounties) => promo)
+  
+  const calendarPromos = countyPromos
+    .filter((p: PromoWithCounties) => p.showOnCalendar)
+    .map(({ counties, ...promo }: PromoWithCounties) => promo)
+
   // Remove counties field before passing to components
-  const events = filteredEvents.map(({ counties, ...event }) => event)
+  const events = allEvents.map(({ counties, ...event }) => event)
 
   // Get settings (cached)
   const settings = await getCachedSettings()
@@ -118,12 +120,22 @@ export default async function CountyPage({ params }: CountyPageProps) {
       <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
         <CountyHero county={county} events={events} />
         
+        {/* Banner Promos */}
+        {bannerPromos.length > 0 && (
+          <div className="container mx-auto px-4 pt-8">
+            {bannerPromos.map((promo) => (
+              <PromoBanner key={promo.id} promo={promo} />
+            ))}
+          </div>
+        )}
+        
         <div className="container mx-auto px-4 py-12">
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <CountyCalendar 
                 county={county} 
                 events={events}
+                promos={calendarPromos}
                 schoolYear={settings?.schoolYear || '2025-2026'}
                 showCalendarDayNumbers={settings?.showCalendarDayNumbers || false}
               />
@@ -138,4 +150,3 @@ export default async function CountyPage({ params }: CountyPageProps) {
     </>
   )
 }
-

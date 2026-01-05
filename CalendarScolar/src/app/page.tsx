@@ -2,27 +2,22 @@ import { Hero } from '@/components/landing/Hero'
 import { Features } from '@/components/landing/Features'
 import { Subscribe } from '@/components/landing/Subscribe'
 import { LandingCalendar } from '@/components/landing/LandingCalendar'
-import { getCachedActiveEvents, getCachedSettings } from '@/lib/cache'
+import { getCachedActiveEvents, getCachedActivePromos, getCachedSettings } from '@/lib/cache'
 
 export default async function Home() {
-  // Get all active events with their county associations (cached)
+  // Get all active events (cached)
   const allEvents = await getCachedActiveEvents()
-
-  // Filter events for landing page:
-  // - Exclude all promo/ad events (isAd or type PROMO)
-  // - Include only regular school events
-  const commonEvents = allEvents.filter((event) => {
-    // Exclude all ads and promo events
-    if (event.isAd || event.type === 'PROMO') {
-      return false
-    }
-    
-    // Include all regular school events
-    return true
-  })
+  
+  // Get all active promos (cached) - show promos without county filter on landing
+  const allPromos = await getCachedActivePromos()
 
   // Remove counties field before passing to components
-  const events = commonEvents.map(({ counties, ...event }) => event)
+  const events = allEvents.map(({ counties, ...event }) => event)
+  
+  // Only show calendar promos on landing page
+  const calendarPromos = allPromos
+    .filter(p => p.showOnCalendar)
+    .map(({ counties, ...promo }) => promo)
 
   // Get settings (cached)
   const settings = await getCachedSettings()
@@ -36,6 +31,7 @@ export default async function Home() {
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8 h-full overflow-hidden z-0">
           <LandingCalendar 
             events={events}
+            promos={calendarPromos}
             schoolYear={settings?.schoolYear || '2025-2026'}
             showCalendarDayNumbers={settings?.showCalendarDayNumbers || false}
           />

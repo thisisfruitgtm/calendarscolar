@@ -6,6 +6,7 @@ export const CACHE_TAGS = {
   COUNTIES: 'counties',
   COUNTY: 'county',
   EVENTS: 'events',
+  PROMOS: 'promos',
   SETTINGS: 'settings',
   VACATION_PERIODS: 'vacation-periods',
 } as const
@@ -141,6 +142,37 @@ export async function getCachedSettingsMinimal() {
     {
       tags: [CACHE_TAGS.SETTINGS],
       revalidate: false, // Only invalidate via tags
+    }
+  )()
+}
+
+/**
+ * Get all active promos with county associations (cached)
+ */
+export async function getCachedActivePromos() {
+  return unstable_cache(
+    async () => {
+      const now = new Date()
+      return db.promo.findMany({
+        where: { 
+          active: true,
+          startDate: { lte: now },
+          endDate: { gte: now },
+        },
+        include: {
+          counties: {
+            select: {
+              countyId: true,
+            },
+          },
+        },
+        orderBy: [{ priority: 'desc' }, { startDate: 'asc' }],
+      })
+    },
+    ['active-promos'],
+    {
+      tags: [CACHE_TAGS.PROMOS],
+      revalidate: 60, // Revalidate every 60 seconds for date-based filtering
     }
   )()
 }

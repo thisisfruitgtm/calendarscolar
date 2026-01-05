@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 
 export default async function AdminDashboard() {
   const eventCount = await db.event.count({ where: { active: true } })
-  const adCount = await db.event.count({ where: { isAd: true, active: true } })
+  const promoCount = await db.promo.count({ where: { active: true } })
   const countyCount = await db.county.count({ where: { active: true } })
   const groupCount = await db.vacationGroup.count()
   const settings = await db.settings.findUnique({ where: { id: 'settings' } })
@@ -46,13 +46,13 @@ export default async function AdminDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Reclame Active</CardTitle>
-            <CardDescription>Evenimente promoționale</CardDescription>
+            <CardTitle>Promoții Active</CardTitle>
+            <CardDescription>Reclame și promoții</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{adCount}</div>
+            <div className="text-3xl font-bold">{promoCount}</div>
             <Button asChild className="mt-4" variant="outline">
-              <Link href="/admin/ads">Gestionează</Link>
+              <Link href="/admin/promos">Gestionează</Link>
             </Button>
           </CardContent>
         </Card>
@@ -78,4 +78,3 @@ export default async function AdminDashboard() {
     </div>
   )
 }
-

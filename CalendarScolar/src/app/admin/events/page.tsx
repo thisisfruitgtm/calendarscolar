@@ -26,8 +26,6 @@ function getEventTypeLabel(type: EventType): string {
       return 'Sfârșit Semestru'
     case EventType.LAST_DAY:
       return 'Ultima Zi Cursuri'
-    case EventType.PROMO:
-      return 'Promo'
     default:
       return type
   }
@@ -74,8 +72,8 @@ export default async function EventsPage() {
                 <TableRow key={event.id}>
                   <TableCell className="font-medium">{event.title}</TableCell>
                   <TableCell>
-                    <Badge variant={event.isAd ? 'destructive' : 'default'}>
-                      {event.isAd ? 'Reclamă' : getEventTypeLabel(event.type)}
+                    <Badge variant="default">
+                      {getEventTypeLabel(event.type)}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -109,4 +107,3 @@ export default async function EventsPage() {
     </div>
   )
 }
-

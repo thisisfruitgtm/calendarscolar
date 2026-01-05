@@ -1,12 +1,15 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Event } from '@prisma/client'
-import { Calendar as CalendarIcon, Sun, Leaf, TreePine, List, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Event, Promo } from '@prisma/client'
+import { Calendar as CalendarIcon, Sun, Leaf, TreePine, List, ChevronLeft, ChevronRight, Megaphone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+
+type PromoWithoutCounties = Omit<Promo, 'counties'>
 
 interface LandingCalendarProps {
   events: Event[]
+  promos?: PromoWithoutCounties[]
   schoolYear: string
   showCalendarDayNumbers?: boolean
 }
@@ -38,6 +41,8 @@ function getEventIcon(type: string) {
     case 'SEMESTER_START':
     case 'SEMESTER_END':
       return CalendarIcon
+    case 'PROMO':
+      return Megaphone
     case 'LAST_DAY':
       return TreePine
     default:
@@ -56,6 +61,8 @@ function getEventIconColor(type: string) {
     case 'SEMESTER_END':
     case 'LAST_DAY':
       return 'text-violet-600'
+    case 'PROMO':
+      return 'text-blue-600'
     default:
       return 'text-slate-600'
   }
@@ -72,6 +79,8 @@ function getEventBorderColor(type: string) {
     case 'SEMESTER_END':
     case 'LAST_DAY':
       return 'border-violet-200'
+    case 'PROMO':
+      return 'border-blue-200'
     default:
       return 'border-slate-200'
   }
@@ -92,6 +101,8 @@ function getEventColor(type: string) {
     case 'SEMESTER_END':
     case 'LAST_DAY':
       return 'bg-violet-200 border-violet-200'
+    case 'PROMO':
+      return 'bg-blue-200 border-blue-200'
     default:
       return 'bg-white border-slate-200'
   }
@@ -109,6 +120,8 @@ function getEventLabel(type: string) {
       return 'Sfârșit semestru'
     case 'LAST_DAY':
       return 'Ultima zi'
+    case 'PROMO':
+      return 'Promoție'
     default:
       return 'Eveniment'
   }
@@ -451,15 +464,34 @@ function CalendarView({
   )
 }
 
-export function LandingCalendar({ events, schoolYear, showCalendarDayNumbers = false }: LandingCalendarProps) {
+export function LandingCalendar({ events, promos = [], schoolYear, showCalendarDayNumbers = false }: LandingCalendarProps) {
   const [view, setView] = useState<ViewType>('list')
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0)
 
-  const allEvents = events.map((e) => ({ 
-    ...e, 
-    startDate: new Date(e.startDate),
-    endDate: e.endDate ? new Date(e.endDate) : null,
-  })).sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+  // Convert promos to event-like structure
+  const promoEvents = promos.map(promo => ({
+    id: promo.id,
+    title: `📢 ${promo.title}`,
+    description: promo.description,
+    startDate: new Date(promo.startDate),
+    endDate: new Date(promo.endDate),
+    type: 'PROMO' as const,
+    imageUrl: promo.imageUrl,
+    backgroundColor: promo.backgroundColor,
+    active: true,
+    countyId: null,
+    createdAt: promo.createdAt,
+    updatedAt: promo.updatedAt,
+  }))
+
+  const allEvents = [
+    ...promoEvents,
+    ...events.map((e) => ({ 
+      ...e, 
+      startDate: new Date(e.startDate),
+      endDate: e.endDate ? new Date(e.endDate) : null,
+    })),
+  ].sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
 
   return (
     <section className="rounded-2xl bg-white p-6 shadow-sm lg:p-8 relative z-20">
@@ -507,72 +539,51 @@ export function LandingCalendar({ events, schoolYear, showCalendarDayNumbers = f
               const eventDate = new Date(event.startDate)
               const dayNumber = showCalendarDayNumbers ? eventDate.getDate() : null
               
-              const isPromo = ('isAd' in event && event.isAd) || event.type === 'PROMO'
-              const hasCustomBackground = isPromo && (('backgroundColor' in event && event.backgroundColor) || ('backgroundImage' in event && event.backgroundImage))
-              
               return (
                 <article 
                   key={event.id}
-                  className={`relative rounded-xl p-4 transition-all hover:shadow-md overflow-hidden ${hasCustomBackground ? '' : `bg-white border-2 ${borderColor}`}`}
-                  style={{
-                    ...(hasCustomBackground && 'backgroundImage' in event && event.backgroundImage ? {
-                      backgroundImage: `url(${event.backgroundImage})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      minHeight: '120px',
-                    } as React.CSSProperties : {}),
-                    ...(hasCustomBackground && (!('backgroundImage' in event && event.backgroundImage)) && 'backgroundColor' in event && event.backgroundColor ? {
-                      backgroundColor: event.backgroundColor as string,
-                      minHeight: '120px',
-                    } as React.CSSProperties : {}),
-                  } as React.CSSProperties}
+                  className={`relative rounded-xl p-4 transition-all hover:shadow-md overflow-hidden bg-white border-2 ${borderColor}`}
                 >
-                  {hasCustomBackground && 'backgroundImage' in event && event.backgroundImage ? (
-                    <div className="absolute inset-0 bg-black/60 rounded-xl" />
-                  ) : null}
-                  
-                  <div className={`relative flex ${isPromo && hasCustomBackground ? '' : 'items-center gap-4'} z-10`}>
-                    {!(isPromo && hasCustomBackground) && (
-                      <div
-                        className={`flex flex-col items-center justify-center shrink-0 rounded-md bg-white`}
-                        style={{
-                          aspectRatio: '1 / 1',
-                          width: showCalendarDayNumbers ? '4rem' : '4rem',
-                          height: showCalendarDayNumbers ? '4rem' : '4rem',
-                          minWidth: '5rem',
-                          minHeight: '5rem',
-                        }}
-                      >
-                        {showCalendarDayNumbers ? (
-                          <>
-                            <div className="text-[11px] font-semibold uppercase leading-tight opacity-80">
-                              {eventDate.toLocaleString('ro-RO', { month: 'short' })}
-                            </div>
-                            <div className="text-4xl font-bold leading-none">
-                              {dayNumber}
-                            </div>
-                            <div className="text-[11px] font-medium capitalize leading-tight opacity-70">
-                              {eventDate.toLocaleString('ro-RO', { weekday: 'long' })}
-                            </div>
-                          </>
-                        ) : (
-                          <Icon className={`h-6 w-6 ${iconColor}`} />
-                        )}
-                      </div>
-                    )}
+                  <div className="relative flex items-center gap-4 z-10">
+                    <div
+                      className="flex flex-col items-center justify-center shrink-0 rounded-md bg-white"
+                      style={{
+                        aspectRatio: '1 / 1',
+                        width: showCalendarDayNumbers ? '4rem' : '4rem',
+                        height: showCalendarDayNumbers ? '4rem' : '4rem',
+                        minWidth: '5rem',
+                        minHeight: '5rem',
+                      }}
+                    >
+                      {showCalendarDayNumbers ? (
+                        <>
+                          <div className="text-[11px] font-semibold uppercase leading-tight opacity-80">
+                            {eventDate.toLocaleString('ro-RO', { month: 'short' })}
+                          </div>
+                          <div className="text-4xl font-bold leading-none">
+                            {dayNumber}
+                          </div>
+                          <div className="text-[11px] font-medium capitalize leading-tight opacity-70">
+                            {eventDate.toLocaleString('ro-RO', { weekday: 'long' })}
+                          </div>
+                        </>
+                      ) : (
+                        <Icon className={`h-6 w-6 ${iconColor}`} />
+                      )}
+                    </div>
                     
-                    <div className={`flex-1 min-w-0 ${hasCustomBackground ? 'text-white' : ''}`}>
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-xs font-medium uppercase tracking-wider ${hasCustomBackground ? 'text-white opacity-90' : `opacity-75 ${textColor}`}`}>
-                          {isPromo ? 'PROMO' : getEventLabel(event.type)}
+                        <span className={`text-xs font-medium uppercase tracking-wider opacity-75 ${textColor}`}>
+                          {getEventLabel(event.type)}
                         </span>
                       </div>
                       
-                      <h3 className={`font-semibold ${hasCustomBackground ? 'text-white' : textColor}`}>
+                      <h3 className={`font-semibold ${textColor}`}>
                         {event.title}
                       </h3>
                       
-                      <p className={`mt-1 text-sm ${hasCustomBackground ? 'text-white opacity-90' : `opacity-90 ${textColor}`}`}>
+                      <p className={`mt-1 text-sm opacity-90 ${textColor}`}>
                         {event.endDate 
                           ? `${formatDate(event.startDate)} - ${formatDate(event.endDate)}`
                           : formatFullDate(event.startDate)
@@ -580,7 +591,7 @@ export function LandingCalendar({ events, schoolYear, showCalendarDayNumbers = f
                       </p>
                       
                       {event.description && (
-                        <p className={`mt-2 text-sm ${hasCustomBackground ? 'text-white opacity-80' : `opacity-75 ${textColor}`}`}>
+                        <p className={`mt-2 text-sm opacity-75 ${textColor}`}>
                           {event.description}
                         </p>
                       )}

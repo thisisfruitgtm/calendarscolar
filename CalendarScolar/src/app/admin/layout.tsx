@@ -38,10 +38,10 @@ export default async function AdminLayout({
                   Județe
                 </Link>
                 <Link
-                  href="/admin/ads"
+                  href="/admin/promos"
                   className="text-sm font-medium text-slate-700 hover:text-slate-900"
                 >
-                  Reclame
+                  Promoții
                 </Link>
                 <Link
                   href="/admin/subscribers"

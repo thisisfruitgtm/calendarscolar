@@ -15,12 +15,8 @@ const eventSchema = z.object({
   endDate: z.coerce.date().optional(),
   type: z.nativeEnum(EventType),
   imageUrl: z.string().url('URL imagine invalid').max(500, 'URL prea lung').optional().or(z.literal('')),
-  isAd: z.boolean(),
-  adLink: z.string().url('URL link invalid').max(500, 'URL prea lung').optional().or(z.literal('')),
   backgroundColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Culoare invalidă (format hex)').optional().or(z.literal('')),
-  backgroundImage: z.string().url('URL imagine invalid').max(500, 'URL prea lung').optional().or(z.literal('')),
   countyId: z.string().regex(/^c[a-z0-9]{24}$/, 'ID județ invalid').optional().nullable(),
-  countyIds: z.array(z.string().regex(/^c[a-z0-9]{24}$/, 'ID județ invalid')).optional(),
   active: z.boolean(),
 })
 
@@ -38,21 +34,13 @@ export async function createEvent(data: unknown) {
     description: validated.description ? await sanitizeHtml(validated.description) : validated.description,
   }
 
-  const { countyIds, ...eventData } = sanitizedData
-
   const event = await db.event.create({
-    data: {
-      ...eventData,
-      counties: countyIds && countyIds.length > 0 ? {
-        create: countyIds.map(countyId => ({ countyId }))
-      } : undefined,
-    },
+    data: sanitizedData,
   })
 
   revalidatePath('/admin/events')
-  revalidatePath('/admin/ads')
   revalidatePath('/api/calendar')
-  revalidateTag(CACHE_TAGS.EVENTS)
+  revalidateTag(CACHE_TAGS.EVENTS, 'default')
   return event
 }
 
@@ -75,27 +63,14 @@ export async function updateEvent(id: string, data: unknown) {
     description: validated.description ? await sanitizeHtml(validated.description) : validated.description,
   }
 
-  const { countyIds, ...eventData } = sanitizedData
-
-  // Delete existing county associations
-  await db.eventCounty.deleteMany({
-    where: { eventId: id },
-  })
-
   const event = await db.event.update({
     where: { id },
-    data: {
-      ...eventData,
-      counties: countyIds && countyIds.length > 0 ? {
-        create: countyIds.map(countyId => ({ countyId }))
-      } : undefined,
-    },
+    data: sanitizedData,
   })
 
   revalidatePath('/admin/events')
-  revalidatePath('/admin/ads')
   revalidatePath('/api/calendar')
-  revalidateTag(CACHE_TAGS.EVENTS)
+  revalidateTag(CACHE_TAGS.EVENTS, 'default')
   return event
 }
 
@@ -116,7 +91,7 @@ export async function deleteEvent(id: string) {
 
   revalidatePath('/admin/events')
   revalidatePath('/api/calendar')
-  revalidateTag(CACHE_TAGS.EVENTS)
+  revalidateTag(CACHE_TAGS.EVENTS, 'default')
 }
 
 export async function toggleEventActive(id: string) {
@@ -142,7 +117,6 @@ export async function toggleEventActive(id: string) {
 
   revalidatePath('/admin/events')
   revalidatePath('/api/calendar')
-  revalidateTag(CACHE_TAGS.EVENTS)
+  revalidateTag(CACHE_TAGS.EVENTS, 'default')
   return updated
 }
-

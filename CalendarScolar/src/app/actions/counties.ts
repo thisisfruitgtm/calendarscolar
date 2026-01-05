@@ -57,8 +57,8 @@ export async function createVacationPeriod(groupId: string, data: unknown) {
   revalidatePath('/admin/counties')
   revalidatePath('/judete')
   revalidatePath(`/judet/*`)
-  revalidateTag(CACHE_TAGS.VACATION_PERIODS)
-  revalidateTag(CACHE_TAGS.COUNTY)
+  revalidateTag(CACHE_TAGS.VACATION_PERIODS, 'default')
+  revalidateTag(CACHE_TAGS.COUNTY, 'default')
   return period
 }
 
@@ -83,8 +83,8 @@ export async function updateVacationPeriod(id: string, data: unknown) {
   revalidatePath('/admin/counties')
   revalidatePath('/judete')
   revalidatePath(`/judet/*`)
-  revalidateTag(CACHE_TAGS.VACATION_PERIODS)
-  revalidateTag(CACHE_TAGS.COUNTY)
+  revalidateTag(CACHE_TAGS.VACATION_PERIODS, 'default')
+  revalidateTag(CACHE_TAGS.COUNTY, 'default')
   return period
 }
 
@@ -106,8 +106,8 @@ export async function deleteVacationPeriod(id: string) {
   revalidatePath('/admin/counties')
   revalidatePath('/judete')
   revalidatePath(`/judet/*`)
-  revalidateTag(CACHE_TAGS.VACATION_PERIODS)
-  revalidateTag(CACHE_TAGS.COUNTY)
+  revalidateTag(CACHE_TAGS.VACATION_PERIODS, 'default')
+  revalidateTag(CACHE_TAGS.COUNTY, 'default')
 }
 
 export async function updateVacationGroup(id: string, data: unknown) {
@@ -131,8 +131,8 @@ export async function updateVacationGroup(id: string, data: unknown) {
   revalidatePath('/admin/counties')
   revalidatePath('/judete')
   revalidatePath(`/judet/*`)
-  revalidateTag(CACHE_TAGS.VACATION_PERIODS)
-  revalidateTag(CACHE_TAGS.COUNTY)
+  revalidateTag(CACHE_TAGS.VACATION_PERIODS, 'default')
+  revalidateTag(CACHE_TAGS.COUNTY, 'default')
   return group
 }
 
@@ -157,9 +157,9 @@ export async function updateCounty(id: string, data: unknown) {
   revalidatePath('/admin/counties')
   revalidatePath('/judete')
   revalidatePath(`/judet/${county.slug}`)
-  revalidateTag(CACHE_TAGS.COUNTIES)
-  revalidateTag(CACHE_TAGS.COUNTY)
-  revalidateTag(`${CACHE_TAGS.COUNTY}-${county.slug}`)
+  revalidateTag(CACHE_TAGS.COUNTIES, 'default')
+  revalidateTag(CACHE_TAGS.COUNTY, 'default')
+  revalidateTag(`${CACHE_TAGS.COUNTY}-${county.slug}`, 'default')
   return county
 }
 
@@ -187,9 +187,9 @@ export async function toggleCountyActive(id: string) {
   revalidatePath('/admin/counties')
   revalidatePath('/judete')
   revalidatePath(`/judet/${updated.slug}`)
-  revalidateTag(CACHE_TAGS.COUNTIES)
-  revalidateTag(CACHE_TAGS.COUNTY)
-  revalidateTag(`${CACHE_TAGS.COUNTY}-${updated.slug}`)
+  revalidateTag(CACHE_TAGS.COUNTIES, 'default')
+  revalidateTag(CACHE_TAGS.COUNTY, 'default')
+  revalidateTag(`${CACHE_TAGS.COUNTY}-${updated.slug}`, 'default')
   return updated
 }
 

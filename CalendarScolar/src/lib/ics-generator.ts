@@ -1,15 +1,50 @@
-import { Event } from '@prisma/client'
-import { ICSOptions } from '@/types'
+import { Event, Promo } from '@prisma/client'
 import { sanitizeText } from './sanitize'
 
-export function generateICS(events: Event[], options: ICSOptions = {}): string {
-  const { includeAds = true } = options
+interface ICSEvent {
+  id: string
+  title: string
+  description?: string | null
+  startDate: Date
+  endDate: Date | null
+  type?: string
+  imageUrl?: string | null
+  link?: string | null
+}
 
-  // Filter events
-  let filteredEvents = events.filter((e) => e.active)
-  if (!includeAds) {
-    filteredEvents = filteredEvents.filter((e) => !e.isAd)
-  }
+export function generateICS(events: Event[], promos: Promo[] = []): string {
+  // Filter only active events
+  const filteredEvents = events.filter((e) => e.active)
+  
+  // Filter active promos that should show on calendar
+  const filteredPromos = promos.filter((p) => p.active && p.showOnCalendar)
+
+  // Convert to unified format
+  const allItems: ICSEvent[] = [
+    ...filteredEvents.map(e => ({
+      id: e.id,
+      title: e.title,
+      description: e.description,
+      startDate: new Date(e.startDate),
+      endDate: e.endDate ? new Date(e.endDate) : null,
+      type: e.type,
+      imageUrl: e.imageUrl,
+      link: null,
+    })),
+    ...filteredPromos.map(p => ({
+      id: p.id,
+      title: `📢 ${p.title}`,
+      description: p.description,
+      startDate: new Date(p.startDate),
+      endDate: new Date(p.endDate),
+      type: 'PROMO',
+      imageUrl: p.imageUrl,
+      link: p.link,
+    })),
+  ]
+
+  // Sort by start date
+  allItems.sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
 
   // Generate ICS content
   const lines: string[] = [
@@ -23,13 +58,11 @@ export function generateICS(events: Event[], options: ICSOptions = {}): string {
     'X-WR-CALDESC:Calendar școlar oficial pentru România',
   ]
 
-  for (const event of filteredEvents) {
-    // Check if event is all-day (starts at midnight or close to midnight UTC)
-    // For calendar events, we consider them all-day if they start/end at midnight
-    const startDateObj = new Date(event.startDate)
-    const endDateObj = event.endDate ? new Date(event.endDate) : null
+  for (const item of allItems) {
+    const startDateObj = item.startDate
+    const endDateObj = item.endDate
     
-    // More lenient check: if hours are 0 or 23:59, consider it all-day
+    // Check if event is all-day
     const startIsMidnight = startDateObj.getUTCHours() === 0 && 
                            startDateObj.getUTCMinutes() === 0 && 
                            startDateObj.getUTCSeconds() === 0
@@ -37,15 +70,15 @@ export function generateICS(events: Event[], options: ICSOptions = {}): string {
                          (endDateObj.getUTCHours() === 23 && endDateObj.getUTCMinutes() === 59) ||
                          (endDateObj.getUTCHours() === 0 && endDateObj.getUTCMinutes() === 0 && endDateObj.getUTCSeconds() === 0)
     
-    // For promo/vacation/holiday events, treat as all-day by default
-    const isPromoOrVacation = event.type === 'PROMO' || event.type === 'VACATION' || event.type === 'HOLIDAY'
-    const isAllDay = isPromoOrVacation || (startIsMidnight && endIsEndOfDay)
+    // For vacation/holiday/promo events, treat as all-day by default
+    const isAllDayType = item.type === 'VACATION' || item.type === 'HOLIDAY' || item.type === 'PROMO'
+    const isAllDay = isAllDayType || (startIsMidnight && endIsEndOfDay)
     
     let startDate: string
     let endDate: string
     
     if (isAllDay) {
-      startDate = formatICSDateOnly(event.startDate)
+      startDate = formatICSDateOnly(item.startDate)
       if (endDateObj) {
         // For all-day events, DTEND is exclusive, so add one day
         const endDatePlusOne = new Date(endDateObj)
@@ -58,32 +91,26 @@ export function generateICS(events: Event[], options: ICSOptions = {}): string {
         endDate = formatICSDateOnly(nextDay)
       }
     } else {
-      startDate = formatICSDate(event.startDate)
+      startDate = formatICSDate(item.startDate)
       endDate = endDateObj ? formatICSDate(endDateObj) : startDate
     }
 
     lines.push('BEGIN:VEVENT')
-    lines.push(`UID:${event.id}@calendarscolar.ro`)
+    lines.push(`UID:${item.id}@calendarscolar.ro`)
     if (isAllDay) {
       lines.push(`DTSTART;VALUE=DATE:${startDate}`)
-      // For all-day events, DTEND is exclusive (day after the last day)
       lines.push(`DTEND;VALUE=DATE:${endDate}`)
     } else {
       lines.push(`DTSTART:${startDate}`)
       lines.push(`DTEND:${endDate}`)
     }
-    lines.push(`SUMMARY:${escapeICS(event.title)}`)
-    // Add SEQUENCE to help with updates
+    lines.push(`SUMMARY:${escapeICS(item.title)}`)
     lines.push('SEQUENCE:0')
     
     // Build description with image if available
-    // Sanitize description to prevent XSS (remove HTML, keep plain text)
-    let description = event.description ? sanitizeText(event.description) : ''
-    if (event.imageUrl) {
-      // Include image in description for better compatibility
-      // Some calendar apps (like Apple Calendar) can display images from description
-      // Image URL is already validated as URL in schema
-      const imageHtml = `<img src="${escapeICS(event.imageUrl)}" alt="${escapeICS(event.title)}" style="max-width: 100%; height: auto;" />`
+    let description = item.description ? sanitizeText(item.description) : ''
+    if (item.imageUrl) {
+      const imageHtml = `<img src="${escapeICS(item.imageUrl)}" alt="${escapeICS(item.title)}" style="max-width: 100%; height: auto;" />`
       description = description 
         ? `${description}\\n\\n${imageHtml}`
         : imageHtml
@@ -93,17 +120,14 @@ export function generateICS(events: Event[], options: ICSOptions = {}): string {
       lines.push(`DESCRIPTION:${escapeICS(description)}`)
     }
 
-    // Add URL and image attachments only if not causing issues with Apple Calendar
-    // Some calendar apps may ignore events with certain attachments
-    if (event.isAd && event.adLink) {
-      lines.push(`URL:${event.adLink}`)
+    // Add URL for promos
+    if (item.link) {
+      lines.push(`URL:${item.link}`)
     }
 
-    if (event.imageUrl) {
-      // Add image as X-APPLE-CID for Apple Calendar (more compatible)
-      lines.push(`X-APPLE-CID;VALUE=URI:${event.imageUrl}`)
-      // Also add as ATTACH for other calendar apps
-      lines.push(`ATTACH;FMTTYPE=image/jpeg:${event.imageUrl}`)
+    if (item.imageUrl) {
+      lines.push(`X-APPLE-CID;VALUE=URI:${item.imageUrl}`)
+      lines.push(`ATTACH;FMTTYPE=image/jpeg:${item.imageUrl}`)
     }
 
     lines.push(`DTSTAMP:${formatICSDate(new Date())}`)
@@ -141,4 +165,3 @@ function escapeICS(text: string): string {
     .replace(/,/g, '\\,')
     .replace(/\n/g, '\\n')
 }
-

@@ -1,28 +1,33 @@
 import { NextResponse } from 'next/server'
-import { getCachedActiveEvents } from '@/lib/cache'
+import { getCachedActiveEvents, getCachedActivePromos } from '@/lib/cache'
 import { generateICS } from '@/lib/ics-generator'
+import { log } from '@/lib/logger'
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ token: string }> }
 ) {
   try {
-    const { token } = await params
-    
-    // TODO: Validate token against premium users table
-    // For now, any token means premium (no ads)
+    await params // Token validation can be added here later
     
     const allEvents = await getCachedActiveEvents()
+    const allPromos = await getCachedActivePromos()
 
-    // Remove counties field and convert dates back to Date objects (cache serializes them as strings)
+    // Remove counties field and convert dates
     const events = allEvents.map(({ counties, ...event }) => ({
       ...event,
       startDate: new Date(event.startDate),
       endDate: event.endDate ? new Date(event.endDate) : null,
     }))
+
+    const promos = allPromos.map(({ counties, ...promo }) => ({
+      ...promo,
+      startDate: new Date(promo.startDate),
+      endDate: new Date(promo.endDate),
+    }))
     
-    // Generate ICS without ads
-    const ics = generateICS(events, { includeAds: false, token })
+    // Generate ICS
+    const ics = generateICS(events, promos)
 
     return new NextResponse(ics, {
       headers: {
@@ -32,12 +37,13 @@ export async function GET(
       },
     })
   } catch (error) {
-    console.error('Error generating premium ICS:', error)
+    log.error('Error generating premium ICS', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return NextResponse.json(
       { error: 'Failed to generate calendar' },
       { status: 500 }
     )
   }
 }
-
-

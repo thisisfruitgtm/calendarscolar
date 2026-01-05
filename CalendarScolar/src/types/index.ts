@@ -9,17 +9,26 @@ export interface EventFormData {
   endDate?: Date
   type: EventType
   imageUrl?: string
-  isAd: boolean
-  adLink?: string
+  backgroundColor?: string
   active: boolean
+}
+
+export interface PromoFormData {
+  title: string
+  description?: string
+  imageUrl?: string
+  link?: string
+  startDate: Date
+  endDate: Date
+  showOnCalendar: boolean
+  showAsBanner: boolean
+  backgroundColor?: string
+  priority: number
+  active: boolean
+  countyIds: string[]
 }
 
 export interface ICSOptions {
   includeAds?: boolean
   token?: string
 }
-
-
-
-
-

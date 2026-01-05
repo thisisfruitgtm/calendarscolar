@@ -32,7 +32,7 @@ export async function updateSettings(data: unknown) {
 
   revalidatePath('/admin/settings')
   revalidatePath('/api/calendar')
-  revalidateTag(CACHE_TAGS.SETTINGS)
+  revalidateTag(CACHE_TAGS.SETTINGS, 'default')
   return settings
 }
 

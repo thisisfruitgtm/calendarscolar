@@ -51,10 +51,59 @@
 - Don't log sensitive data
 - Appropriate log levels (error, warn, info, debug)
 
-## Testing (Future)
-- Unit tests for utilities
-- Integration tests for API routes
-- E2E tests for critical flows
+## Testing
+- **OBLIGATORIU:** Creează teste pentru fiecare funcționalitate nouă
+- Unit tests pentru utilities (sanitize, rate-limit, etc.)
+- Integration tests pentru API routes și Server Actions
+- E2E tests pentru flow-uri critice (viitor)
+
+### Procedura Testare Automată
+
+**După fiecare funcționalitate nouă:**
+
+1. **Identifică ce trebuie testat:**
+   - Funcții pure (utilities) → `tests/unit/nume-functionalitate.test.ts`
+   - Integrări (API routes, Server Actions) → `tests/integration/nume-functionalitate.test.ts`
+   - Componente React → `tests/components/nume-component.test.tsx` (viitor)
+
+2. **Creează fișier de test:**
+   ```typescript
+   import { describe, it, expect } from 'vitest'
+   import { functieDeTestat } from '@/path/to/function'
+   
+   describe('nume functionalitate', () => {
+     it('should work correctly', () => {
+       expect(functieDeTestat(input)).toBe(expectedOutput)
+     })
+     
+     it('should handle edge case', () => {
+       // test edge case
+     })
+     
+     it('should handle errors', () => {
+       // test error handling
+     })
+   })
+   ```
+
+3. **Rulează testele:**
+   - `npm test -- tests/unit/nume-functionalitate.test.ts`
+   - Verifică că toate testele trec
+
+4. **Commit:**
+   - `git add tests/`
+   - `git commit -m "test: add tests for nume-functionalitate"`
+
+**Teste la build:**
+- Testele rulează automat la `npm run build:test`
+- Dacă testele eșuează → build-ul eșuează → nu se deploy-ează
+
+**Best Practices:**
+- Testează comportamentul, nu implementarea
+- Testează edge cases și error handling
+- Un test = o singură verificare
+- Folosește date de test realiste
+- Nu ignora testele care eșuează
 
 ## Performance
 - Optimize images (Next.js Image component)

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -28,12 +28,8 @@ const eventSchema = z.object({
   endDate: z.string().optional(),
   type: z.nativeEnum(EventType),
   imageUrl: z.string().optional(),
-  isAd: z.boolean(),
-  adLink: z.string().optional(),
   backgroundColor: z.string().optional(),
-  backgroundImage: z.string().optional(),
   countyId: z.string().optional(),
-  countyIds: z.array(z.string()).optional(),
   active: z.boolean(),
 })
 
@@ -48,25 +44,17 @@ interface EventFormProps {
     endDate?: Date | null
     type: EventType
     imageUrl?: string | null
-    isAd: boolean
-    adLink?: string | null
     backgroundColor?: string | null
-    backgroundImage?: string | null
     countyId?: string | null
-    counties?: Array<{ id: string; name: string }>
     active: boolean
   }
-  defaultIsAd?: boolean
   counties?: Array<{ id: string; name: string }>
 }
 
-export function EventForm({ event, defaultIsAd = false, counties = [] }: EventFormProps) {
+export function EventForm({ event, counties = [] }: EventFormProps) {
   const router = useRouter()
   const [imageUrl, setImageUrl] = useState(event?.imageUrl || '')
   const [loading, setLoading] = useState(false)
-  const [selectedCountyIds, setSelectedCountyIds] = useState<string[]>(
-    event?.counties?.map(c => c.id) || []
-  )
 
   const {
     register,
@@ -85,26 +73,13 @@ export function EventForm({ event, defaultIsAd = false, counties = [] }: EventFo
       endDate: event?.endDate
         ? new Date(event.endDate).toISOString().slice(0, 16)
         : '',
-      type: event?.type || (defaultIsAd ? EventType.PROMO : EventType.HOLIDAY),
+      type: event?.type || EventType.HOLIDAY,
       imageUrl: event?.imageUrl || '',
-      isAd: event?.isAd ?? defaultIsAd,
-      adLink: event?.adLink || '',
       backgroundColor: event?.backgroundColor || '',
-      backgroundImage: event?.backgroundImage || '',
       countyId: event?.countyId || '',
-      countyIds: event?.counties?.map(c => c.id) || [],
       active: event?.active ?? true,
     },
   })
-
-  const isAd = watch('isAd')
-
-  // Set type to PROMO when isAd is checked
-  useEffect(() => {
-    if (isAd) {
-      setValue('type', EventType.PROMO)
-    }
-  }, [isAd, setValue])
 
   const onFormSubmit = async (data: EventFormData) => {
     setLoading(true)
@@ -162,7 +137,6 @@ export function EventForm({ event, defaultIsAd = false, counties = [] }: EventFo
         <Select
           value={watch('type')}
           onValueChange={(value) => setValue('type', value as EventType)}
-          disabled={isAd}
         >
           <SelectTrigger>
             <SelectValue />
@@ -173,14 +147,31 @@ export function EventForm({ event, defaultIsAd = false, counties = [] }: EventFo
             <SelectItem value={EventType.LAST_DAY}>Ultima Zi Cursuri</SelectItem>
             <SelectItem value={EventType.SEMESTER_START}>Început Semestru</SelectItem>
             <SelectItem value={EventType.SEMESTER_END}>Sfârșit Semestru</SelectItem>
-            <SelectItem value={EventType.PROMO}>Promo</SelectItem>
           </SelectContent>
         </Select>
-        {isAd && (
-          <p className="text-sm text-slate-500">
-            Tipul este setat automat la "Promo" pentru reclame
-          </p>
-        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="countyId">Județ (opțional)</Label>
+        <Select
+          value={watch('countyId') || ''}
+          onValueChange={(value) => setValue('countyId', value || undefined)}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Toate județele" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">Toate județele</SelectItem>
+            {counties.map((county) => (
+              <SelectItem key={county.id} value={county.id}>
+                {county.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-sm text-slate-500">
+          Lasă gol pentru evenimente naționale
+        </p>
       </div>
 
       <div className="space-y-2">
@@ -204,105 +195,23 @@ export function EventForm({ event, defaultIsAd = false, counties = [] }: EventFo
         />
       </div>
 
-      <div className="flex items-center space-x-2">
-        <Checkbox
-          id="isAd"
-          checked={isAd}
-          onCheckedChange={(checked) => setValue('isAd', checked === true)}
-        />
-        <Label htmlFor="isAd" className="cursor-pointer">
-          Este reclamă/promo
-        </Label>
+      <div className="space-y-2">
+        <Label htmlFor="backgroundColor">Culoare Fundal (opțional)</Label>
+        <div className="flex gap-2">
+          <Input 
+            id="backgroundColor" 
+            {...register('backgroundColor')} 
+            placeholder="#3B82F6" 
+            className="flex-1"
+          />
+          <Input 
+            type="color"
+            value={watch('backgroundColor') || '#3B82F6'}
+            onChange={(e) => setValue('backgroundColor', e.target.value)}
+            className="h-10 w-20 cursor-pointer"
+          />
+        </div>
       </div>
-
-      {isAd && (
-        <>
-          <div className="space-y-2">
-            <Label>Județe (opțional)</Label>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="all-counties"
-                  checked={selectedCountyIds.length === 0}
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      setSelectedCountyIds([])
-                      setValue('countyIds', [])
-                    }
-                  }}
-                />
-                <Label htmlFor="all-counties" className="cursor-pointer font-medium">
-                  Toate județele
-                </Label>
-              </div>
-              <div className="max-h-60 overflow-y-auto border rounded-md p-4">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {counties.map((county) => (
-                    <div key={county.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`county-${county.id}`}
-                        checked={selectedCountyIds.includes(county.id)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            const newIds = [...selectedCountyIds, county.id]
-                            setSelectedCountyIds(newIds)
-                            setValue('countyIds', newIds)
-                          } else {
-                            const newIds = selectedCountyIds.filter(id => id !== county.id)
-                            setSelectedCountyIds(newIds)
-                            setValue('countyIds', newIds)
-                          }
-                        }}
-                      />
-                      <Label htmlFor={`county-${county.id}`} className="cursor-pointer text-sm">
-                        {county.name}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <p className="text-sm text-slate-500">
-              Selectează județele specifice sau lasă "Toate județele" pentru a afișa reclama peste tot
-            </p>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="adLink">Link Reclamă</Label>
-            <Input id="adLink" {...register('adLink')} placeholder="https://..." />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="backgroundColor">Culoare Fundal</Label>
-            <div className="flex gap-2">
-              <Input 
-                id="backgroundColor" 
-                {...register('backgroundColor')} 
-                placeholder="#3B82F6" 
-                className="flex-1"
-              />
-              <Input 
-                type="color"
-                value={watch('backgroundColor') || '#3B82F6'}
-                onChange={(e) => setValue('backgroundColor', e.target.value)}
-                className="h-10 w-20 cursor-pointer"
-              />
-            </div>
-            <p className="text-sm text-slate-500">
-              Selectează o culoare pentru fundalul promo-ului (format hex: #3B82F6)
-            </p>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="backgroundImage">Imagine Fundal (URL)</Label>
-            <Input 
-              id="backgroundImage" 
-              {...register('backgroundImage')} 
-              placeholder="https://..." 
-            />
-            <p className="text-sm text-slate-500">
-              Sau adaugă o imagine de fundal (URL). Dacă ambele sunt setate, imaginea are prioritate.
-            </p>
-          </div>
-        </>
-      )}
 
       <div className="flex items-center space-x-2">
         <Checkbox

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { rateLimit, getClientIdentifier } from '@/lib/rate-limit'
+import { log } from '@/lib/logger'
 
 export async function POST(request: Request) {
   // Rate limiting: 20 requests per minute per IP
@@ -66,7 +67,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error tracking subscription action:', error)
+    log.error('Error tracking subscription action', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return NextResponse.json(
       { error: 'Operation failed' },
       { status: 500 }

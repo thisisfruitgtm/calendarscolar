@@ -672,4 +672,4 @@ Pentru întrebări sau sugestii, contactează echipa de dezvoltare.
 
 ---
 
-**Ultima actualizare**: Decembrie 2025
+**Ultima actualizare**: 5 Ianuarie 2026
