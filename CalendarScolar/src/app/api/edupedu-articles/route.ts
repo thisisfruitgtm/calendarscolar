@@ -8,6 +8,21 @@ interface EdupeduArticle {
   pubDate: string
 }
 
+// In-memory cache for articles (since feed is >2MB and can't use Next.js cache)
+let articlesCache: {
+  articles: EdupeduArticle[]
+  timestamp: number
+} | null = null
+
+const CACHE_DURATION = 3600000 // 1 hour in milliseconds
+
+/**
+ * Clear the articles cache (called from admin settings)
+ */
+export function clearEdupeduCache() {
+  articlesCache = null
+}
+
 function decodeHtmlEntities(text: string): string {
   return text
     .replace(/&lt;/g, '<')
@@ -84,6 +99,9 @@ function parseRSSFeed(xmlText: string): EdupeduArticle[] {
 }
 
 export async function GET(request: Request) {
+  const url = new URL(request.url)
+  const forceRefresh = url.searchParams.get('refresh') === 'true'
+  
   // Rate limiting: 30 requests per minute per IP
   const identifier = getClientIdentifier(request)
   const limit = rateLimit(identifier, 30, 60000)
@@ -104,21 +122,52 @@ export async function GET(request: Request) {
     )
   }
 
+  // Clear cache if force refresh requested
+  if (forceRefresh) {
+    articlesCache = null
+  }
+
+  // Check if we have valid cached articles
+  const now = Date.now()
+  if (articlesCache && (now - articlesCache.timestamp) < CACHE_DURATION) {
+    return NextResponse.json(
+      { articles: articlesCache.articles, cached: true },
+      { 
+        headers: { 
+          'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=1800' 
+        } 
+      }
+    )
+  }
+
   try {
     const feedUrl = 'https://www.edupedu.ro/feed/?s=calendar'
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000)
 
-    // Cache the response for 1 hour (3600 seconds)
+    // Don't use Next.js cache - feed is too large (>2MB)
+    // Using in-memory cache instead
     const response = await fetch(feedUrl, {
-      next: { revalidate: 3600 },
+      cache: 'no-store',
       headers: {
         'User-Agent': 'CalendarScolar.ro/1.0',
       },
+      signal: controller.signal,
     })
+    
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
+      // Return cached articles if available, otherwise empty
+      if (articlesCache) {
+        return NextResponse.json(
+          { articles: articlesCache.articles, stale: true },
+          { headers: { 'Cache-Control': 'public, max-age=300' } }
+        )
+      }
       return NextResponse.json(
         { articles: [] },
-        { headers: { 'Cache-Control': 'public, max-age=300' } } // Cache empty response for 5 min
+        { headers: { 'Cache-Control': 'public, max-age=300' } }
       )
     }
 
@@ -131,11 +180,17 @@ export async function GET(request: Request) {
       )
     }
 
-    const articles = parseRSSFeed(xmlText)
+    const articles = parseRSSFeed(xmlText).slice(0, 3)
+    
+    // Update cache
+    articlesCache = {
+      articles,
+      timestamp: now,
+    }
 
     // Return latest 3 articles with caching headers
     return NextResponse.json(
-      { articles: articles.slice(0, 3) },
+      { articles },
       { 
         headers: { 
           'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=1800' 
@@ -143,7 +198,13 @@ export async function GET(request: Request) {
       }
     )
   } catch {
-    // Return empty array on error, cache for 5 minutes
+    // Return cached articles if available, otherwise empty
+    if (articlesCache) {
+      return NextResponse.json(
+        { articles: articlesCache.articles, stale: true },
+        { headers: { 'Cache-Control': 'public, max-age=300' } }
+      )
+    }
     return NextResponse.json(
       { articles: [] },
       { headers: { 'Cache-Control': 'public, max-age=300' } }

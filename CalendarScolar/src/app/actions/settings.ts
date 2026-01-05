@@ -86,8 +86,17 @@ export async function refreshEdupeduCache() {
     data: { edupeduLastRefresh: new Date() },
   })
 
-  // The actual cache invalidation will happen on next request
-  // since we're using next: { revalidate } in the fetch
+  // Force refresh by calling the API with refresh param
+  // This clears the in-memory cache
+  try {
+    const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    await fetch(`${baseUrl}/api/edupedu-articles?refresh=true`, {
+      cache: 'no-store',
+    })
+  } catch {
+    // Ignore fetch errors - the cache will be cleared on next request
+  }
+
   revalidatePath('/api/edupedu-articles')
   
   return { success: true, timestamp: new Date() }
