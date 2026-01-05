@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { rateLimit, getClientIdentifier } from '@/lib/rate-limit'
+import { getCachedSettings } from '@/lib/cache'
 
 interface EdupeduArticle {
   title: string
@@ -91,6 +92,15 @@ export async function GET(request: Request) {
     return NextResponse.json(
       { error: 'Too many requests' },
       { status: 429 }
+    )
+  }
+
+  // Check if Edupedu is enabled in settings
+  const settings = await getCachedSettings()
+  if (settings && settings.edupeduEnabled === false) {
+    return NextResponse.json(
+      { articles: [], disabled: true },
+      { headers: { 'Cache-Control': 'public, max-age=60' } }
     )
   }
 

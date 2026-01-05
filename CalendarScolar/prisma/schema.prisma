@@ -56,12 +56,25 @@ enum EventType {
 }
 
 model Settings {
-  id                    String   @id @default("settings")
-  adsEnabled            Boolean  @default(true)
-  calendarName          String   @default("Calendar Școlar 2025-2026")
-  schoolYear            String   @default("2025-2026")
-  showCalendarDayNumbers Boolean @default(false)
-  updatedAt             DateTime @updatedAt
+  id                     String   @id @default("settings")
+  adsEnabled             Boolean  @default(true)
+  calendarName           String   @default("Calendar Școlar 2025-2026")
+  schoolYear             String   @default("2025-2026")
+  showCalendarDayNumbers Boolean  @default(false)
+  
+  // Edupedu integration
+  edupeduEnabled         Boolean  @default(true)
+  edupeduCacheDuration   Int      @default(3600) // seconds
+  edupeduLastRefresh     DateTime?
+  
+  // Cache management
+  lastCacheInvalidation  DateTime?
+  
+  // Maintenance
+  maintenanceMode        Boolean  @default(false)
+  maintenanceMessage     String?
+  
+  updatedAt              DateTime @updatedAt
 }
 
 // Grupe de vacanță (ex: Grupa A, B, C pentru vacanța de februarie)
