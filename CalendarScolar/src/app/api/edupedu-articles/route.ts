@@ -96,36 +96,48 @@ export async function GET(request: Request) {
 
   try {
     const feedUrl = 'https://www.edupedu.ro/feed/?s=calendar'
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 seconds timeout
 
+    // Cache the response for 1 hour (3600 seconds)
     const response = await fetch(feedUrl, {
-      cache: 'no-store',
+      next: { revalidate: 3600 },
       headers: {
         'User-Agent': 'CalendarScolar.ro/1.0',
       },
-      signal: controller.signal,
     })
 
-    clearTimeout(timeoutId)
-
     if (!response.ok) {
-      return NextResponse.json({ articles: [] })
+      return NextResponse.json(
+        { articles: [] },
+        { headers: { 'Cache-Control': 'public, max-age=300' } } // Cache empty response for 5 min
+      )
     }
 
     const xmlText = await response.text()
     
     if (!xmlText || xmlText.length < 100) {
-      return NextResponse.json({ articles: [] })
+      return NextResponse.json(
+        { articles: [] },
+        { headers: { 'Cache-Control': 'public, max-age=300' } }
+      )
     }
 
     const articles = parseRSSFeed(xmlText)
 
-    // Return latest 3 articles
-    return NextResponse.json({ articles: articles.slice(0, 3) })
-  } catch (error) {
-    // Return empty array on error
-    return NextResponse.json({ articles: [] })
+    // Return latest 3 articles with caching headers
+    return NextResponse.json(
+      { articles: articles.slice(0, 3) },
+      { 
+        headers: { 
+          'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=1800' 
+        } 
+      }
+    )
+  } catch {
+    // Return empty array on error, cache for 5 minutes
+    return NextResponse.json(
+      { articles: [] },
+      { headers: { 'Cache-Control': 'public, max-age=300' } }
+    )
   }
 }
 
