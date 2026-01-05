@@ -25,7 +25,9 @@ export function EdupeduArticles() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Legitimate hydration pattern
     setMounted(true)
+    
     async function fetchArticles() {
       try {
         const response = await fetch('/api/edupedu-articles')

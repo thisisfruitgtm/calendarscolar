@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { AlertCircle, Home, RefreshCw, Shield } from 'lucide-react'
+import { Home, RefreshCw, Shield } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AdminError({

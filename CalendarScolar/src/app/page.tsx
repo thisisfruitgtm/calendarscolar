@@ -2,7 +2,7 @@ import { Hero } from '@/components/landing/Hero'
 import { Features } from '@/components/landing/Features'
 import { Subscribe } from '@/components/landing/Subscribe'
 import { LandingCalendar } from '@/components/landing/LandingCalendar'
-import { getCachedActiveEvents, getCachedActivePromos, getCachedSettings } from '@/lib/cache'
+import { getCachedActiveEvents, getCachedActivePromos, getCachedSettings, getCachedActiveCounties } from '@/lib/cache'
 
 export default async function Home() {
   // Get all active events (cached)
@@ -21,6 +21,9 @@ export default async function Home() {
 
   // Get settings (cached)
   const settings = await getCachedSettings()
+  
+  // Get counties for Subscribe component
+  const counties = await getCachedActiveCounties()
 
   return (
     <main className="min-h-screen">
@@ -54,7 +57,7 @@ export default async function Home() {
         </div>
       </section>
       <Features />
-      <Subscribe />
+      <Subscribe counties={counties} />
     </main>
   )
 }

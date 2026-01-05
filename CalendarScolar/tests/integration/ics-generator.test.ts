@@ -3,7 +3,7 @@ import { generateICS } from '@/lib/ics-generator'
 import { Event, Promo } from '@prisma/client'
 
 describe('ICS Generator', () => {
-  const mockEvent: Event = {
+  const mockEvent: Omit<Event, 'counties'> = {
     id: 'test-event-1',
     title: 'Test Event',
     description: 'Test description',
@@ -78,6 +78,70 @@ describe('ICS Generator', () => {
   it('should include URL for promos with link', () => {
     const ics = generateICS([], [mockPromo])
     expect(ics).toContain('URL:https://example.com')
+  })
+
+  it('should use default calendar name when not specified', () => {
+    const ics = generateICS([mockEvent], [])
+    expect(ics).toContain('X-WR-CALNAME:Calendar Școlar')
+  })
+
+  it('should use custom calendar name when specified', () => {
+    const ics = generateICS([mockEvent], [], 'Calendar Școlar - Iași')
+    expect(ics).toContain('X-WR-CALNAME:Calendar Școlar - Iași')
+  })
+
+  // Security tests
+  describe('ICS Security', () => {
+    it('should escape special ICS characters in title', () => {
+      const maliciousEvent = { 
+        ...mockEvent, 
+        title: 'Test;Event,With\\Special\nChars' 
+      }
+      const ics = generateICS([maliciousEvent], [])
+      // Should be escaped - semicolons, commas, backslashes, newlines
+      expect(ics).toContain('SUMMARY:Test\\;Event\\,With\\\\Special\\\\nChars')
+    })
+
+    it('should sanitize dangerous protocols in promo links', () => {
+      const maliciousPromo = { 
+        ...mockPromo, 
+        link: 'javascript:alert(1)' 
+      }
+      const ics = generateICS([], [maliciousPromo])
+      // Should NOT contain the malicious link
+      expect(ics).not.toContain('javascript:')
+      expect(ics).not.toContain('URL:javascript')
+    })
+
+    it('should allow valid HTTPS URLs', () => {
+      const validPromo = { 
+        ...mockPromo, 
+        link: 'https://example.com/safe-page' 
+      }
+      const ics = generateICS([], [validPromo])
+      expect(ics).toContain('URL:https://example.com/safe-page')
+    })
+
+    it('should prevent CRLF injection in description', () => {
+      const injectionEvent = { 
+        ...mockEvent, 
+        description: 'Normal text\r\nBEGIN:VEVENT\r\nSUMMARY:Injected' 
+      }
+      const ics = generateICS([injectionEvent], [])
+      // Should escape newlines, preventing injection
+      expect(ics).not.toMatch(/\r\nBEGIN:VEVENT\r\nSUMMARY:Injected/)
+      expect(ics).toContain('\\n')
+    })
+
+    it('should limit title length to prevent DoS', () => {
+      const longTitleEvent = { 
+        ...mockEvent, 
+        title: 'A'.repeat(1000) 
+      }
+      const ics = generateICS([longTitleEvent], [])
+      // Title should be truncated
+      expect(ics).not.toContain('A'.repeat(1000))
+    })
   })
 })
 

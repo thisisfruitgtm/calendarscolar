@@ -72,7 +72,7 @@ export async function getCachedCountyMinimal(slug: string) {
     async () => {
       return db.county.findUnique({
         where: { slug },
-        select: { id: true, active: true },
+        select: { id: true, name: true, active: true },
       })
     },
     [`county-minimal-${slug}`],

@@ -1,5 +1,6 @@
 import { County, VacationGroup, VacationPeriod, Event } from '@prisma/client'
 import { Calendar } from 'lucide-react'
+import Link from 'next/link'
 import { CountyActions } from './CountyActions'
 
 type CountyWithGroup = County & {
@@ -47,15 +48,15 @@ export function CountyHero({ county, events }: CountyHeroProps) {
           <nav className="mb-6 text-sm">
             <ol className="flex items-center justify-center gap-2 text-slate-600">
               <li>
-                <a href="/" className="hover:text-slate-900 transition-colors">
+                <Link href="/" className="hover:text-slate-900 transition-colors">
                   Acasă
-                </a>
+                </Link>
               </li>
               <li>/</li>
               <li>
-                <a href="/judete" className="hover:text-slate-900 transition-colors">
+                <Link href="/judete" className="hover:text-slate-900 transition-colors">
                   Județe
-                </a>
+                </Link>
               </li>
               <li>/</li>
               <li className="font-medium text-slate-900">{county.name}</li>

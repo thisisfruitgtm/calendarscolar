@@ -231,7 +231,7 @@ function CalendarDay({
     : isToday ? 'text-blue-700 font-bold' : 'text-slate-900 font-normal'
 
   const dayName = showCalendarDayNumbers ? getDayName(date) : null
-  const Icon = event ? getEventIcon(event.type) : null
+  const EventIcon = event ? getEventIcon(event.type) : null
   const iconColor = event ? getEventIconColor(event.type) : ''
 
   if (!event) {
@@ -261,8 +261,8 @@ function CalendarDay({
         {showCalendarDayNumbers ? (
           <div className="text-lg font-bold">{day}</div>
         ) : (
-          Icon ? (
-            <Icon className={`h-5 w-5 ${iconColor}`} />
+          EventIcon ? (
+            <EventIcon className={`h-5 w-5 ${iconColor}`} />
           ) : (
             day
           )
@@ -522,7 +522,7 @@ export function CountyCalendar({ county, events, promos = [], schoolYear, showCa
         <>
           <div className="space-y-4">
             {allEvents.map((event, index) => {
-              const Icon = getEventIcon(event.type)
+              const EventIcon = getEventIcon(event.type)
               const iconColor = getEventIconColor(event.type)
               const borderColor = getEventBorderColor(event.type)
               const textColor = getEventTextColor(event.type)
@@ -564,7 +564,7 @@ export function CountyCalendar({ county, events, promos = [], schoolYear, showCa
                           </div>
                         </>
                       ) : (
-                        <Icon className={`h-6 w-6 ${iconColor}`} />
+                        <EventIcon className={`h-6 w-6 ${iconColor}`} />
                       )}
                     </div>
                     

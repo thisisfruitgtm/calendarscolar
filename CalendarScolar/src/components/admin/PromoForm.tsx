@@ -280,7 +280,7 @@ export function PromoForm({ promo, counties = [] }: PromoFormProps) {
           </div>
         </div>
         <p className="text-sm text-slate-500">
-          Selectează județele specifice sau lasă "Toate județele" pentru a afișa peste tot
+          Selectează județele specifice sau lasă &quot;Toate județele&quot; pentru a afișa peste tot
         </p>
       </div>
 

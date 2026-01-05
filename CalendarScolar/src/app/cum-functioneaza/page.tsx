@@ -1,5 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Calendar, RefreshCw, Shield, Zap, Link as LinkIcon, Smartphone, Globe, CheckCircle2 } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Calendar, RefreshCw, Shield, Link as LinkIcon, Smartphone, Globe, CheckCircle2 } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
@@ -118,12 +118,12 @@ export default function CumFunctioneazaPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
                   <span className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-600 text-white font-bold">2</span>
-                  Apasă "Adaugă în Calendar"
+                  Apasă &quot;Adaugă în Calendar&quot;
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-slate-600">
                 <p>
-                  Pe pagina județului, găsește butonul mare "Adaugă în calendar" și apasă pe el. 
+                  Pe pagina județului, găsește butonul mare &quot;Adaugă în calendar&quot; și apasă pe el. 
                   Se va deschide un dialog cu opțiuni pentru diferite aplicații de calendar.
                 </p>
               </CardContent>
@@ -157,7 +157,7 @@ export default function CumFunctioneazaPage() {
               <CardContent className="text-slate-600">
                 <p>
                   Aplicația ta de calendar se va deschide și îți va cere să confirmi abonarea. 
-                  Apasă "Adaugă" sau "Subscribe" și calendarul va fi adăugat automat. 
+                  Apasă &quot;Adaugă&quot; sau &quot;Subscribe&quot; și calendarul va fi adăugat automat. 
                   Evenimentele vor apărea imediat în calendarul tău!
                 </p>
               </CardContent>
@@ -213,7 +213,7 @@ export default function CumFunctioneazaPage() {
               </CardHeader>
               <CardContent className="text-slate-600">
                 <p className="text-sm">
-                  Compatibil cu Thunderbird Calendar. Folosește opțiunea "Copiază URL Feed" pentru a adăuga manual.
+                  Compatibil cu Thunderbird Calendar. Folosește opțiunea &quot;Copiază URL Feed&quot; pentru a adăuga manual.
                 </p>
               </CardContent>
             </Card>

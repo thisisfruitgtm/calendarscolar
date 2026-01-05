@@ -131,8 +131,9 @@ export async function GET(
       endDate: new Date(promo.endDate),
     }))
 
-    // Generate ICS
-    const ics = generateICS(events, promos)
+    // Generate ICS with county name in calendar name
+    const calendarName = `Calendar Școlar - ${county.name}`
+    const ics = generateICS(events, promos, calendarName)
 
     return new NextResponse(ics, {
       headers: {

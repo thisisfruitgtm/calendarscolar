@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { rateLimit, getClientIdentifier } from '@/lib/rate-limit'
 
 interface EdupeduArticle {
   title: string
@@ -81,7 +82,18 @@ function parseRSSFeed(xmlText: string): EdupeduArticle[] {
   return articles
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Rate limiting: 30 requests per minute per IP
+  const identifier = getClientIdentifier(request)
+  const limit = rateLimit(identifier, 30, 60000)
+  
+  if (!limit.success) {
+    return NextResponse.json(
+      { error: 'Too many requests' },
+      { status: 429 }
+    )
+  }
+
   try {
     const feedUrl = 'https://www.edupedu.ro/feed/?s=calendar'
     const controller = new AbortController()

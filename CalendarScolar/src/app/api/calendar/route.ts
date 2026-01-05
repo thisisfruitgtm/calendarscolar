@@ -3,9 +3,25 @@ import { getCachedActiveEvents, getCachedActivePromos } from '@/lib/cache'
 import { generateICS } from '@/lib/ics-generator'
 import { trackPromoImpression } from '@/app/actions/promos'
 import { log } from '@/lib/logger'
+import { rateLimit, getClientIdentifier } from '@/lib/rate-limit'
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    // Rate limiting: 60 requests per minute per IP
+    const identifier = getClientIdentifier(request)
+    const limit = rateLimit(identifier, 60, 60000)
+    
+    if (!limit.success) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { 
+          status: 429,
+          headers: {
+            'Retry-After': String(Math.ceil((limit.resetAt - Date.now()) / 1000)),
+          },
+        }
+      )
+    }
     // Get all active events (cached)
     const allEvents = await getCachedActiveEvents()
 

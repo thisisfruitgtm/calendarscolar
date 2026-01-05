@@ -224,7 +224,7 @@ function CalendarDay({
     : colorClasses.includes('text-violet') ? 'text-violet-700 font-medium'
     : isToday ? 'text-blue-700 font-bold' : 'text-slate-900 font-normal'
 
-  const Icon = event ? getEventIcon(event.type) : null
+  const EventIcon = event ? getEventIcon(event.type) : null
   const iconColor = event ? getEventIconColor(event.type) : ''
 
   if (!event) {
@@ -254,8 +254,8 @@ function CalendarDay({
         {showCalendarDayNumbers ? (
           <div className="text-lg font-bold">{day}</div>
         ) : (
-          Icon ? (
-            <Icon className={`h-5 w-5 ${iconColor}`} />
+          EventIcon ? (
+            <EventIcon className={`h-5 w-5 ${iconColor}`} />
           ) : (
             day
           )
@@ -532,7 +532,7 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
         <>
           <div className="space-y-4">
             {allEvents.map((event) => {
-              const Icon = getEventIcon(event.type)
+              const EventIcon = getEventIcon(event.type)
               const iconColor = getEventIconColor(event.type)
               const borderColor = getEventBorderColor(event.type)
               const textColor = getEventTextColor(event.type)
@@ -568,7 +568,7 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
                           </div>
                         </>
                       ) : (
-                        <Icon className={`h-6 w-6 ${iconColor}`} />
+                        <EventIcon className={`h-6 w-6 ${iconColor}`} />
                       )}
                     </div>
                     

@@ -133,7 +133,7 @@ export default function TermeniSiConditiiPage() {
             </CardHeader>
             <CardContent className="space-y-4 text-slate-600">
               <p>
-                CalendarȘcolar.ro este furnizat "așa cum este", fără garanții de niciun fel, exprese sau implicite. 
+                CalendarȘcolar.ro este furnizat &quot;așa cum este&quot;, fără garanții de niciun fel, exprese sau implicite. 
                 Nu garantăm că site-ul va funcționa fără întreruperi sau erori.
               </p>
               <p>

@@ -35,7 +35,9 @@ export function CountyActions({ county, events }: CountyActionsProps) {
   useEffect(() => {
     // Use NEXT_PUBLIC_APP_URL if set (for tunneling), otherwise use current origin
     const publicUrl = process.env.NEXT_PUBLIC_APP_URL
-    setBaseUrl(publicUrl || window.location.origin)
+    const url = publicUrl || window.location.origin
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Legitimate hydration pattern
+    setBaseUrl(url)
     setMounted(true)
   }, [])
 
