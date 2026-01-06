@@ -475,6 +475,8 @@ export function CountyCalendar({ county, events, promos = [], schoolYear, showCa
     type: 'PROMO' as const,
     imageUrl: promo.imageUrl,
     backgroundColor: promo.backgroundColor,
+    backgroundImageDesktop: promo.backgroundImageDesktop,
+    backgroundImageMobile: promo.backgroundImageMobile,
     link: promo.link,
     active: true,
     isPromo: true,
@@ -576,8 +578,30 @@ export function CountyCalendar({ county, events, promos = [], schoolYear, showCa
                     ...('isCountySpecific' in event && event.isCountySpecific 
                       ? { ['--tw-ring-color' as string]: county.group?.color } 
                       : {}),
+                    ...('isPromo' in event && event.isPromo && 'backgroundColor' in event && event.backgroundColor
+                      ? { backgroundColor: event.backgroundColor }
+                      : {}),
                   } as React.CSSProperties}
                 >
+                  {/* Background image for promo */}
+                  {'isPromo' in event && event.isPromo && 'backgroundImageDesktop' in event && event.backgroundImageDesktop && (
+                    <>
+                      <div 
+                        className="hidden md:block absolute inset-0 bg-cover bg-center opacity-20"
+                        style={{ backgroundImage: `url(${event.backgroundImageDesktop})` }}
+                      />
+                      <div 
+                        className="md:hidden absolute inset-0 bg-cover bg-center opacity-20"
+                        style={{ backgroundImage: `url(${('backgroundImageMobile' in event && event.backgroundImageMobile) || event.backgroundImageDesktop})` }}
+                      />
+                    </>
+                  )}
+                  {'isPromo' in event && event.isPromo && 'imageUrl' in event && event.imageUrl && !('backgroundImageDesktop' in event && event.backgroundImageDesktop) && (
+                    <div 
+                      className="absolute inset-0 bg-cover bg-center opacity-20"
+                      style={{ backgroundImage: `url(${event.imageUrl})` }}
+                    />
+                  )}
                   <div className="relative flex items-center gap-4 z-10">
                     <div
                       className="flex flex-col items-center justify-center shrink-0 rounded-md bg-white"

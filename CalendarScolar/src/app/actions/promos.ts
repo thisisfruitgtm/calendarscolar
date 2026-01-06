@@ -10,13 +10,24 @@ import { sanitizeHtml } from '@/lib/sanitize'
 const promoSchema = z.object({
   title: z.string().min(1, 'Titlul este obligatoriu').max(200, 'Titlul este prea lung'),
   description: z.string().max(5000, 'Descrierea este prea lungă').optional(),
-  imageUrl: z.string().url('URL imagine invalid').max(500, 'URL prea lung').optional().or(z.literal('')),
+  imageUrl: z.string().refine(
+    (val) => !val || val.startsWith('/'),
+    { message: 'Trebuie să fie o cale locală care începe cu / (ex: /promos/image.jpg)' }
+  ).max(500, 'Cale prea lungă').optional().or(z.literal('')),
   link: z.string().url('URL link invalid').max(500, 'URL prea lung').optional().or(z.literal('')),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
   showOnCalendar: z.boolean(),
   showAsBanner: z.boolean(),
   backgroundColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Culoare invalidă (format hex)').optional().or(z.literal('')),
+  backgroundImageDesktop: z.string().refine(
+    (val) => !val || val.startsWith('/'),
+    { message: 'Trebuie să fie o cale locală care începe cu / (ex: /promos/banner.jpg)' }
+  ).max(500, 'Cale prea lungă').optional().or(z.literal('')),
+  backgroundImageMobile: z.string().refine(
+    (val) => !val || val.startsWith('/'),
+    { message: 'Trebuie să fie o cale locală care începe cu / (ex: /promos/banner.jpg)' }
+  ).max(500, 'Cale prea lungă').optional().or(z.literal('')),
   priority: z.number().int().min(0).max(100),
   countyIds: z.array(z.string().regex(/^c[a-z0-9]{24}$/, 'ID județ invalid')).optional(),
   active: z.boolean(),

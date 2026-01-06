@@ -25,7 +25,7 @@ export default function PoliticaDeConfidentialitatePage() {
         {/* Ultima actualizare */}
         <div className="mb-8 text-center">
           <p className="text-sm text-slate-500">
-            Ultima actualizare: {new Date().toLocaleDateString('ro-RO', { year: 'numeric', month: 'long', day: 'numeric' })}
+            Ultima actualizare: 30 decembrie 2025
           </p>
         </div>
 

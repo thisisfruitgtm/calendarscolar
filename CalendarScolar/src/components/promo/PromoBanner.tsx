@@ -32,15 +32,29 @@ export function PromoBanner({ promo }: PromoBannerProps) {
     }
   }
 
+  const backgroundImage = promo.backgroundImageDesktop || promo.backgroundImageMobile || promo.imageUrl
+  
   const content = (
     <div 
       className="relative rounded-xl overflow-hidden mb-4 transition-all hover:shadow-lg"
       style={{
         backgroundColor: promo.backgroundColor || '#3B82F6',
-        minHeight: promo.imageUrl ? '120px' : '80px',
+        minHeight: backgroundImage ? '120px' : '80px',
       }}
     >
-      {promo.imageUrl && (
+      {promo.backgroundImageDesktop && (
+        <div 
+          className="hidden md:block absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${promo.backgroundImageDesktop})` }}
+        />
+      )}
+      {promo.backgroundImageMobile && (
+        <div 
+          className="md:hidden absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${promo.backgroundImageMobile})` }}
+        />
+      )}
+      {!promo.backgroundImageDesktop && !promo.backgroundImageMobile && promo.imageUrl && (
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${promo.imageUrl})` }}
@@ -48,7 +62,7 @@ export function PromoBanner({ promo }: PromoBannerProps) {
       )}
       
       {/* Overlay */}
-      <div className={`absolute inset-0 ${promo.imageUrl ? 'bg-black/50' : ''}`} />
+      <div className={`absolute inset-0 ${backgroundImage ? 'bg-black/50' : ''}`} />
       
       {/* Content */}
       <div className="relative z-10 p-4 md:p-6 flex items-center justify-between">

@@ -33,7 +33,7 @@ export function HeroContent({ counties, lastUpdate }: HeroContentProps) {
           <div className="mt-4 mb-4 flex items-center justify-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 bg-white text-sm font-medium text-blue-700">
               <Clock className="h-4 w-4" />
-              <span>Ultima actualizare: {lastUpdate}</span>
+              <span>Actualizare Ministerul Educației: <b>{lastUpdate}</b></span>
             </div>
           </div>
         </FadeInUp>

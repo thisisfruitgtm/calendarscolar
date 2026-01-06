@@ -10,8 +10,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
-import { UploadButton } from '@/lib/uploadthing'
 import { createPromo, updatePromo } from '@/app/actions/promos'
+import { LocalUploadButton } from '@/components/ui/local-upload-button'
 
 const promoSchema = z.object({
   title: z.string().min(1, 'Titlul este obligatoriu'),
@@ -44,6 +44,8 @@ interface PromoFormProps {
     showOnCalendar: boolean
     showAsBanner: boolean
     backgroundColor?: string | null
+    backgroundImageDesktop?: string | null
+    backgroundImageMobile?: string | null
     priority: number
     counties?: Array<{ county: { id: string; name: string } }>
     active: boolean
@@ -184,24 +186,83 @@ export function PromoForm({ promo, counties = [] }: PromoFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label>Imagine</Label>
+        <Label>Imagine (opțional - pentru calendar)</Label>
         {imageUrl && (
           <div className="mb-2">
-            <img src={imageUrl} alt="Preview" className="h-32 w-auto rounded" />
+            <img src={imageUrl} alt="Preview" className="h-32 w-auto rounded border" />
           </div>
         )}
-        <UploadButton
-          endpoint="imageUploader"
-          onClientUploadComplete={(res) => {
-            if (res && res[0]) {
-              setImageUrl(res[0].url)
-              setValue('imageUrl', res[0].url)
-            }
-          }}
-          onUploadError={(error) => {
-            console.error('Upload error:', error)
-          }}
-        />
+        <div className="flex gap-2">
+          <Input
+            placeholder="/promos/image.jpg"
+            value={imageUrl}
+            onChange={(e) => {
+              setImageUrl(e.target.value)
+              setValue('imageUrl', e.target.value)
+            }}
+            className="flex-1"
+          />
+          <LocalUploadButton
+            onUploadComplete={(url) => {
+              setImageUrl(url)
+              setValue('imageUrl', url)
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-4 border-t pt-6">
+        <div className="space-y-2">
+          <Label>Imagine Background Desktop</Label>
+          {backgroundImageDesktop && (
+            <div className="mb-2">
+              <img src={backgroundImageDesktop} alt="Desktop Preview" className="h-32 w-auto rounded border" />
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Input
+              placeholder="/promos/banner-desktop.jpg"
+              value={backgroundImageDesktop}
+              onChange={(e) => {
+                setBackgroundImageDesktop(e.target.value)
+                setValue('backgroundImageDesktop', e.target.value)
+              }}
+              className="flex-1"
+            />
+            <LocalUploadButton
+              onUploadComplete={(url) => {
+                setBackgroundImageDesktop(url)
+                setValue('backgroundImageDesktop', url)
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Imagine Background Mobile</Label>
+          {backgroundImageMobile && (
+            <div className="mb-2">
+              <img src={backgroundImageMobile} alt="Mobile Preview" className="h-32 w-auto rounded border" />
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Input
+              placeholder="/promos/banner-mobile.jpg"
+              value={backgroundImageMobile}
+              onChange={(e) => {
+                setBackgroundImageMobile(e.target.value)
+                setValue('backgroundImageMobile', e.target.value)
+              }}
+              className="flex-1"
+            />
+            <LocalUploadButton
+              onUploadComplete={(url) => {
+                setBackgroundImageMobile(url)
+                setValue('backgroundImageMobile', url)
+              }}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="space-y-2">

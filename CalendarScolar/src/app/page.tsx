@@ -15,9 +15,10 @@ export default async function Home() {
   // Remove counties field before passing to components
   const events = allEvents.map(({ counties, ...event }) => event)
   
-  // Only show calendar promos on landing page
+  // Only show calendar promos on landing page that don't have specific counties assigned
+  // (promos with counties.length === 0 are for all counties and should appear on landing)
   const calendarPromos = allPromos
-    .filter(p => p.showOnCalendar)
+    .filter(p => p.showOnCalendar && p.counties.length === 0)
     .map(({ counties, ...promo }) => promo)
 
   // Get settings (cached)
