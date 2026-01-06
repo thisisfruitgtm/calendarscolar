@@ -14,6 +14,7 @@ interface HeroContentProps {
 export function HeroContent({ counties, lastUpdate }: HeroContentProps) {
   return (
     <div className="mx-auto max-w-3xl text-center">
+
       <FadeInUp duration={700}>
         <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
           Calendar Școlar
@@ -21,19 +22,22 @@ export function HeroContent({ counties, lastUpdate }: HeroContentProps) {
         </h1>
       </FadeInUp>
       
-      {lastUpdate && (
-        <FadeInUp delay={150} duration={600}>
-          <div className="mt-4 flex items-center justify-center gap-2 text-sm font-medium text-blue-600">
-            <Clock className="h-4 w-4" />
-            <span>Ultima actualizare: {lastUpdate}</span>
-          </div>
-        </FadeInUp>
-      )}
+   
       
       <FadeInUp delay={300} duration={600}>
         <p className="mt-6 text-lg leading-8 text-slate-600 sm:text-xl">
           Calendarul școlar, acum direct în telefonul tău, în doar 3 click-uri. Simplu pentru părinți dar și pentru copii: toate vacanțele și zilele libere școlare, mereu la îndemână!
         </p>
+        {lastUpdate && (
+        <FadeInUp delay={150} duration={600}>
+          <div className="mt-4 mb-4 flex items-center justify-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 bg-white text-sm font-medium text-blue-700">
+              <Clock className="h-4 w-4" />
+              <span>Ultima actualizare: {lastUpdate}</span>
+            </div>
+          </div>
+        </FadeInUp>
+      )}
       </FadeInUp>
       
       {/* Autocomplete Search */}

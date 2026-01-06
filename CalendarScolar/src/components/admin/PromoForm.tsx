@@ -23,6 +23,8 @@ const promoSchema = z.object({
   showOnCalendar: z.boolean(),
   showAsBanner: z.boolean(),
   backgroundColor: z.string().optional(),
+  backgroundImageDesktop: z.string().optional(),
+  backgroundImageMobile: z.string().optional(),
   priority: z.number().int().min(0).max(100),
   countyIds: z.array(z.string()).optional(),
   active: z.boolean(),
@@ -54,6 +56,8 @@ interface PromoFormProps {
 export function PromoForm({ promo, counties = [] }: PromoFormProps) {
   const router = useRouter()
   const [imageUrl, setImageUrl] = useState(promo?.imageUrl || '')
+  const [backgroundImageDesktop, setBackgroundImageDesktop] = useState(promo?.backgroundImageDesktop || '')
+  const [backgroundImageMobile, setBackgroundImageMobile] = useState(promo?.backgroundImageMobile || '')
   const [loading, setLoading] = useState(false)
   const [selectedCountyIds, setSelectedCountyIds] = useState<string[]>(
     promo?.counties?.map(c => c.county.id) || []
@@ -81,6 +85,8 @@ export function PromoForm({ promo, counties = [] }: PromoFormProps) {
       showOnCalendar: promo?.showOnCalendar ?? true,
       showAsBanner: promo?.showAsBanner ?? false,
       backgroundColor: promo?.backgroundColor || '',
+      backgroundImageDesktop: promo?.backgroundImageDesktop || '',
+      backgroundImageMobile: promo?.backgroundImageMobile || '',
       priority: promo?.priority ?? 0,
       countyIds: promo?.counties?.map(c => c.county.id) || [],
       active: promo?.active ?? true,
@@ -90,7 +96,13 @@ export function PromoForm({ promo, counties = [] }: PromoFormProps) {
   const onFormSubmit = async (data: PromoFormData) => {
     setLoading(true)
     try {
-      const submitData = { ...data, imageUrl, countyIds: selectedCountyIds }
+      const submitData = { 
+        ...data, 
+        imageUrl, 
+        backgroundImageDesktop,
+        backgroundImageMobile,
+        countyIds: selectedCountyIds 
+      }
       if (promo) {
         await updatePromo(promo.id, submitData)
       } else {

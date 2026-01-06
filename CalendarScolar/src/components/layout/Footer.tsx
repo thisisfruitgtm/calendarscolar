@@ -91,7 +91,7 @@ export function Footer() {
               {' '}- Dezvoltatorul aplicației
             </p>
             
-            <div className="flex flex-wrap items-center justify-center gap-8 mb-6">
+            <div className="flex flex-wrap items-center justify-center gap-8 mb-6 hidden">
               <a href="https://marincea.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                 <img 
                   src="https://marincea.com/img/Logo_marincea_digital_consulting.svg" 

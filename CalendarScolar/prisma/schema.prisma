@@ -193,6 +193,8 @@ model Promo {
   showOnCalendar  Boolean @default(true)  // apare în calendar
   showAsBanner    Boolean @default(false) // apare ca banner pe pagină
   backgroundColor String?
+  backgroundImageDesktop String?  // imagine background desktop (URL sau cale locală /public)
+  backgroundImageMobile String?   // imagine background mobile (URL sau cale locală /public)
   
   // Targeting - dacă counties e gol, apare peste tot
   counties    PromoCounty[]
