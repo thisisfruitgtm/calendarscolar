@@ -7,7 +7,7 @@ export function HomeStructuredData() {
     name: 'CalendarȘcolar.ro',
     url: baseUrl,
     description:
-      'Calendar școlar complet pentru toate cele 42 de județe. Vacanțe, zile libere, structura anului școlar 2026-2027.',
+      'Calendar școlar complet pentru toate cele 42 de județe. Vacanțe, zile libere, structura anului școlar 2025-2026 și 2026-2027.',
     inLanguage: 'ro-RO',
     potentialAction: {
       '@type': 'SearchAction',
@@ -38,9 +38,9 @@ export function HomeStructuredData() {
   const webPageSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    name: 'CalendarȘcolar.ro – Calendar Școlar 2026-2027',
+    name: 'CalendarȘcolar.ro – Calendar Școlar 2025-2026 și 2026-2027',
     description:
-      'Calendar școlar complet pentru toate cele 42 de județe. Vacanțe, zile libere, structura anului școlar 2026-2027.',
+      'Calendar școlar complet pentru toate cele 42 de județe. Vacanțe, zile libere, structura anului școlar 2025-2026 și 2026-2027.',
     url: baseUrl,
     inLanguage: 'ro-RO',
     isPartOf: {
@@ -108,6 +108,108 @@ export function HomeStructuredData() {
     ],
   }
 
+  // Key school calendar events for structured data (both 2025-2026 remaining + 2026-2027)
+  const eventsSchema = [
+    // 2025-2026 remaining events (current school year)
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: 'Vacanța de primăvară 2026',
+      startDate: '2026-04-11',
+      endDate: '2026-04-21',
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      location: { '@type': 'Country', name: 'România' },
+      organizer: { '@type': 'Organization', name: 'Ministerul Educației' },
+      description: 'Vacanța de Paște 2026 pentru toți elevii din România (anul școlar 2025-2026).',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: 'Sfârșitul anului școlar 2025-2026',
+      startDate: '2026-06-19',
+      endDate: '2026-06-19',
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      location: { '@type': 'Country', name: 'România' },
+      organizer: { '@type': 'Organization', name: 'Ministerul Educației' },
+      description: 'Ultima zi de cursuri pentru anul școlar 2025-2026. Vacanța de vară începe pe 20 iunie 2026.',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: 'Vacanța de vară 2026',
+      startDate: '2026-06-20',
+      endDate: '2026-09-06',
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      location: { '@type': 'Country', name: 'România' },
+      organizer: { '@type': 'Organization', name: 'Ministerul Educației' },
+      description: 'Vacanța de vară 2026 pentru toți elevii din România.',
+    },
+    // 2026-2027 events
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: 'Început an școlar 2026-2027',
+      startDate: '2026-09-07',
+      endDate: '2026-09-07',
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      location: { '@type': 'Country', name: 'România' },
+      organizer: { '@type': 'Organization', name: 'Ministerul Educației' },
+      description: 'Prima zi de școală pentru anul școlar 2026-2027. Cursuri: 7 septembrie 2026 – 18 iunie 2027.',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: 'Vacanța de iarnă 2026-2027',
+      startDate: '2026-12-20',
+      endDate: '2027-01-05',
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      location: { '@type': 'Country', name: 'România' },
+      organizer: { '@type': 'Organization', name: 'Ministerul Educației' },
+      description: 'Vacanța de Crăciun și Anul Nou pentru toți elevii din România.',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: 'Vacanța intersemestrială 2027',
+      startDate: '2027-02-15',
+      endDate: '2027-03-07',
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      location: { '@type': 'Country', name: 'România' },
+      organizer: { '@type': 'Organization', name: 'Ministerul Educației' },
+      description: 'Vacanța intersemestrială organizată în 3 grupe: Grupa A (15-21 feb), Grupa B (22-28 feb), Grupa C (1-7 mar).',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: 'Vacanța de primăvară 2027',
+      startDate: '2027-04-19',
+      endDate: '2027-05-03',
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      location: { '@type': 'Country', name: 'România' },
+      organizer: { '@type': 'Organization', name: 'Ministerul Educației' },
+      description: 'Vacanța de Paște pentru toți elevii din România, include Paștele Ortodox.',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: 'Vacanța de vară 2027',
+      startDate: '2027-06-19',
+      endDate: '2027-09-05',
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      location: { '@type': 'Country', name: 'România' },
+      organizer: { '@type': 'Organization', name: 'Ministerul Educației' },
+      description: 'Vacanța de vară 2027 pentru toți elevii din România.',
+    },
+  ]
+
   return (
     <>
       <script
@@ -126,6 +228,13 @@ export function HomeStructuredData() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
       />
+      {eventsSchema.map((event, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(event) }}
+        />
+      ))}
     </>
   )
 }

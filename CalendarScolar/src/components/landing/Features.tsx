@@ -94,25 +94,25 @@ export function Features() {
                   <div className="h-6 w-6 rounded-full bg-blue-800" />
                   <h4 className="font-semibold text-slate-900">Grupa A</h4>
                 </div>
-                <p className="text-sm text-slate-600 mb-2">9-15 februarie 2026</p>
-                <p className="text-xs text-slate-500">5 județe</p>
+                <p className="text-sm text-slate-600 mb-2">15-21 februarie 2027</p>
+                <p className="text-xs text-slate-500">6 județe</p>
               </div>
-              
+
               <div className="rounded-xl bg-white p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="h-6 w-6 rounded-full bg-blue-400" />
                   <h4 className="font-semibold text-slate-900">Grupa B</h4>
                 </div>
-                <p className="text-sm text-slate-600 mb-2">16-22 februarie 2026</p>
-                <p className="text-xs text-slate-500">16 județe</p>
+                <p className="text-sm text-slate-600 mb-2">22-28 februarie 2027</p>
+                <p className="text-xs text-slate-500">15 județe</p>
               </div>
-              
+
               <div className="rounded-xl bg-white p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="h-6 w-6 rounded-full bg-green-500" />
                   <h4 className="font-semibold text-slate-900">Grupa C</h4>
                 </div>
-                <p className="text-sm text-slate-600 mb-2">23 feb - 1 mar 2026</p>
+                <p className="text-sm text-slate-600 mb-2">1-7 martie 2027</p>
                 <p className="text-xs text-slate-500">21 județe</p>
               </div>
             </div>
