@@ -2,10 +2,10 @@ import { View, Text, StyleSheet } from '@react-pdf/renderer'
 import { PDF_COLORS } from './colors'
 
 const LEGEND_ITEMS = [
-  { label: 'Vacanta', color: PDF_COLORS.VACATION },
-  { label: 'Zi libera', color: PDF_COLORS.HOLIDAY },
-  { label: 'Inceput semestru', color: PDF_COLORS.SEMESTER_START },
-  { label: 'Sfarsit semestru / ultima zi', color: PDF_COLORS.LAST_DAY },
+  { label: 'Vacanță', color: PDF_COLORS.VACATION },
+  { label: 'Zi liberă', color: PDF_COLORS.HOLIDAY },
+  { label: 'Început semestru', color: PDF_COLORS.SEMESTER_START },
+  { label: 'Sfârșit semestru / ultima zi', color: PDF_COLORS.LAST_DAY },
 ]
 
 export function PDFLegend() {

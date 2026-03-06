@@ -32,9 +32,9 @@ export function CalendarPDFDocument({
 
   return (
     <Document
-      title={`Calendar Scolar ${schoolYear} — Judetul ${countyName}`}
-      author="CalendarScolar.ro"
-      subject={`Calendarul scolar complet pentru judetul ${countyName}, an scolar ${schoolYear}`}
+      title={`Calendar Școlar ${schoolYear} — Județul ${countyName}`}
+      author="CalendarȘcolar.ro"
+      subject={`Calendarul școlar complet pentru județul ${countyName}, an școlar ${schoolYear}`}
       creator="CalendarScolar.ro"
     >
       <Page size="A4" orientation="landscape" style={styles.page}>

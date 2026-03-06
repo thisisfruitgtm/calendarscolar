@@ -1,4 +1,8 @@
-export function HomeStructuredData() {
+interface HomeStructuredDataProps {
+  lastModified?: string | null // ISO date string
+}
+
+export function HomeStructuredData({ lastModified }: HomeStructuredDataProps) {
   const baseUrl = 'https://calendarscolar.ro'
 
   const websiteSchema = {
@@ -43,6 +47,8 @@ export function HomeStructuredData() {
       'Calendar școlar complet pentru toate cele 42 de județe. Vacanțe, zile libere, structura anului școlar 2025-2026 și 2026-2027.',
     url: baseUrl,
     inLanguage: 'ro-RO',
+    datePublished: '2026-02-16',
+    ...(lastModified ? { dateModified: lastModified } : {}),
     isPartOf: {
       '@type': 'WebSite',
       name: 'CalendarȘcolar.ro',

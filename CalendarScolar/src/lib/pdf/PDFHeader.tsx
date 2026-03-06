@@ -15,11 +15,11 @@ export function PDFHeader({ countyName, groupName, groupColor, schoolYear }: PDF
         <Text style={styles.brand}>CalendarScolar.ro</Text>
         <Text style={styles.separator}>|</Text>
         <Text style={styles.title}>
-          Calendar Scolar {schoolYear}
+          Calendar Școlar {schoolYear}
         </Text>
         <Text style={styles.separator}>—</Text>
         <Text style={styles.county}>
-          Judetul {countyName}
+          Județul {countyName}
         </Text>
       </View>
       {groupName && (
@@ -27,7 +27,7 @@ export function PDFHeader({ countyName, groupName, groupColor, schoolYear }: PDF
           <View style={[styles.groupBadge, { backgroundColor: groupColor }]}>
             <Text style={styles.groupText}>{groupName}</Text>
           </View>
-          <Text style={styles.groupInfo}>Vacanta intersemestriala</Text>
+          <Text style={styles.groupInfo}>Vacanța intersemestrială</Text>
         </View>
       )}
     </View>

@@ -34,7 +34,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen">
-      <HomeStructuredData />
+      <HomeStructuredData lastModified={settings?.updatedAt ? new Date(settings.updatedAt).toISOString().split('T')[0] : null} />
       <Hero />
       
       {/* Calendar Preview Section with fade */}
