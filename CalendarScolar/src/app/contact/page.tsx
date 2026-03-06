@@ -108,7 +108,7 @@ export default function ContactPage() {
                       Fruit Creative SRL
                     </a>
                   </h3>
-                  <p className="text-sm">Dezvoltatorul aplicației - înregistrată ANSPDCP nr. 10677</p>
+                  <p className="text-sm">Dezvoltatorul aplicației</p>
                 </div>
               </div>
             </CardContent>

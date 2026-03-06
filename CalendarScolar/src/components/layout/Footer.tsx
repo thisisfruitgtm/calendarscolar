@@ -72,23 +72,18 @@ export function Footer() {
           {/* Partners Section */}
           <div className="mb-8">
             <p className="text-xs text-slate-500 text-center leading-relaxed max-w-4xl mx-auto mb-6">
-              Acest produs este oferit de{' '}
+              Un proiect{' '}
               <a href="https://marincea.com" target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-white transition-colors underline">
                 marincea.com
               </a>
-              {' '}- Consultanță digitală impreună cu{' '}
+              {' '}&amp;{' '}
               <a href="https://edupedu.ro" target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-white transition-colors underline">
                 edupedu.ro
               </a>
-              {' '}- Știri la zi prin educație, prin{' '}
+              , dezvoltat de{' '}
               <a href="https://thisisfruit.com" target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-white transition-colors underline">
                 Fruit Creative SRL
               </a>
-              {' '}-{' '}
-              <a href="https://thisisfruit.com" target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-white transition-colors underline">
-                thisisfruit.com
-              </a>
-              {' '}- Dezvoltatorul aplicației
             </p>
             
             <div className="flex flex-wrap items-center justify-center gap-8 mb-6 hidden">
@@ -115,9 +110,6 @@ export function Footer() {
               </a>
             </div>
             
-            <p className="text-xs text-slate-500 text-center">
-              Fruit Creative - înregistrată ANSPDCP nr. 10677
-            </p>
           </div>
           
           {/* Copyright */}
