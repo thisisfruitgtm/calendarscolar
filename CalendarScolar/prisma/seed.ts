@@ -161,10 +161,91 @@ async function main() {
     console.log(`✅ ${grupa.name} created with ${grupa.counties.length} counties`)
   }
 
+  // ============================================================
+  // Restul anului școlar 2025-2026 (martie - septembrie 2026)
+  // Paștele Ortodox 2026: 12 aprilie 2026
+  // Rusalii 2026: 31 mai - 1 iunie 2026
+  // ============================================================
+  const events2025_2026 = [
+    // Vacanța de primăvară 2026
+    {
+      title: 'Vacanța de primăvară 2026',
+      startDate: new Date('2026-04-11'),
+      endDate: new Date('2026-04-21'),
+      type: 'VACATION' as const,
+      description: 'Vacanța de Paște (11-21 aprilie 2026, include Paștele Ortodox 12 aprilie)',
+    },
+
+    // 1 Mai 2026
+    {
+      title: '1 Mai 2026 - Ziua Muncii',
+      startDate: new Date('2026-05-01'),
+      type: 'HOLIDAY' as const,
+      description: 'Ziua Internațională a Muncii - zi liberă',
+    },
+
+    // Rusalii 2026 (50 zile după Paștele Ortodox 12 aprilie)
+    {
+      title: 'Rusalii 2026',
+      startDate: new Date('2026-05-31'),
+      endDate: new Date('2026-06-01'),
+      type: 'HOLIDAY' as const,
+      description: 'Rusalii (31 mai - 1 iunie 2026) - sărbătoare legală',
+    },
+
+    // 1 Iunie 2026
+    {
+      title: '1 Iunie 2026 - Ziua Copilului',
+      startDate: new Date('2026-06-01'),
+      type: 'HOLIDAY' as const,
+      description: 'Ziua Copilului - zi liberă',
+    },
+
+    // Ultima zi - clasele XII/XIII 2025-2026
+    {
+      title: 'Ultima zi 2026 - clasele XII/XIII',
+      startDate: new Date('2026-06-05'),
+      type: 'LAST_DAY' as const,
+      description: 'Ultima zi de cursuri 2025-2026 pentru elevii claselor a XII-a zi, a XIII-a seral (34 săptămâni)',
+    },
+
+    // Ultima zi - clasa a VIII-a 2025-2026
+    {
+      title: 'Ultima zi 2026 - clasa a VIII-a',
+      startDate: new Date('2026-06-12'),
+      type: 'LAST_DAY' as const,
+      description: 'Ultima zi de cursuri 2025-2026 pentru elevii clasei a VIII-a (35 săptămâni)',
+    },
+
+    // Sfârșit an școlar 2025-2026
+    {
+      title: 'Sfârșit an școlar 2025-2026',
+      startDate: new Date('2026-06-19'),
+      type: 'LAST_DAY' as const,
+      description: 'Ultima zi de școală 2025-2026 pentru clasele I-VII și IX-XI (36 săptămâni)',
+    },
+
+    // Vacanța de vară 2026
+    {
+      title: 'Vacanța de vară 2026',
+      startDate: new Date('2026-06-20'),
+      endDate: new Date('2026-09-06'),
+      type: 'VACATION' as const,
+      description: 'Vacanța mare de vară 2026 (20 iunie - 6 septembrie 2026)',
+    },
+  ]
+
+  for (const event of events2025_2026) {
+    await prisma.event.create({ data: event })
+  }
+  console.log(`✅ ${events2025_2026.length} evenimente 2025-2026 (martie-septembrie) create`)
+
+  // ============================================================
   // Structura anului școlar 2026-2027 conform Ordin Nr. 3.194/2026
   // (Monitorul Oficial Nr. 126/16.II.2026)
   // Cursuri: 7 septembrie 2026 - 18 iunie 2027 (36 săptămâni)
   // Paștele Ortodox: 2 mai 2027
+  // ============================================================
   const commonEvents = [
     // Semestrul I
     {

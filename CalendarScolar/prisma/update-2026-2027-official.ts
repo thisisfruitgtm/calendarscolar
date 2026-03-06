@@ -178,6 +178,74 @@ async function main() {
     console.log('ℹ️  Cluj deja în Grupa A - skip')
   }
 
+  // 9. ADD: Evenimente 2025-2026 rămase (martie - septembrie 2026)
+  const events2025_2026 = [
+    {
+      title: 'Vacanța de primăvară 2026',
+      startDate: new Date('2026-04-11'),
+      endDate: new Date('2026-04-21'),
+      type: 'VACATION' as const,
+      description: 'Vacanța de Paște (11-21 aprilie 2026, include Paștele Ortodox 12 aprilie)',
+    },
+    {
+      title: '1 Mai 2026 - Ziua Muncii',
+      startDate: new Date('2026-05-01'),
+      type: 'HOLIDAY' as const,
+      description: 'Ziua Internațională a Muncii - zi liberă',
+    },
+    {
+      title: 'Rusalii 2026',
+      startDate: new Date('2026-05-31'),
+      endDate: new Date('2026-06-01'),
+      type: 'HOLIDAY' as const,
+      description: 'Rusalii (31 mai - 1 iunie 2026) - sărbătoare legală',
+    },
+    {
+      title: '1 Iunie 2026 - Ziua Copilului',
+      startDate: new Date('2026-06-01'),
+      type: 'HOLIDAY' as const,
+      description: 'Ziua Copilului - zi liberă',
+    },
+    {
+      title: 'Ultima zi 2026 - clasele XII/XIII',
+      startDate: new Date('2026-06-05'),
+      type: 'LAST_DAY' as const,
+      description: 'Ultima zi de cursuri 2025-2026 pentru elevii claselor a XII-a zi, a XIII-a seral (34 săptămâni)',
+    },
+    {
+      title: 'Ultima zi 2026 - clasa a VIII-a',
+      startDate: new Date('2026-06-12'),
+      type: 'LAST_DAY' as const,
+      description: 'Ultima zi de cursuri 2025-2026 pentru elevii clasei a VIII-a (35 săptămâni)',
+    },
+    {
+      title: 'Sfârșit an școlar 2025-2026',
+      startDate: new Date('2026-06-19'),
+      type: 'LAST_DAY' as const,
+      description: 'Ultima zi de școală 2025-2026 pentru clasele I-VII și IX-XI (36 săptămâni)',
+    },
+    {
+      title: 'Vacanța de vară 2026',
+      startDate: new Date('2026-06-20'),
+      endDate: new Date('2026-09-06'),
+      type: 'VACATION' as const,
+      description: 'Vacanța mare de vară 2026 (20 iunie - 6 septembrie 2026)',
+    },
+  ]
+
+  for (const event of events2025_2026) {
+    const exists = await prisma.event.findFirst({
+      where: { title: event.title },
+    })
+    if (!exists) {
+      await prisma.event.create({ data: event })
+      created++
+      console.log(`✅ CREAT: ${event.title}`)
+    } else {
+      console.log(`ℹ️  ${event.title} - deja există, skip`)
+    }
+  }
+
   console.log(`\n📊 Rezumat: ${created} create, ${updated} actualizate`)
   console.log('✅ Calendar actualizat conform Ordin Nr. 3.194/2026 + decizii ISJ')
 }
