@@ -8,6 +8,7 @@
  * Safe to run multiple times (idempotent).
  */
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
@@ -16,6 +17,17 @@ async function main() {
 
   let updated = 0
   let created = 0
+
+  // Sync admin password from env var
+  if (process.env.ADMIN_PASSWORD) {
+    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12)
+    await prisma.user.update({
+      where: { email: 'admin@calendarscolar.ro' },
+      data: { password: hashedPassword },
+    })
+    updated++
+    console.log('✅ ACTUALIZAT: Parola admin sincronizată din ADMIN_PASSWORD')
+  }
 
   // 1. ADD: Vacanța de toamnă (NEW - not in previous version)
   const autumnVacation = await prisma.event.findFirst({
