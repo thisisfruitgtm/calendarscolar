@@ -16,8 +16,40 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CalendarȘcolar.ro - Calendar Școlar 2026-2027",
-  description: "Calendar școlar oficial pentru București. Abonează-te și primește actualizări automate în calendarul tău.",
+  title: "CalendarȘcolar.ro – Calendar Școlar 2026-2027",
+  description: "Calendar școlar complet pentru toate cele 42 de județe. Vacanțe, zile libere, structura anului școlar 2026-2027. Sincronizează-l automat în Google Calendar, Apple Calendar sau Outlook.",
+  keywords: [
+    'calendar școlar',
+    'calendar școlar 2026-2027',
+    'vacanțe școlare',
+    'zile libere școală',
+    'structura anului școlar',
+    'calendar școlar România',
+  ],
+  openGraph: {
+    title: 'CalendarȘcolar.ro – Calendar Școlar 2026-2027',
+    description: 'Vacanțe, zile libere și structura anului școlar 2026-2027 pentru toate cele 42 de județe. Sincronizare automată în calendarul tău.',
+    type: 'website',
+    locale: 'ro_RO',
+    url: 'https://calendarscolar.ro',
+    siteName: 'CalendarȘcolar.ro',
+    images: [
+      {
+        url: 'https://calendarscolar.ro/api/og',
+        width: 1200,
+        height: 630,
+        alt: 'Calendar Școlar 2026-2027 România',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'CalendarȘcolar.ro – Calendar Școlar 2026-2027',
+    description: 'Vacanțe, zile libere și structura anului școlar 2026-2027 pentru toate cele 42 de județe.',
+  },
+  alternates: {
+    canonical: 'https://calendarscolar.ro',
+  },
 };
 
 export default function RootLayout({
