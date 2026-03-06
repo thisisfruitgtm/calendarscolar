@@ -152,7 +152,7 @@ export async function GET(
         .catch((err) => log.error('Failed to cache PDF', { slug, error: String(err) }))
     }
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="calendar-scolar-${slug}-${SCHOOL_YEAR}.pdf"`,
