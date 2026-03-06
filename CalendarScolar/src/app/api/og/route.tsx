@@ -1,8 +1,12 @@
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
 import { rateLimit, getClientIdentifier } from '@/lib/rate-limit'
+import { readFile } from 'fs/promises'
+import { join } from 'path'
 
 export const runtime = 'nodejs'
+
+const interBlack = readFile(join(process.cwd(), 'src/app/api/og/fonts/Inter-Black.ttf'))
 
 export async function GET(request: NextRequest) {
   const clientId = getClientIdentifier(request)
@@ -12,6 +16,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const fontData = await interBlack
+
     const imageResponse = new ImageResponse(
       (
         <div
@@ -24,7 +30,7 @@ export async function GET(request: NextRequest) {
             justifyContent: 'center',
             background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #BFDBFE 100%)',
             position: 'relative',
-            fontFamily: 'system-ui, -apple-system',
+            fontFamily: 'Inter',
           }}
         >
           {/* Decorative circles */}
@@ -82,21 +88,21 @@ export async function GET(request: NextRequest) {
             {/* Title */}
             <div
               style={{
-                fontSize: 72,
-                fontWeight: 'bold',
+                fontSize: 80,
+                fontWeight: 900,
                 color: '#0f172a',
-                marginBottom: 8,
-                lineHeight: 1.2,
+                marginBottom: -8,
+                lineHeight: 1.1,
               }}
             >
               Calendar Școlar
             </div>
             <div
               style={{
-                fontSize: 72,
-                fontWeight: 'bold',
+                fontSize: 80,
+                fontWeight: 900,
                 color: '#2563EB',
-                marginBottom: 32,
+                marginBottom: 28,
                 lineHeight: 1.2,
               }}
             >
@@ -133,7 +139,7 @@ export async function GET(request: NextRequest) {
                       borderRadius: 12,
                       fontSize: 20,
                       color: '#1e40af',
-                      fontWeight: '600',
+                      fontWeight: 900,
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
                     }}
                   >
@@ -163,6 +169,14 @@ export async function GET(request: NextRequest) {
       {
         width: 1200,
         height: 630,
+        fonts: [
+          {
+            name: 'Inter',
+            data: fontData,
+            weight: 900,
+            style: 'normal',
+          },
+        ],
       }
     )
 
