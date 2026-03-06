@@ -4,6 +4,7 @@ import { Subscribe } from '@/components/landing/Subscribe'
 import { LandingCalendar } from '@/components/landing/LandingCalendar'
 import { getCachedActiveEvents, getCachedActivePromos, getCachedSettings, getCachedActiveCounties } from '@/lib/cache'
 import { FadeInUp } from '@/components/ui/fade-in-up'
+import { HomeStructuredData } from '@/components/seo/HomeStructuredData'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,6 +32,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen">
+      <HomeStructuredData />
       <Hero />
       
       {/* Calendar Preview Section with fade */}

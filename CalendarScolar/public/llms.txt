@@ -1,0 +1,34 @@
+# CalendarȘcolar.ro
+
+> Calendar școlar oficial pentru anul 2026-2027 în România, cu vacanțe și zile libere pentru toate cele 42 de județe.
+
+## Despre
+
+CalendarȘcolar.ro este o platformă gratuită care oferă calendarul școlar oficial pentru anul 2026-2027, bazat pe structura aprobată de Ministerul Educației (Ordin Nr. 3.194/2026, publicat în Monitorul Oficial). Calendarul include vacanțele intersemestriale care diferă de la județ la județ (3 grupe), zilele libere naționale, și datele semestrelor.
+
+## Structura anului școlar 2026-2027
+
+- **Semestrul I**: 14 septembrie 2026 – 30 ianuarie 2027
+- **Vacanța intersemestrială**: diferă pe grupe (Grupa A: 15-21 feb, Grupa B: 22-28 feb, Grupa C: 1-7 mar)
+- **Semestrul II**: după vacanța intersemestrială – 19 iunie 2027
+- **Vacanța de vară**: 19 iunie – 13 septembrie 2027
+
+## Grupe de vacanță intersemestrială
+
+- **Grupa A** (6 județe): Caraș-Severin, Cluj, Dolj, Gorj, Mehedinți, Timiș — 15-21 februarie 2027
+- **Grupa B** (15 județe): Alba, Arad, Argeș, Bihor, Brașov, Dâmbovița, Giurgiu, Hunedoara, Olt, Prahova, Satu Mare, Sibiu, Teleorman, Vâlcea, Vrancea — 22-28 februarie 2027
+- **Grupa C** (21 județe): Bacău, Bistrița-Năsăud, Botoșani, Brăila, București, Buzău, Călărași, Constanța, Covasna, Galați, Harghita, Ialomița, Iași, Ilfov, Maramureș, Mureș, Neamț, Sălaj, Suceava, Tulcea, Vaslui — 1-7 martie 2027
+
+## Funcționalități
+
+- Calendar școlar complet pentru fiecare județ
+- Sincronizare automată cu Google Calendar, Apple Calendar și Outlook (format ICS)
+- Actualizări automate când apar modificări oficiale
+- Interfață în limba română
+
+## Pagini importante
+
+- [Pagina principală](https://calendarscolar.ro)
+- [Toate județele](https://calendarscolar.ro/judete)
+- [Cum funcționează](https://calendarscolar.ro/cum-functioneaza)
+- [Contact](https://calendarscolar.ro/contact)

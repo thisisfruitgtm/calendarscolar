@@ -1,6 +1,7 @@
 import { ImageResponse } from '@vercel/og'
 import { NextRequest } from 'next/server'
 import { getCachedCountyBySlug } from '@/lib/cache'
+import { rateLimit, getClientIdentifier } from '@/lib/rate-limit'
 
 export const runtime = 'nodejs'
 
@@ -8,9 +9,15 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const clientId = getClientIdentifier(request)
+  const limit = rateLimit(`og:${clientId}`, 30, 60000)
+  if (!limit.success) {
+    return new Response('Too many requests', { status: 429 })
+  }
+
   try {
     const { slug } = await params
-    
+
     const county = await getCachedCountyBySlug(slug)
 
     if (!county) {
@@ -28,7 +35,7 @@ export async function GET(
       }).format(new Date(date))
     }
 
-    return new ImageResponse(
+    const imageResponse = new ImageResponse(
       (
         <div
           style={{
@@ -161,6 +168,14 @@ export async function GET(
         height: 630,
       }
     )
+
+    // Cache for 7 days
+    imageResponse.headers.set(
+      'Cache-Control',
+      'public, max-age=604800, s-maxage=604800, stale-while-revalidate=2592000'
+    )
+
+    return imageResponse
   } catch (e: unknown) {
     console.error('Error generating OG image:', e instanceof Error ? e.message : e)
     return new Response('Failed to generate image', {

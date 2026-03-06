@@ -1,10 +1,18 @@
 import { ImageResponse } from '@vercel/og'
+import { NextRequest } from 'next/server'
+import { rateLimit, getClientIdentifier } from '@/lib/rate-limit'
 
 export const runtime = 'nodejs'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const clientId = getClientIdentifier(request)
+  const limit = rateLimit(`og:${clientId}`, 30, 60000)
+  if (!limit.success) {
+    return new Response('Too many requests', { status: 429 })
+  }
+
   try {
-    return new ImageResponse(
+    const imageResponse = new ImageResponse(
       (
         <div
           style={{
@@ -157,6 +165,13 @@ export async function GET() {
         height: 630,
       }
     )
+
+    imageResponse.headers.set(
+      'Cache-Control',
+      'public, max-age=604800, s-maxage=604800, stale-while-revalidate=2592000'
+    )
+
+    return imageResponse
   } catch (e: unknown) {
     console.error('Error generating OG image:', e instanceof Error ? e.message : e)
     return new Response('Failed to generate image', { status: 500 })

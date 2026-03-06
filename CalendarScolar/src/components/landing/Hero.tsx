@@ -1,8 +1,5 @@
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { MapPin, ArrowRight, Clock } from 'lucide-react'
+import Image from 'next/image'
 import { getCachedActiveCounties, getCachedSettingsMinimal } from '@/lib/cache'
-import { CountyAutocomplete } from './CountyAutocomplete'
 import { HeroContent } from './HeroContent'
 
 export async function Hero() {
@@ -23,11 +20,13 @@ export async function Hero() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 via-indigo-50 to-white py-16 sm:py-20">
       {/* Background image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-        style={{
-          backgroundImage: 'url(/hero.webp)',
-        }}
+      <Image
+        src="/hero.webp"
+        alt=""
+        fill
+        priority
+        className="object-cover opacity-20"
+        sizes="100vw"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-blue-50/90 via-indigo-50/90 to-white/90" />
       
