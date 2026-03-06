@@ -10,7 +10,7 @@ export function Footer() {
           {/* Brand Section */}
           <div className="lg:col-span-3">
             <h3 className="text-xl font-bold text-white mb-4">CalendarȘcolar.ro</h3>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <p className="text-sm text-slate-300 leading-relaxed">
               Calendar școlar complet pentru toate cele 43 de județe. 
               Planifică-ți vacanțele și organizează-te pentru tot anul școlar 2026-2027.
             </p>
@@ -27,22 +27,22 @@ export function Footer() {
               <h4 className="text-sm font-semibold text-white mb-4">Link-uri utile</h4>
               <ul className="space-y-3">
                 <li>
-                  <Link href="/judete" className="text-sm text-slate-400 hover:text-white transition-colors inline-block">
+                  <Link href="/judete" className="text-sm text-slate-300 hover:text-white transition-colors inline-block">
                     Toate Județele
                   </Link>
                 </li>
                 <li>
-                  <Link href="/cum-functioneaza" className="text-sm text-slate-400 hover:text-white transition-colors inline-block">
+                  <Link href="/cum-functioneaza" className="text-sm text-slate-300 hover:text-white transition-colors inline-block">
                     Cum Funcționează
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="text-sm text-slate-400 hover:text-white transition-colors inline-block">
+                  <Link href="/contact" className="text-sm text-slate-300 hover:text-white transition-colors inline-block">
                     Contact
                   </Link>
                 </li>
                 <li>
-                  <Link href="/sugestii" className="text-sm text-slate-400 hover:text-white transition-colors inline-block">
+                  <Link href="/sugestii" className="text-sm text-slate-300 hover:text-white transition-colors inline-block">
                     Sugestii
                   </Link>
                 </li>
@@ -53,12 +53,12 @@ export function Footer() {
               <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
               <ul className="space-y-3">
                 <li>
-                  <Link href="/termeni-si-conditii" className="text-sm text-slate-400 hover:text-white transition-colors inline-block">
+                  <Link href="/termeni-si-conditii" className="text-sm text-slate-300 hover:text-white transition-colors inline-block">
                     Termeni și condiții
                   </Link>
                 </li>
                 <li>
-                  <Link href="/politica-de-confidentialitate" className="text-sm text-slate-400 hover:text-white transition-colors inline-block">
+                  <Link href="/politica-de-confidentialitate" className="text-sm text-slate-300 hover:text-white transition-colors inline-block">
                     Politica de confidențialitate
                   </Link>
                 </li>
@@ -71,7 +71,7 @@ export function Footer() {
         <div className="pt-8 border-t border-slate-800">
           {/* Partners Section */}
           <div className="mb-8">
-            <p className="text-xs text-slate-500 text-center leading-relaxed max-w-4xl mx-auto mb-6">
+            <p className="text-xs text-slate-400 text-center leading-relaxed max-w-4xl mx-auto mb-6">
               Un proiect{' '}
               <a href="https://marincea.com" target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-white transition-colors underline">
                 marincea.com
@@ -114,7 +114,7 @@ export function Footer() {
           
           {/* Copyright */}
           <div className="text-center pt-6 border-t border-slate-800">
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-300">
               &copy; {new Date().getFullYear()} CalendarȘcolar.ro. Toate drepturile rezervate.
             </p>
           </div>

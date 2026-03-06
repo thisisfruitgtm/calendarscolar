@@ -50,7 +50,7 @@ export function EdupeduArticles() {
         <h4 className="text-sm font-semibold text-white mb-5">
           Noutăți calendar școlar de la Edupedu.ro
         </h4>
-        <p className="text-sm text-slate-500">Se încarcă...</p>
+        <p className="text-sm text-slate-400">Se încarcă...</p>
       </div>
     )
   }
@@ -62,7 +62,7 @@ export function EdupeduArticles() {
         <h4 className="text-sm font-semibold text-white mb-9">
           Noutăți calendar școlar de la Edupedu.ro
         </h4>
-        <p className="text-sm text-slate-500 mb-4">
+        <p className="text-sm text-slate-400 mb-4">
           Nu există articole disponibile momentan.
         </p>
         <div>
@@ -70,7 +70,7 @@ export function EdupeduArticles() {
             href="https://www.edupedu.ro/?s=calendar"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-slate-400 hover:text-white transition-colors underline inline-flex items-center gap-1"
+            className="text-xs text-slate-300 hover:text-white transition-colors underline inline-flex items-center gap-1"
           >
             Vezi toate articolele
             <span>→</span>
@@ -98,7 +98,7 @@ export function EdupeduArticles() {
                 {article.title}
               </div>
               {article.pubDate && (
-                <div className="text-xs text-slate-500">
+                <div className="text-xs text-slate-400">
                   {formatDate(article.pubDate)}
                 </div>
               )}
@@ -111,7 +111,7 @@ export function EdupeduArticles() {
           href="https://www.edupedu.ro/?s=calendar"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-slate-400 hover:text-white transition-colors underline inline-flex items-center gap-1"
+          className="text-xs text-slate-300 hover:text-white transition-colors underline inline-flex items-center gap-1"
         >
           Vezi toate articolele
           <span>→</span>

@@ -169,7 +169,7 @@ export function SeasonalHighlight({ events }: SeasonalHighlightProps) {
                         {event.endDate && ` – ${formatShortDate(event.endDate)}`}
                       </p>
                     </div>
-                    <div className="text-xs text-slate-400 whitespace-nowrap">
+                    <div className="text-xs text-slate-500 whitespace-nowrap">
                       {getDaysUntil(event.startDate) === 1
                         ? 'mâine'
                         : `${getDaysUntil(event.startDate)} zile`}
