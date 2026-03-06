@@ -1,5 +1,5 @@
 import { County, VacationGroup, VacationPeriod, Event, EventType } from '@prisma/client'
-import { Map } from 'lucide-react'
+import { Map, FileDown } from 'lucide-react'
 import Link from 'next/link'
 import { CountyActions } from './CountyActions'
 
@@ -197,6 +197,26 @@ export function CountyInfo({ county, events }: CountyInfoProps) {
           </div>
         </section>
       )}
+
+      {/* PDF Download */}
+      <section className="rounded-2xl bg-white p-6 shadow-sm">
+        <h2 className="mb-3 text-lg font-semibold text-slate-900">
+          Calendar printabil
+        </h2>
+        <p className="mb-4 text-sm text-slate-600">
+          Descarcă calendarul școlar {county.name} în format PDF — toate cele 12 luni
+          ale anului școlar 2026-2027 pe o singură pagină A4 landscape,
+          cu vacanțele și zilele libere marcate color.
+        </p>
+        <a
+          href={`/api/calendar/county/${county.slug}/pdf`}
+          download
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-primary/90 shadow-sm hover:shadow-md"
+        >
+          <FileDown className="h-4 w-4" />
+          Descarcă PDF
+        </a>
+      </section>
 
       {/* SEO Content */}
       <section className="rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100 p-6">
