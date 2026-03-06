@@ -52,7 +52,7 @@ export function HeroContent({ counties, lastUpdate }: HeroContentProps) {
         <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-x-6">
           <Button asChild variant="outline" size="lg">
             <Link href="/judete" className="flex items-center gap-2">
-              Vezi Toate Județele
+              Vezi județele
             </Link>
           </Button>
         </div>

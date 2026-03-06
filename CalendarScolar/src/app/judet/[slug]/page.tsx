@@ -6,6 +6,7 @@ import { CountyCalendar } from '@/components/county/CountyCalendar'
 import { CountyInfo } from '@/components/county/CountyInfo'
 import { StructuredData } from '@/components/seo/StructuredData'
 import { PromoBanner } from '@/components/promo/PromoBanner'
+import { CountyActions } from '@/components/county/CountyActions'
 
 interface CountyPageProps {
   params: Promise<{ slug: string }>
@@ -123,7 +124,12 @@ export default async function CountyPage({ params }: CountyPageProps) {
       
       <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
         <CountyHero county={county} events={events} />
-        
+
+        {/* Quick Actions - outside hero z-0 so fixed bottom bar works */}
+        <div className="container mx-auto px-4 -mt-6 mb-2 md:mb-0">
+          <CountyActions county={county} events={events} />
+        </div>
+
         {/* Banner Promos */}
         {bannerPromos.length > 0 && (
           <div className="container mx-auto px-4 pt-8">
@@ -133,7 +139,7 @@ export default async function CountyPage({ params }: CountyPageProps) {
           </div>
         )}
         
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-12 pb-28 md:pb-12">
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <CountyCalendar 

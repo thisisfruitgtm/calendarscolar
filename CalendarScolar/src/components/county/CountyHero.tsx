@@ -1,7 +1,6 @@
 import { County, VacationGroup, VacationPeriod, Event } from '@prisma/client'
 import { Calendar } from 'lucide-react'
 import Link from 'next/link'
-import { CountyActions } from './CountyActions'
 
 type CountyWithGroup = County & {
   group: (VacationGroup & { periods: VacationPeriod[] }) | null
@@ -96,10 +95,6 @@ export function CountyHero({ county, events }: CountyHeroProps) {
             </div>
           )}
 
-          {/* Quick Actions */}
-          <div className="mt-6 pb-24 md:pb-0">
-            <CountyActions county={county} events={events} />
-          </div>
         </div>
       </div>
     </section>

@@ -32,7 +32,7 @@ export function Header() {
             <AccessibilityMenu />
             <Button asChild variant="outline" size="sm" className="bg-white/90 backdrop-blur-sm hover:bg-white">
               <Link href="/judete">
-                Vezi Toate Județele
+                Vezi județele
               </Link>
             </Button>
           </div>

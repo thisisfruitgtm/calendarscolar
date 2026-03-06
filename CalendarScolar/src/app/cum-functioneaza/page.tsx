@@ -298,7 +298,7 @@ export default function CumFunctioneazaPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-blue-50 font-semibold px-8">
                   <Link href="/judete">
-                    Vezi Toate Județele
+                    Vezi județele
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-2 border-white bg-transparent text-white hover:bg-transparent hover:text-white font-semibold px-8">
