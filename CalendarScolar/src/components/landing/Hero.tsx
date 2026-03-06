@@ -18,7 +18,7 @@ export async function Hero() {
     : null
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 via-indigo-50 to-white py-16 sm:py-20">
+    <section className="relative bg-gradient-to-b from-blue-50 via-indigo-50 to-white py-16 sm:py-20">
       {/* Background image */}
       <Image
         src="/hero.webp"

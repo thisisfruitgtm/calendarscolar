@@ -40,15 +40,15 @@ export default async function Home() {
       {/* Calendar Preview Section with fade */}
       <section className="relative bg-gradient-to-b from-white via-slate-50 to-white overflow-hidden py-8">
         <div className="relative mx-auto max-w-4xl px-6 lg:px-8 z-0">
-          <LandingCalendar 
+          <LandingCalendar
             events={events}
             promos={calendarPromos}
             schoolYear={settings?.schoolYear || '2026-2027'}
             showCalendarDayNumbers={settings?.showCalendarDayNumbers || false}
           />
         </div>
-        
-        {/* Fade effect at bottom - starts from middle */}
+
+        {/* Fade effect at bottom */}
         <div className="absolute bottom-0 left-0 right-0 h-[50%] bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-10" />
       </section>
       

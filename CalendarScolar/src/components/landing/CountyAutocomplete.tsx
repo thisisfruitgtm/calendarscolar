@@ -29,18 +29,78 @@ function normalizeForSearch(text: string): string {
     .replace(/[\u0300-\u036f]/g, '') // Elimină diacriticele
 }
 
-export function CountyAutocomplete({ 
-  counties, 
+const TYPING_EXAMPLES = ['Cluj', 'București', 'Timiș', 'Constanța', 'Iași', 'Brașov']
+const TYPING_SPEED = 80
+const ERASING_SPEED = 40
+const PAUSE_AFTER_TYPE = 2000
+const PAUSE_AFTER_ERASE = 500
+
+function useTypingPlaceholder(examples: string[], prefix: string) {
+  const [displayText, setDisplayText] = useState('')
+  const [phase, setPhase] = useState<'typing' | 'erasing'>('typing')
+  const [wordIndex, setWordIndex] = useState(0)
+  const charRef = useRef(0)
+
+  useEffect(() => {
+    const currentWord = examples[wordIndex]
+    let timeout: ReturnType<typeof setTimeout>
+
+    if (phase === 'typing') {
+      if (charRef.current < currentWord.length) {
+        timeout = setTimeout(() => {
+          charRef.current++
+          setDisplayText(currentWord.slice(0, charRef.current))
+        }, TYPING_SPEED)
+      } else {
+        // Finished typing — wait, then switch to erasing
+        timeout = setTimeout(() => setPhase('erasing'), PAUSE_AFTER_TYPE)
+      }
+    } else {
+      if (charRef.current > 0) {
+        timeout = setTimeout(() => {
+          charRef.current--
+          setDisplayText(currentWord.slice(0, charRef.current))
+        }, ERASING_SPEED)
+      } else {
+        // Finished erasing — wait, then move to next word
+        timeout = setTimeout(() => {
+          setWordIndex((i) => (i + 1) % examples.length)
+          setPhase('typing')
+        }, PAUSE_AFTER_ERASE)
+      }
+    }
+
+    return () => clearTimeout(timeout)
+  }, [displayText, phase, wordIndex, examples])
+
+  const cursor = phase === 'typing' || phase === 'erasing' ? '|' : ''
+  return prefix + displayText + cursor
+}
+
+export function CountyAutocomplete({
+  counties,
   onSelect,
-  placeholder = "Caută județul tău (ex: Cluj, București, Timiș...)"
+  placeholder: _placeholder
 }: CountyAutocompleteProps) {
   const router = useRouter()
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
+  const [isFocused, setIsFocused] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
+  const prefix = isMobile ? 'ex: ' : 'Caută județul tău, ex: '
+  const animatedPlaceholder = useTypingPlaceholder(TYPING_EXAMPLES, prefix)
 
   const normalizedQuery = normalizeForSearch(query)
   
@@ -133,7 +193,7 @@ export function CountyAutocomplete({
         <Input
           ref={inputRef}
           type="text"
-          placeholder={placeholder}
+          placeholder={isFocused ? 'Scrie numele județului...' : animatedPlaceholder}
           value={query}
           onChange={(e) => {
             setQuery(e.target.value)
@@ -143,6 +203,10 @@ export function CountyAutocomplete({
           onKeyDown={handleKeyDown}
           onFocus={() => {
             setIsOpen(true)
+            setIsFocused(true)
+          }}
+          onBlur={() => {
+            setIsFocused(false)
           }}
           className="h-14 bg-white pl-12 pr-4 text-base font-medium shadow-lg border-2 border-slate-200 focus:border-blue-500"
         />

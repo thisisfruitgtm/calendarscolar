@@ -577,22 +577,22 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
               Toate evenimentele importante pentru anul școlar
             </p>
           </div>
-        <div className="flex justify-center lg:inline-flex lg:items-center gap-0.5 rounded-lg border border-slate-200 bg-slate-50 p-0.5 relative z-40">
+        <div className="flex justify-center lg:inline-flex lg:items-center gap-2 relative z-40">
           <Button
-            variant={view === 'list' ? 'default' : 'ghost'}
+            variant={view === 'list' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setView('list')}
-            className="gap-2 rounded-md shrink-0 m-0 relative z-50"
+            className="gap-2 rounded-full shrink-0 relative z-50"
             type="button"
           >
             <List className="h-4 w-4" />
             Listă
           </Button>
           <Button
-            variant={view === 'calendar' ? 'default' : 'ghost'}
+            variant={view === 'calendar' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setView('calendar')}
-            className="gap-2 rounded-md shrink-0 m-0 relative z-50"
+            className="gap-2 rounded-full shrink-0 relative z-50"
             type="button"
           >
             <CalendarIcon className="h-4 w-4" />
@@ -622,8 +622,8 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
             </div>
           </div>
           
-          <div className="space-y-4 max-w-4xl mx-auto max-h-[500px] overflow-y-auto">
-            {allEvents.map((event) => {
+          <div className="space-y-4 max-w-4xl mx-auto">
+            {allEvents.slice(0, 5).map((event) => {
               const EventIcon = getEventIcon(event.type)
               const iconColor = getEventIconColor(event.type)
               const borderColor = getEventBorderColor(event.type)

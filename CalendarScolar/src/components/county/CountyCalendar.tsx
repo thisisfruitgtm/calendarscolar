@@ -524,21 +524,21 @@ export function CountyCalendar({ county, events, promos = [], schoolYear, showCa
             Toate evenimentele importante pentru județul {county.name}
           </p>
         </div>
-        <div className="flex justify-center lg:inline-flex lg:items-center gap-0.5 rounded-lg border border-slate-200 bg-slate-50 p-0.5">
+        <div className="flex justify-center lg:inline-flex lg:items-center gap-2">
           <Button
-            variant={view === 'list' ? 'default' : 'ghost'}
+            variant={view === 'list' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setView('list')}
-            className="gap-2 rounded-md shrink-0 m-0"
+            className="gap-2 rounded-full shrink-0"
           >
             <List className="h-4 w-4" />
             Listă
           </Button>
           <Button
-            variant={view === 'calendar' ? 'default' : 'ghost'}
+            variant={view === 'calendar' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setView('calendar')}
-            className="gap-2 rounded-md shrink-0 m-0"
+            className="gap-2 rounded-full shrink-0"
           >
             <CalendarIcon className="h-4 w-4" />
             Calendar

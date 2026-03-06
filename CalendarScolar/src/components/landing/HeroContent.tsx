@@ -33,7 +33,7 @@ export function HeroContent({ counties, lastUpdate }: HeroContentProps) {
           <div className="mt-4 mb-4 flex items-center justify-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 bg-white text-sm font-medium text-blue-700">
               <Clock className="h-4 w-4" />
-              <span>Actualizare Ministerul Educației: <b>{lastUpdate}</b></span>
+              <span>Actualizare Ministerul Educației: <b className="whitespace-nowrap">{lastUpdate}</b></span>
             </div>
           </div>
         </FadeInUp>
@@ -41,14 +41,14 @@ export function HeroContent({ counties, lastUpdate }: HeroContentProps) {
       </FadeInUp>
       
       {/* Autocomplete Search */}
-      <FadeInUp delay={450} duration={600}>
+      <FadeInUp delay={450} duration={600} className="relative z-20">
         <div className="mt-10 flex justify-center">
           <CountyAutocomplete counties={counties} />
         </div>
       </FadeInUp>
 
       {/* Alternative CTA */}
-      <FadeInUp delay={600} duration={600}>
+      <FadeInUp delay={600} duration={600} className="relative z-10">
         <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-x-6">
           <Button asChild variant="outline" size="lg">
             <Link href="/judete" className="flex items-center gap-2">
