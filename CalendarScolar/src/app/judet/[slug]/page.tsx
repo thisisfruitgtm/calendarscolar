@@ -13,11 +13,15 @@ interface CountyPageProps {
 
 // Generate static pages for all counties at build time
 export async function generateStaticParams() {
-  const counties = await getCachedActiveCounties()
-
-  return counties.map((county) => ({
-    slug: county.slug,
-  }))
+  try {
+    const counties = await getCachedActiveCounties()
+    return counties.map((county) => ({
+      slug: county.slug,
+    }))
+  } catch {
+    // DB not available at build time (e.g. Nixpacks/Docker build)
+    return []
+  }
 }
 
 // Generate metadata for SEO
