@@ -38,7 +38,7 @@ const faqs = [
     answer: 'Pe CalendarȘcolar.ro poți adăuga calendarul școlar direct în Google Calendar, Apple Calendar sau Outlook. Alege județul tău, apasă „Adaugă în calendar", selectează aplicația preferată, și gata! Calendarul se sincronizează automat și primești actualizări când apar modificări oficiale.',
   },
   {
-    question: 'Ce este structura anului școlar 2026-2027?',
+    question: 'Care este structura anului școlar 2026-2027?',
     answer: 'Anul școlar 2026-2027 are 2 semestre: Semestrul I (7 septembrie 2026 – 29 ianuarie 2027, ~20 săptămâni) și Semestrul II (9 februarie 2027 – 18 iunie 2027, ~16 săptămâni). Include vacanța de iarnă (19 decembrie 2026 – 4 ianuarie 2027), vacanța intersemestrială (15 feb – 7 mar 2027, pe grupe), vacanța de primăvară (19 apr – 3 mai 2027) și vacanța de vară (din 19 iunie 2027).',
   },
 ]
