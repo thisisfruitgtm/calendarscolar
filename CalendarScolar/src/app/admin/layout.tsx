@@ -12,7 +12,7 @@ export default async function AdminLayout({
   const session = await auth()
 
   if (!session) {
-    redirect('/admin-login')
+    redirect('/auth-cs7k9')
   }
 
   return (
@@ -62,7 +62,7 @@ export default async function AdminLayout({
               <form
                 action={async () => {
                   'use server'
-                  await signOut({ redirectTo: '/admin-login' })
+                  await signOut({ redirectTo: '/auth-cs7k9' })
                 }}
               >
                 <Button type="submit" variant="outline" size="sm">

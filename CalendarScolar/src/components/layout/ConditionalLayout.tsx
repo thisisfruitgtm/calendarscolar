@@ -10,7 +10,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   
   // Don't show header and footer in admin sections
-  const isAdminRoute = pathname?.startsWith('/admin') || pathname?.startsWith('/admin-login')
+  const isAdminRoute = pathname?.startsWith('/admin') || pathname?.startsWith('/auth-cs7k9')
   
   if (isAdminRoute) {
     return (

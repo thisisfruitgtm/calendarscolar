@@ -18,7 +18,7 @@ export const authConfig: NextAuthConfig = {
     authorized: ({ auth, request: { nextUrl } }) => {
       const isLoggedIn = !!auth?.user
       const isOnAdmin = nextUrl.pathname.startsWith('/admin')
-      const isOnLogin = nextUrl.pathname === '/admin-login'
+      const isOnLogin = nextUrl.pathname === '/auth-cs7k9'
 
       // Always allow access to login page
       if (isOnLogin) {
@@ -48,7 +48,7 @@ export const authConfig: NextAuthConfig = {
     },
   },
   pages: {
-    signIn: '/admin-login',
+    signIn: '/auth-cs7k9',
   },
   session: {
     strategy: 'jwt',

@@ -19,6 +19,7 @@ Calendar școlar 2026-2027 conform Ordin Nr. 3.194/2026 (Monitorul Oficial Nr. 1
   - `AUTH_SECRET=<random>`
   - `AUTH_URL=https://calendarscolar.ro`
   - `NODE_ENV=production`
+  - `ADMIN_PASSWORD=<strong password for initial seed>`
 
 ## Data Update Procedure
 When calendar data needs updating (new ISJ decisions, official corrections):
@@ -44,6 +45,11 @@ Window: 15 februarie - 7 martie 2027. Each ISJ picks one week:
 - `npm run db:seed` — full DB reset + seed
 - `npm run db:update` — apply migrations (no reset)
 - `npm run db:studio` — Prisma Studio GUI
+
+## Admin Access
+- Login URL: `/auth-cs7k9` (obfuscated, not linked anywhere public)
+- Default admin: `admin@calendarscolar.ro`
+- Password set via `ADMIN_PASSWORD` env var during seed
 
 ## Important Notes
 - `generateStaticParams` in dynamic routes has try/catch for build-time (no DB available)

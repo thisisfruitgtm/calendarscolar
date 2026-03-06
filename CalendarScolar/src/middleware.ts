@@ -5,8 +5,8 @@ import { auth } from '@/lib/auth'
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   
-  // Don't protect admin-login route
-  if (pathname === '/admin-login') {
+  // Don't protect login route
+  if (pathname === '/auth-cs7k9') {
     const response = NextResponse.next()
     response.headers.set('x-pathname', pathname)
     return response
@@ -17,7 +17,7 @@ export default async function middleware(request: NextRequest) {
     const session = await auth()
     
     if (!session) {
-      return NextResponse.redirect(new URL('/admin-login', request.url))
+      return NextResponse.redirect(new URL('/auth-cs7k9', request.url))
     }
   }
   
