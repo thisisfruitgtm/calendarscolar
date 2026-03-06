@@ -27,6 +27,8 @@ function formatDate(date: Date): string {
   }).format(new Date(date))
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function JudetePage() {
   const groups = await db.vacationGroup.findMany({
     include: {

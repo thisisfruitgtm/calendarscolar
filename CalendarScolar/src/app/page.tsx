@@ -5,6 +5,8 @@ import { LandingCalendar } from '@/components/landing/LandingCalendar'
 import { getCachedActiveEvents, getCachedActivePromos, getCachedSettings, getCachedActiveCounties } from '@/lib/cache'
 import { FadeInUp } from '@/components/ui/fade-in-up'
 
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   // Get all active events (cached)
   const allEvents = await getCachedActiveEvents()
