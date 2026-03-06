@@ -25,7 +25,7 @@ export function CountyHero({ county, events }: CountyHeroProps) {
 
   return (
     <section 
-      className="relative overflow-hidden py-20 lg:py-28"
+      className="relative z-0 overflow-hidden py-20 lg:py-28"
       style={{
         background: `linear-gradient(135deg, ${county.group?.color || '#3B82F6'}15 0%, ${county.group?.color || '#3B82F6'}30 100%)`,
       }}
