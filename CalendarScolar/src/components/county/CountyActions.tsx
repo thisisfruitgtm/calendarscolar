@@ -59,7 +59,8 @@ export function CountyActions({ county, events }: CountyActionsProps) {
   }, [mounted])
 
   const calendarFeedUrl = baseUrl ? `${baseUrl}/api/calendar/county/${county.slug}` : ''
-  const googleCalendarUrl = calendarFeedUrl ? `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(calendarFeedUrl)}` : '#'
+  const webcalUrl = calendarFeedUrl ? `webcal://${calendarFeedUrl.replace('https://', '').replace('http://', '')}` : ''
+  const googleCalendarUrl = webcalUrl ? `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcalUrl)}` : '#'
   // Apple Calendar requires webcal:// protocol, even for HTTPS URLs
   // webcal:// will be converted to https:// by Apple Calendar automatically
   const appleCalendarUrl = calendarFeedUrl 

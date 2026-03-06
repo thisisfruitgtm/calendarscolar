@@ -28,7 +28,8 @@ export function Subscribe({ counties: initialCounties }: SubscribeProps) {
     ? `${baseUrl}/api/calendar/county/${selectedCounty.slug}`
     : `${baseUrl}/api/calendar`
   
-  const googleCalendarUrl = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(calendarUrl)}`
+  const webcalUrl = `webcal://${calendarUrl.replace('https://', '').replace('http://', '')}`
+  const googleCalendarUrl = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcalUrl)}`
   const appleCalendarUrl = `webcal://${calendarUrl.replace('https://', '').replace('http://', '')}`
   const outlookCalendarUrl = `https://outlook.live.com/calendar/0/addcalendar?url=${encodeURIComponent(calendarUrl)}`
 
