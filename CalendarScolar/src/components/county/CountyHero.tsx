@@ -1,6 +1,7 @@
 import { County, VacationGroup, VacationPeriod, Event } from '@prisma/client'
 import { Calendar } from 'lucide-react'
 import Link from 'next/link'
+import { CountyActions } from './CountyActions'
 
 type CountyWithGroup = County & {
   group: (VacationGroup & { periods: VacationPeriod[] }) | null
@@ -24,7 +25,7 @@ export function CountyHero({ county, events }: CountyHeroProps) {
 
   return (
     <section 
-      className="relative z-0 overflow-hidden py-16 lg:py-20 pb-8 lg:pb-10"
+      className="relative overflow-hidden py-20 lg:py-28"
       style={{
         background: `linear-gradient(135deg, ${county.group?.color || '#3B82F6'}15 0%, ${county.group?.color || '#3B82F6'}30 100%)`,
       }}
@@ -95,6 +96,10 @@ export function CountyHero({ county, events }: CountyHeroProps) {
             </div>
           )}
 
+          {/* Quick Actions */}
+          <div className="mt-6 pb-24 md:pb-0">
+            <CountyActions county={county} events={events} />
+          </div>
         </div>
       </div>
     </section>
