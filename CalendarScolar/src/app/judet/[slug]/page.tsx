@@ -126,7 +126,7 @@ export default async function CountyPage({ params }: CountyPageProps) {
         <CountyHero county={county} events={events} />
 
         {/* Quick Actions - outside hero z-0 so fixed bottom bar works */}
-        <div className="container mx-auto px-4 -mt-6 mb-2 md:mb-0">
+        <div className="container mx-auto px-4 py-4 md:py-6">
           <CountyActions county={county} events={events} />
         </div>
 
