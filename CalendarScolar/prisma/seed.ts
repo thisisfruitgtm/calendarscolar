@@ -157,7 +157,8 @@ async function main() {
     console.log(`✅ ${grupa.name} created with ${grupa.counties.length} counties`)
   }
 
-  // Structura anului școlar 2026-2027 conform ordinului MEC
+  // Structura anului școlar 2026-2027 conform Ordin Nr. 3.194/2026
+  // (Monitorul Oficial Nr. 126/16.II.2026)
   // Cursuri: 7 septembrie 2026 - 18 iunie 2027 (36 săptămâni)
   // Paștele Ortodox: 2 mai 2027
   const commonEvents = [
@@ -169,12 +170,21 @@ async function main() {
       description: 'Prima zi de școală. Cursuri: 7 septembrie 2026 - 18 iunie 2027 (36 săptămâni)',
     },
 
-    // Ziua Educației
+    // Ziua internațională a educației (Art. 3)
     {
-      title: '5 Octombrie - Ziua Educației',
+      title: '5 Octombrie - Ziua internațională a educației',
       startDate: new Date('2026-10-05'),
       type: 'HOLIDAY' as const,
-      description: 'Ziua Educației - zi liberă',
+      description: 'Ziua internațională a educației - nu se organizează cursuri (conform Art. 3)',
+    },
+
+    // Vacanța de toamnă
+    {
+      title: 'Vacanța de toamnă',
+      startDate: new Date('2026-10-24'),
+      endDate: new Date('2026-11-01'),
+      type: 'VACATION' as const,
+      description: 'Vacanța de toamnă (24 octombrie - 1 noiembrie 2026)',
     },
 
     // Sfântul Andrei
@@ -196,18 +206,18 @@ async function main() {
     // Vacanța de iarnă
     {
       title: 'Vacanța de iarnă',
-      startDate: new Date('2026-12-21'),
-      endDate: new Date('2027-01-03'),
+      startDate: new Date('2026-12-23'),
+      endDate: new Date('2027-01-10'),
       type: 'VACATION' as const,
-      description: 'Vacanța de Crăciun și Anul Nou (21 decembrie 2026 - 3 ianuarie 2027)',
+      description: 'Vacanța de Crăciun și Anul Nou (23 decembrie 2026 - 10 ianuarie 2027)',
     },
 
     // Semestrul II
     {
       title: 'Început semestru II',
-      startDate: new Date('2027-01-04'),
+      startDate: new Date('2027-01-11'),
       type: 'SEMESTER_START' as const,
-      description: 'Reluarea cursurilor după vacanța de iarnă',
+      description: 'Reluarea cursurilor după vacanța de iarnă (11 ianuarie 2027)',
     },
 
     // Unirea Principatelor
@@ -221,18 +231,18 @@ async function main() {
     // Vacanța de primăvară (include Paștele Ortodox 2 mai 2027)
     {
       title: 'Vacanța de primăvară',
-      startDate: new Date('2027-04-19'),
-      endDate: new Date('2027-05-03'),
+      startDate: new Date('2027-04-24'),
+      endDate: new Date('2027-05-04'),
       type: 'VACATION' as const,
-      description: 'Vacanța de Paște (19 aprilie - 3 mai 2027, include Paștele Ortodox)',
+      description: 'Vacanța de Paște (24 aprilie - 4 mai 2027, include Paștele Ortodox 2 mai)',
     },
 
-    // 1 Mai
+    // 1 Mai (în vacanță)
     {
       title: '1 Mai - Ziua Muncii',
       startDate: new Date('2027-05-01'),
       type: 'HOLIDAY' as const,
-      description: 'Ziua Internațională a Muncii - zi liberă (sâmbătă)',
+      description: 'Ziua Internațională a Muncii - zi liberă (în vacanța de primăvară)',
     },
 
     // Ziua Copilului
@@ -256,7 +266,7 @@ async function main() {
       title: 'Ultima zi - clasa a VIII-a',
       startDate: new Date('2027-06-11'),
       type: 'LAST_DAY' as const,
-      description: 'Ultima zi de cursuri pentru elevii clasei a VIII-a (vineri, săptămâna 35)',
+      description: 'Ultima zi de cursuri pentru elevii clasei a VIII-a (35 săptămâni)',
     },
 
     // Sfârșit an școlar (36 săptămâni)
@@ -264,25 +274,33 @@ async function main() {
       title: 'Sfârșit an școlar',
       startDate: new Date('2027-06-18'),
       type: 'LAST_DAY' as const,
-      description: 'Ultima zi de școală pentru clasele I-VII și IX-XI (vineri, săptămâna 36)',
+      description: 'Ultima zi de școală pentru clasele I-VII și IX-XI (36 săptămâni)',
     },
 
-    // Rusalii (50 zile după Paștele Ortodox)
+    // Rusalii (50 zile după Paștele Ortodox 2 mai 2027)
     {
       title: 'Rusalii',
       startDate: new Date('2027-06-20'),
       endDate: new Date('2027-06-21'),
       type: 'HOLIDAY' as const,
-      description: 'Rusalii (20-21 iunie 2027)',
+      description: 'Rusalii (20-21 iunie 2027) - sărbătoare legală',
+    },
+
+    // Ultima zi - liceu tehnologic/profesional (37 săptămâni)
+    {
+      title: 'Ultima zi - liceu tehnologic/profesional',
+      startDate: new Date('2027-06-25'),
+      type: 'LAST_DAY' as const,
+      description: 'Ultima zi de cursuri pentru clasele din învățământul liceal filiera tehnologică și profesional (37 săptămâni)',
     },
 
     // Vacanța de vară
     {
       title: 'Vacanța de vară',
       startDate: new Date('2027-06-19'),
-      endDate: new Date('2027-09-06'),
+      endDate: new Date('2027-09-05'),
       type: 'VACATION' as const,
-      description: 'Vacanța mare de vară',
+      description: 'Vacanța mare de vară (19 iunie - 5 septembrie 2027)',
     },
   ]
 

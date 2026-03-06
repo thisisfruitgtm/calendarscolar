@@ -15,6 +15,8 @@ if [ ! -f "$DB_FILE" ]; then
 else
   echo "Checking for schema updates..."
   npx prisma db push
+  echo "Running data migrations..."
+  npx tsx prisma/update-2026-2027-official.ts
 fi
 
 echo "Starting server on port ${PORT:-3000}..."

@@ -16,6 +16,7 @@
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
+    "db:update": "tsx prisma/update-2026-2027-official.ts",
     "tunnel": "cloudflared tunnel --url http://localhost:3000"
   },
   "dependencies": {
