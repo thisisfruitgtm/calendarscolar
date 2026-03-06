@@ -82,11 +82,22 @@ function parseRSSFeed(xmlText: string): EdupeduArticle[] {
       }
     }
     
-    // Filter articles that contain "calendar" (case insensitive)
+    // Filter: only articles about the school calendar specifically
     const titleLower = title.toLowerCase()
-    const hasCalendar = titleLower.includes('calendar') || description.includes('calendar')
-    
-    if (hasCalendar && title && link) {
+    const text = titleLower + ' ' + description
+    const isSchoolCalendar =
+      text.includes('calendar școlar') ||
+      text.includes('calendar scolar') ||
+      text.includes('structura anului școlar') ||
+      text.includes('structura anului scolar') ||
+      text.includes('an școlar') ||
+      text.includes('an scolar') ||
+      (text.includes('vacanț') && (text.includes('școlar') || text.includes('scolar') || text.includes('elev'))) ||
+      (text.includes('vacanta') && (text.includes('scolar') || text.includes('elev'))) ||
+      text.includes('semestru') ||
+      text.includes('intersemestr')
+
+    if (isSchoolCalendar && title && link) {
       articles.push({
         title: decodeHtmlEntities(title),
         link: decodeHtmlEntities(link),
@@ -141,7 +152,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const feedUrl = 'https://www.edupedu.ro/feed/?s=calendar'
+    const feedUrl = 'https://www.edupedu.ro/feed/?s=calendar+scolar'
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 10000)
 

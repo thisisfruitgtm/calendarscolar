@@ -147,8 +147,27 @@ async function main() {
     console.log('✅ ACTUALIZAT: 5 Octombrie - denumire oficială')
   }
 
+  // 8. FIX: Cluj → Grupa A (ISJ Cluj decizie 24.02.2026: vacanță 15-21 feb 2027)
+  const clujCounty = await prisma.county.findFirst({
+    where: { slug: 'cluj' },
+    include: { group: true },
+  })
+  const grupaA = await prisma.vacationGroup.findFirst({
+    where: { name: 'Grupa A' },
+  })
+  if (clujCounty && grupaA && clujCounty.groupId !== grupaA.id) {
+    await prisma.county.update({
+      where: { id: clujCounty.id },
+      data: { groupId: grupaA.id },
+    })
+    updated++
+    console.log('✅ ACTUALIZAT: Cluj mutat din ' + clujCounty.group.name + ' → Grupa A (ISJ decizie 24.02.2026)')
+  } else if (clujCounty && grupaA && clujCounty.groupId === grupaA.id) {
+    console.log('ℹ️  Cluj deja în Grupa A - skip')
+  }
+
   console.log(`\n📊 Rezumat: ${created} create, ${updated} actualizate`)
-  console.log('✅ Calendar actualizat conform Ordin Nr. 3.194/2026')
+  console.log('✅ Calendar actualizat conform Ordin Nr. 3.194/2026 + decizii ISJ')
 }
 
 main()

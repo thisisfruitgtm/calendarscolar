@@ -14,6 +14,7 @@ const GRUPA_A = { // 15-21 februarie 2027
     { name: 'Gorj', slug: 'gorj', capitalCity: 'Târgu Jiu', population: 323317 },
     { name: 'Mehedinți', slug: 'mehedinti', capitalCity: 'Drobeta-Turnu Severin', population: 254570 },
     { name: 'Dolj', slug: 'dolj', capitalCity: 'Craiova', population: 654368 },
+    { name: 'Cluj', slug: 'cluj', capitalCity: 'Cluj-Napoca', population: 736301 },
   ],
   vacation: {
     name: 'Vacanța intersemestrială',
@@ -30,7 +31,6 @@ const GRUPA_B = { // 22-28 februarie 2027
     { name: 'Bihor', slug: 'bihor', capitalCity: 'Oradea', population: 551297 },
     { name: 'Satu Mare', slug: 'satu-mare', capitalCity: 'Satu Mare', population: 330445 },
     { name: 'Sălaj', slug: 'salaj', capitalCity: 'Zalău', population: 218958 },
-    { name: 'Cluj', slug: 'cluj', capitalCity: 'Cluj-Napoca', population: 736301 },
     { name: 'Hunedoara', slug: 'hunedoara', capitalCity: 'Deva', population: 382281 },
     { name: 'Alba', slug: 'alba', capitalCity: 'Alba Iulia', population: 323778 },
     { name: 'Sibiu', slug: 'sibiu', capitalCity: 'Sibiu', population: 397322 },
