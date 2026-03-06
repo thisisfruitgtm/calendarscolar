@@ -92,7 +92,7 @@ async function main() {
     console.log('✅ ACTUALIZAT: Început semestru II → 11 ianuarie 2027')
   }
 
-  // 4. FIX: Vacanța de primăvară (was Apr 19 - May 3, should be Apr 24 - May 4)
+  // 4. FIX: Vacanța de primăvară (restore correct dates if corrupted by 'vară' bug)
   const springVacation = await prisma.event.findFirst({
     where: { title: { contains: 'primăvară' } },
   })
@@ -110,13 +110,18 @@ async function main() {
   }
 
   // 5. FIX: Vacanța de vară (end was Sep 6, should be Sep 5)
+  // NOTE: Use 'Vacanța de vară' (exact title) to avoid matching 'primăvară'
   const summerVacation = await prisma.event.findFirst({
-    where: { title: { contains: 'vară' } },
+    where: {
+      title: { contains: 'vară' },
+      NOT: { title: { contains: 'primăvară' } },
+    },
   })
   if (summerVacation) {
     await prisma.event.update({
       where: { id: summerVacation.id },
       data: {
+        startDate: new Date('2027-06-19'),
         endDate: new Date('2027-09-05'),
         description: 'Vacanța mare de vară (19 iunie - 5 septembrie 2027)',
       },
