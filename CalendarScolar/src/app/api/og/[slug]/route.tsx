@@ -1,9 +1,13 @@
-import { ImageResponse } from '@vercel/og'
+import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
 import { getCachedCountyBySlug } from '@/lib/cache'
 import { rateLimit, getClientIdentifier } from '@/lib/rate-limit'
+import { readFile } from 'fs/promises'
+import { join } from 'path'
 
 export const runtime = 'nodejs'
+
+const interBlack = readFile(join(process.cwd(), 'src/app/api/og/fonts/Inter-Black.ttf'))
 
 export async function GET(
   request: NextRequest,
@@ -17,6 +21,7 @@ export async function GET(
 
   try {
     const { slug } = await params
+    const fontData = await interBlack
 
     const county = await getCachedCountyBySlug(slug)
 
@@ -47,7 +52,7 @@ export async function GET(
             justifyContent: 'center',
             background: `linear-gradient(135deg, ${groupColor}15 0%, ${groupColor}30 100%)`,
             position: 'relative',
-            fontFamily: 'system-ui, -apple-system',
+            fontFamily: 'Inter',
           }}
         >
           {/* Decorative circles */}
@@ -93,21 +98,21 @@ export async function GET(
             {/* Title */}
             <div
               style={{
-                fontSize: 64,
-                fontWeight: 'bold',
+                fontSize: 80,
+                fontWeight: 900,
                 color: '#0f172a',
-                marginBottom: 16,
-                lineHeight: 1.2,
+                marginBottom: -8,
+                lineHeight: 1.1,
               }}
             >
               Calendar Școlar
             </div>
             <div
               style={{
-                fontSize: 64,
-                fontWeight: 'bold',
+                fontSize: 80,
+                fontWeight: 900,
                 color: groupColor,
-                marginBottom: 24,
+                marginBottom: 20,
                 lineHeight: 1.2,
               }}
             >
@@ -124,7 +129,7 @@ export async function GET(
                 lineHeight: 1.5,
               }}
             >
-              Toate vacanțele și zilele libere pentru anul școlar 2026-2027 în județul {county.name}
+              {`Toate vacanțele și zilele libere pentru anul școlar 2026-2027 în județul ${county.name}`}
             </div>
 
             {/* Vacation card */}
@@ -152,11 +157,11 @@ export async function GET(
                 <div
                   style={{
                     fontSize: 24,
-                    fontWeight: '600',
+                    fontWeight: 900,
                     color: '#0f172a',
                   }}
                 >
-                  {formatDate(nextVacation.startDate)} - {formatDate(nextVacation.endDate)}
+                  {`${formatDate(nextVacation.startDate)} - ${formatDate(nextVacation.endDate)}`}
                 </div>
               </div>
             )}
@@ -166,6 +171,14 @@ export async function GET(
       {
         width: 1200,
         height: 630,
+        fonts: [
+          {
+            name: 'Inter',
+            data: fontData,
+            weight: 900,
+            style: 'normal',
+          },
+        ],
       }
     )
 
@@ -183,4 +196,3 @@ export async function GET(
     })
   }
 }
-

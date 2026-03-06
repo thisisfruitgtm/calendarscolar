@@ -41,7 +41,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://scripts.simpleanalyticscdn.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: https://queue.simpleanalyticscdn.com; font-src 'self'; connect-src 'self' https: https://queue.simpleanalyticscdn.com; frame-ancestors 'none'"
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://overview.thisisfruit.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: https://overview.thisisfruit.com; font-src 'self'; connect-src 'self' https: https://overview.thisisfruit.com; frame-ancestors 'none'"
           },
         ],
       },
