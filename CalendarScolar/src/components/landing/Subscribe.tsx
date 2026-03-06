@@ -50,7 +50,7 @@ export function Subscribe({ counties: initialCounties }: SubscribeProps) {
                 Adaugă în calendar
               </h2>
               <p className="mt-6 text-lg leading-8 text-blue-100">
-                Alege județul tău și aplicația preferată pentru a adăuga calendarul în câteva click-uri.
+                Alege județul tău și aplicația preferată pentru a adăuga calendarul în doar 3 pași.
               </p>
             </div>
           </FadeInUp>
