@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { GoogleCalendarIcon } from '@/components/icons/GoogleCalendarIcon'
@@ -18,8 +18,11 @@ interface SubscribeProps {
 export function Subscribe({ counties: initialCounties }: SubscribeProps) {
   const [selectedCounty, setSelectedCounty] = useState<{ id: string; name: string; slug: string; capitalCity: string } | null>(null)
   const [showCalendarOptions, setShowCalendarOptions] = useState(false)
+  const [baseUrl, setBaseUrl] = useState('')
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  useEffect(() => {
+    setBaseUrl(process.env.NEXT_PUBLIC_APP_URL || window.location.origin)
+  }, [])
   
   const calendarUrl = selectedCounty 
     ? `${baseUrl}/api/calendar/county/${selectedCounty.slug}`
