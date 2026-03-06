@@ -131,14 +131,14 @@ export function CountyForm({ county, groups }: CountyFormProps) {
       <div className="space-y-2">
         <Label htmlFor="groupId">Grupă Vacanță</Label>
         <Select
-          value={watch('groupId') || ''}
-          onValueChange={(value) => setValue('groupId', value)}
+          value={watch('groupId') || '__none__'}
+          onValueChange={(value) => setValue('groupId', value === '__none__' ? '' : value)}
         >
           <SelectTrigger>
             <SelectValue placeholder="Selectează o grupă" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Fără grupă</SelectItem>
+            <SelectItem value="__none__">Fără grupă</SelectItem>
             {groups.map((group) => (
               <SelectItem key={group.id} value={group.id}>
                 {group.name}

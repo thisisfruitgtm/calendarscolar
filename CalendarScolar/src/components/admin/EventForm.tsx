@@ -154,14 +154,14 @@ export function EventForm({ event, counties = [] }: EventFormProps) {
       <div className="space-y-2">
         <Label htmlFor="countyId">Județ (opțional)</Label>
         <Select
-          value={watch('countyId') || ''}
-          onValueChange={(value) => setValue('countyId', value || undefined)}
+          value={watch('countyId') || '__none__'}
+          onValueChange={(value) => setValue('countyId', value === '__none__' ? undefined : value)}
         >
           <SelectTrigger>
             <SelectValue placeholder="Toate județele" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Toate județele</SelectItem>
+            <SelectItem value="__none__">Toate județele</SelectItem>
             {counties.map((county) => (
               <SelectItem key={county.id} value={county.id}>
                 {county.name}
