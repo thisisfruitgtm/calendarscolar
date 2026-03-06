@@ -419,8 +419,16 @@ function CalendarView({
   onMonthChange: (index: number) => void
 }) {
   const [startYear, endYear] = schoolYear.split('-').map(Number)
-  
+
   const months = [
+    // Restul anului școlar anterior (martie - august)
+    { name: 'Martie', year: startYear, month: 2 },
+    { name: 'Aprilie', year: startYear, month: 3 },
+    { name: 'Mai', year: startYear, month: 4 },
+    { name: 'Iunie', year: startYear, month: 5 },
+    { name: 'Iulie', year: startYear, month: 6 },
+    { name: 'August', year: startYear, month: 7 },
+    // Anul școlar curent
     { name: 'Septembrie', year: startYear, month: 8 },
     { name: 'Octombrie', year: startYear, month: 9 },
     { name: 'Noiembrie', year: startYear, month: 10 },
@@ -495,6 +503,12 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
   // Find current month index or default to 0
   const currentMonthIndexFromDate = useMemo(() => {
     const months = [
+      { name: 'Martie', year: startYear, month: 2 },
+      { name: 'Aprilie', year: startYear, month: 3 },
+      { name: 'Mai', year: startYear, month: 4 },
+      { name: 'Iunie', year: startYear, month: 5 },
+      { name: 'Iulie', year: startYear, month: 6 },
+      { name: 'August', year: startYear, month: 7 },
       { name: 'Septembrie', year: startYear, month: 8 },
       { name: 'Octombrie', year: startYear, month: 9 },
       { name: 'Noiembrie', year: startYear, month: 10 },
@@ -550,7 +564,6 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
       return eventEnd >= todayStart
     })
     .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
-    .slice(0, 6) // Show only first 6 events on landing page
 
   return (
     <FadeInUp delay={1200} duration={700}>

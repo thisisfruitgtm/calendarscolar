@@ -433,6 +433,14 @@ function CalendarView({
   const [startYear, endYear] = schoolYear.split('-').map(Number)
   
   const months = [
+    // Restul anului școlar anterior (martie - august)
+    { name: 'Martie', year: startYear, month: 2 },
+    { name: 'Aprilie', year: startYear, month: 3 },
+    { name: 'Mai', year: startYear, month: 4 },
+    { name: 'Iunie', year: startYear, month: 5 },
+    { name: 'Iulie', year: startYear, month: 6 },
+    { name: 'August', year: startYear, month: 7 },
+    // Anul școlar curent
     { name: 'Septembrie', year: startYear, month: 8 },
     { name: 'Octombrie', year: startYear, month: 9 },
     { name: 'Noiembrie', year: startYear, month: 10 },
