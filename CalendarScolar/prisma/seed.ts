@@ -93,7 +93,11 @@ async function main() {
   await prisma.event.deleteMany()
 
   // Create admin user
-  const hashedPassword = await bcrypt.hash('admin123', 10)
+  const adminPassword = process.env.ADMIN_PASSWORD || 'admin123'
+  if (!process.env.ADMIN_PASSWORD) {
+    console.warn('⚠️  ADMIN_PASSWORD not set — using default "admin123". Change this in production!')
+  }
+  const hashedPassword = await bcrypt.hash(adminPassword, 12)
   await prisma.user.upsert({
     where: { email: 'admin@calendarscolar.ro' },
     update: {},

@@ -161,7 +161,7 @@ async function main() {
       data: { groupId: grupaA.id },
     })
     updated++
-    console.log('✅ ACTUALIZAT: Cluj mutat din ' + clujCounty.group.name + ' → Grupa A (ISJ decizie 24.02.2026)')
+    console.log('✅ ACTUALIZAT: Cluj mutat din ' + (clujCounty.group?.name ?? 'grupa necunoscută') + ' → Grupa A (ISJ decizie 24.02.2026)')
   } else if (clujCounty && grupaA && clujCounty.groupId === grupaA.id) {
     console.log('ℹ️  Cluj deja în Grupa A - skip')
   }

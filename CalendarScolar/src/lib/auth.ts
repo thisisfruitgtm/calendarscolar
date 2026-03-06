@@ -4,6 +4,7 @@ import { db } from './db'
 import bcrypt from 'bcryptjs'
 import { Role } from '@prisma/client'
 import { authConfig } from './auth.config'
+import { rateLimit } from './rate-limit'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
@@ -16,6 +17,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
         if (!credentials?.email || !credentials?.password) {
           return null
+        }
+
+        // Rate limit login attempts by email (5 attempts per 15 minutes)
+        const loginKey = `login:${(credentials.email as string).toLowerCase()}`
+        const limit = rateLimit(loginKey, 5, 15 * 60 * 1000)
+        if (!limit.success) {
+          throw new Error('Prea multe încercări. Reîncearcă mai târziu.')
         }
 
         const user = await db.user.findUnique({

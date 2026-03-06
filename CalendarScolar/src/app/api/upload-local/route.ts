@@ -18,7 +18,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    // Validează tipul de fișier
+    // Validează extensia fișierului (whitelist)
+    const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.gif']
+    const ext = file.name.toLowerCase().match(/\.[a-z]+$/)?.[0] ?? ''
+    if (!ALLOWED_EXTENSIONS.includes(ext)) {
+      return NextResponse.json({ error: 'Only image files allowed (.jpg, .png, .webp, .gif)' }, { status: 400 })
+    }
+
+    // Validează tipul de fișier (MIME type)
     if (!file.type.startsWith('image/')) {
       return NextResponse.json({ error: 'File must be an image' }, { status: 400 })
     }
@@ -32,10 +39,9 @@ export async function POST(request: NextRequest) {
     const uploadDir = join(process.cwd(), 'public', 'promos')
     await mkdir(uploadDir, { recursive: true })
 
-    // Generează nume unic pentru fișier
+    // Generează nume unic pentru fișier (strip original name, use only timestamp + safe extension)
     const timestamp = Date.now()
-    const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
-    const fileName = `${timestamp}-${originalName}`
+    const fileName = `${timestamp}${ext}`
     const filePath = join(uploadDir, fileName)
 
     // Salvează fișierul
