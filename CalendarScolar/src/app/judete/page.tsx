@@ -4,16 +4,16 @@ import Link from 'next/link'
 import { MapPin, Calendar, Users } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Toate Județele - Calendar Școlar 2025-2026 | CalendarȘcolar.ro',
-  description: 'Alege județul tău pentru a vedea calendarul școlar complet. Vacanțe, zile libere și structura anului școlar 2025-2026 pentru toate cele 42 de județe.',
+  title: 'Toate Județele - Calendar Școlar 2026-2027 | CalendarȘcolar.ro',
+  description: 'Alege județul tău pentru a vedea calendarul școlar complet. Vacanțe, zile libere și structura anului școlar 2026-2027 pentru toate cele 42 de județe.',
   keywords: [
     'calendar școlar județe',
     'vacanțe școlare România',
-    'calendar școlar 2025-2026',
+    'calendar școlar 2026-2027',
     'zile libere școală',
   ],
   openGraph: {
-    title: 'Toate Județele - Calendar Școlar 2025-2026',
+    title: 'Toate Județele - Calendar Școlar 2026-2027',
     description: 'Alege județul tău pentru a vedea calendarul școlar complet.',
     type: 'website',
     locale: 'ro_RO',
@@ -35,7 +35,7 @@ export default async function JudetePage() {
         orderBy: { name: 'asc' },
       },
       periods: {
-        where: { schoolYear: '2025-2026' },
+        where: { schoolYear: '2026-2027' },
         take: 1,
       },
     },
@@ -53,7 +53,7 @@ export default async function JudetePage() {
             </h1>
             <p className="mt-4 text-lg text-slate-600 lg:text-xl">
               Alege județul tău pentru a vedea calendarul școlar complet pentru 
-              anul 2025-2026, inclusiv vacanțele intersemestriale care diferă 
+              anul 2026-2027, inclusiv vacanțele intersemestriale care diferă 
               de la județ la județ.
             </p>
           </div>
@@ -82,7 +82,7 @@ export default async function JudetePage() {
                       <p className="font-medium text-slate-900">{group.name}</p>
                       {group.periods[0] && (
                         <p className="text-sm text-slate-600">
-                          {formatDate(group.periods[0].startDate)} - {formatDate(group.periods[0].endDate)} 2026
+                          {formatDate(group.periods[0].startDate)} - {formatDate(group.periods[0].endDate)} 2027
                         </p>
                       )}
                     </div>

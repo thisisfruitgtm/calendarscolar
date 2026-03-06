@@ -94,7 +94,7 @@ export function CountyActions({ county, events }: CountyActionsProps) {
     if (!baseUrl) return
     
     const url = `${baseUrl}/judet/${county.slug}`
-    const title = `Calendar Școlar ${county.name} 2025-2026`
+    const title = `Calendar Școlar ${county.name} 2026-2027`
     const text = `Vezi calendarul școlar complet pentru ${county.name}`
 
     try {

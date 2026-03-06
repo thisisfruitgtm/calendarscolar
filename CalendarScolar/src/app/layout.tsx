@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CalendarȘcolar.ro - Calendar Școlar 2025-2026",
+  title: "CalendarȘcolar.ro - Calendar Școlar 2026-2027",
   description: "Calendar școlar oficial pentru București. Abonează-te și primește actualizări automate în calendarul tău.",
 };
 

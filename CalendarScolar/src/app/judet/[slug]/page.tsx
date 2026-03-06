@@ -32,9 +32,9 @@ export async function generateMetadata({ params }: CountyPageProps): Promise<Met
     }
   }
 
-  const title = county.metaTitle || `Calendar Școlar ${county.name} 2025-2026`
+  const title = county.metaTitle || `Calendar Școlar ${county.name} 2026-2027`
   const description = county.metaDescription || 
-    `Calendar școlar complet pentru județul ${county.name}. Vezi vacanțele, zilele libere și structura anului școlar 2025-2026.`
+    `Calendar școlar complet pentru județul ${county.name}. Vezi vacanțele, zilele libere și structura anului școlar 2026-2027.`
 
   return {
     title,
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: CountyPageProps): Promise<Met
       `vacanțe școlare ${county.name}`,
       `zile libere ${county.name}`,
       `școli ${county.capitalCity}`,
-      'calendar școlar 2025-2026',
+      'calendar școlar 2026-2027',
       'vacanța de iarnă',
       'vacanța de primăvară',
       'vacanța de vară',
@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: CountyPageProps): Promise<Met
           url: `https://calendarscolar.ro/api/og/${county.slug}`,
           width: 1200,
           height: 630,
-          alt: `Calendar Școlar ${county.name} 2025-2026`,
+          alt: `Calendar Școlar ${county.name} 2026-2027`,
         },
       ],
     },
@@ -136,7 +136,7 @@ export default async function CountyPage({ params }: CountyPageProps) {
                 county={county} 
                 events={events}
                 promos={calendarPromos}
-                schoolYear={settings?.schoolYear || '2025-2026'}
+                schoolYear={settings?.schoolYear || '2026-2027'}
                 showCalendarDayNumbers={settings?.showCalendarDayNumbers || false}
               />
             </div>

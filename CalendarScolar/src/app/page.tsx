@@ -37,7 +37,7 @@ export default async function Home() {
           <LandingCalendar 
             events={events}
             promos={calendarPromos}
-            schoolYear={settings?.schoolYear || '2025-2026'}
+            schoolYear={settings?.schoolYear || '2026-2027'}
             showCalendarDayNumbers={settings?.showCalendarDayNumbers || false}
           />
         </div>
@@ -54,7 +54,7 @@ export default async function Home() {
               <p className="text-lg text-slate-600 leading-relaxed">
                 Ca părinte, știi cât de important este să știi din timp când sunt vacanțele și zilele libere. 
                 Cu CalendarȘcolar poți planifica concediile, activitățile extrașcolare și să te organizezi 
-                pentru tot anul școlar 2025-2026.
+                pentru tot anul școlar 2026-2027.
               </p>
             </div>
           </div>

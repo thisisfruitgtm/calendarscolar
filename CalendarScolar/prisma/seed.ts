@@ -3,8 +3,9 @@ import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
-// Județele grupate conform imaginii oficiale MEC
-const GRUPA_A = { // 9-15 februarie 2026 - Albastru închis
+// Județele grupate conform structurii oficiale MEC 2026-2027
+// Săptămâna de vacanță ISJ/ISMB: 15 februarie - 7 martie 2027
+const GRUPA_A = { // 15-21 februarie 2027
   name: 'Grupa A',
   color: '#1E40AF', // dark blue
   counties: [
@@ -16,12 +17,12 @@ const GRUPA_A = { // 9-15 februarie 2026 - Albastru închis
   ],
   vacation: {
     name: 'Vacanța intersemestrială',
-    startDate: new Date('2026-02-09'),
-    endDate: new Date('2026-02-15'),
+    startDate: new Date('2027-02-15'),
+    endDate: new Date('2027-02-21'),
   }
 }
 
-const GRUPA_B = { // 16-22 februarie 2026 - Albastru deschis
+const GRUPA_B = { // 22-28 februarie 2027
   name: 'Grupa B',
   color: '#60A5FA', // light blue
   counties: [
@@ -44,12 +45,12 @@ const GRUPA_B = { // 16-22 februarie 2026 - Albastru deschis
   ],
   vacation: {
     name: 'Vacanța intersemestrială',
-    startDate: new Date('2026-02-16'),
-    endDate: new Date('2026-02-22'),
+    startDate: new Date('2027-02-22'),
+    endDate: new Date('2027-02-28'),
   }
 }
 
-const GRUPA_C = { // 23 februarie - 1 martie 2026 - Verde
+const GRUPA_C = { // 1-7 martie 2027
   name: 'Grupa C',
   color: '#22C55E', // green
   counties: [
@@ -77,8 +78,8 @@ const GRUPA_C = { // 23 februarie - 1 martie 2026 - Verde
   ],
   vacation: {
     name: 'Vacanța intersemestrială',
-    startDate: new Date('2026-02-23'),
-    endDate: new Date('2026-03-01'),
+    startDate: new Date('2027-03-01'),
+    endDate: new Date('2027-03-07'),
   }
 }
 
@@ -110,8 +111,8 @@ async function main() {
     update: {},
     create: {
       id: 'settings',
-      calendarName: 'Calendar Școlar 2025-2026',
-      schoolYear: '2025-2026',
+      calendarName: 'Calendar Școlar 2026-2027',
+      schoolYear: '2026-2027',
       adsEnabled: true,
     },
   })
@@ -134,7 +135,7 @@ async function main() {
         endDate: grupa.vacation.endDate,
         type: VacationType.INTERSEMESTER,
         groupId: group.id,
-        schoolYear: '2025-2026',
+        schoolYear: '2026-2027',
       },
     })
 
@@ -147,8 +148,8 @@ async function main() {
           capitalCity: county.capitalCity,
           population: county.population,
           groupId: group.id,
-          metaTitle: `Calendar Școlar ${county.name} 2025-2026 | Vacanțe și Zile Libere`,
-          metaDescription: `Calendar școlar complet pentru județul ${county.name} (${county.capitalCity}). Vezi toate vacanțele, zilele libere și structura anului școlar 2025-2026.`,
+          metaTitle: `Calendar Școlar ${county.name} 2026-2027 | Vacanțe și Zile Libere`,
+          metaDescription: `Calendar școlar complet pentru județul ${county.name} (${county.capitalCity}). Vezi toate vacanțele, zilele libere și structura anului școlar 2026-2027.`,
         },
       })
     }
@@ -156,124 +157,130 @@ async function main() {
     console.log(`✅ ${grupa.name} created with ${grupa.counties.length} counties`)
   }
 
-  // Structura anului școlar 2025-2026 conform ordinului MEC
+  // Structura anului școlar 2026-2027 conform ordinului MEC
+  // Cursuri: 7 septembrie 2026 - 18 iunie 2027 (36 săptămâni)
+  // Paștele Ortodox: 2 mai 2027
   const commonEvents = [
     // Semestrul I
     {
-      title: 'Început an școlar 2025-2026',
-      startDate: new Date('2025-09-08'),
+      title: 'Început an școlar 2026-2027',
+      startDate: new Date('2026-09-07'),
       type: 'SEMESTER_START' as const,
-      description: 'Prima zi de școală. Cursuri: 8 septembrie 2025 - 19 decembrie 2025 (15 săptămâni)',
+      description: 'Prima zi de școală. Cursuri: 7 septembrie 2026 - 18 iunie 2027 (36 săptămâni)',
     },
-    
-    // Sărbători legale
+
+    // Ziua Educației
     {
-      title: '5 Octombrie - Ziua Mondială a Educației',
-      startDate: new Date('2025-10-05'),
+      title: '5 Octombrie - Ziua Educației',
+      startDate: new Date('2026-10-05'),
       type: 'HOLIDAY' as const,
-      description: 'Ziua Mondială a Educației - zi liberă',
+      description: 'Ziua Educației - zi liberă',
     },
+
+    // Sfântul Andrei
     {
       title: '30 Noiembrie - Sfântul Andrei',
-      startDate: new Date('2025-11-30'),
+      startDate: new Date('2026-11-30'),
       type: 'HOLIDAY' as const,
       description: 'Sărbătoare legală - zi liberă',
     },
+
+    // Ziua Națională
     {
       title: '1 Decembrie - Ziua Națională',
-      startDate: new Date('2025-12-01'),
+      startDate: new Date('2026-12-01'),
       type: 'HOLIDAY' as const,
       description: 'Ziua Națională a României - zi liberă',
     },
-    
+
     // Vacanța de iarnă
     {
       title: 'Vacanța de iarnă',
-      startDate: new Date('2025-12-20'),
-      endDate: new Date('2026-01-07'),
+      startDate: new Date('2026-12-21'),
+      endDate: new Date('2027-01-03'),
       type: 'VACATION' as const,
-      description: 'Vacanța de Crăciun și Anul Nou (20 decembrie 2025 - 7 ianuarie 2026)',
+      description: 'Vacanța de Crăciun și Anul Nou (21 decembrie 2026 - 3 ianuarie 2027)',
     },
-    
+
     // Semestrul II
     {
       title: 'Început semestru II',
-      startDate: new Date('2026-01-08'),
+      startDate: new Date('2027-01-04'),
       type: 'SEMESTER_START' as const,
-      description: 'Reluarea cursurilor după vacanța de iarnă - Modul 3',
+      description: 'Reluarea cursurilor după vacanța de iarnă',
     },
-    
-    // Sărbătoarea Unirii
+
+    // Unirea Principatelor
     {
       title: '24 Ianuarie - Unirea Principatelor',
-      startDate: new Date('2026-01-24'),
+      startDate: new Date('2027-01-24'),
       type: 'HOLIDAY' as const,
-      description: 'Ziua Unirii Principatelor Române - zi liberă',
+      description: 'Ziua Unirii Principatelor Române - zi liberă (duminică)',
     },
-    
-    // Vacanța de primăvară (Paște)
+
+    // Vacanța de primăvară (include Paștele Ortodox 2 mai 2027)
     {
       title: 'Vacanța de primăvară',
-      startDate: new Date('2026-04-04'),
-      endDate: new Date('2026-04-14'),
+      startDate: new Date('2027-04-19'),
+      endDate: new Date('2027-05-03'),
       type: 'VACATION' as const,
-      description: 'Vacanța de Paște (4 aprilie - 14 aprilie 2026)',
+      description: 'Vacanța de Paște (19 aprilie - 3 mai 2027, include Paștele Ortodox)',
     },
-    
+
     // 1 Mai
     {
       title: '1 Mai - Ziua Muncii',
-      startDate: new Date('2026-05-01'),
+      startDate: new Date('2027-05-01'),
       type: 'HOLIDAY' as const,
-      description: 'Ziua Internațională a Muncii - zi liberă',
+      description: 'Ziua Internațională a Muncii - zi liberă (sâmbătă)',
     },
-    
-    // Rusalii și Ziua Copilului (a doua zi de Rusalii se suprapune cu 1 iunie)
+
+    // Ziua Copilului
     {
-      title: 'Rusalii și Ziua Copilului',
-      startDate: new Date('2026-05-31'),
-      endDate: new Date('2026-06-01'),
+      title: '1 Iunie - Ziua Copilului',
+      startDate: new Date('2027-06-01'),
       type: 'HOLIDAY' as const,
-      description: 'Rusalii și Ziua Copilului (31 mai - 1 iunie 2026)',
+      description: 'Ziua Copilului - zi liberă',
     },
-    
-    // Ziua Învățătorului
+
+    // Ultima zi - clasele XII/XIII (34 săptămâni)
     {
-      title: '5 Iunie - Ziua Învățătorului',
-      startDate: new Date('2026-06-05'),
-      type: 'HOLIDAY' as const,
-      description: 'Ziua Învățătorului - zi liberă',
+      title: 'Ultima zi - clasele XII/XIII',
+      startDate: new Date('2027-06-04'),
+      type: 'LAST_DAY' as const,
+      description: 'Ultima zi de cursuri pentru elevii claselor a XII-a zi, a XIII-a seral și frecvență redusă (34 săptămâni)',
     },
-    
-    // Ultima zi pentru clasa a VIII-a
+
+    // Ultima zi - clasa a VIII-a (35 săptămâni)
     {
       title: 'Ultima zi - clasa a VIII-a',
-      startDate: new Date('2026-06-05'),
+      startDate: new Date('2027-06-11'),
       type: 'LAST_DAY' as const,
       description: 'Ultima zi de cursuri pentru elevii clasei a VIII-a (vineri, săptămâna 35)',
     },
-    
-    // Ultima zi pentru clasele XII-XIII
-    {
-      title: 'Ultima zi - clasele XII/XIII',
-      startDate: new Date('2026-06-12'),
-      type: 'LAST_DAY' as const,
-      description: 'Ultima zi de cursuri pentru elevii claselor a XII-a zi, a XIII-a seral și frecvență redusă',
-    },
-    
-    // Sfârșit an școlar
+
+    // Sfârșit an școlar (36 săptămâni)
     {
       title: 'Sfârșit an școlar',
-      startDate: new Date('2026-06-19'),
+      startDate: new Date('2027-06-18'),
       type: 'LAST_DAY' as const,
-      description: 'Ultima zi de școală pentru clasele I-VII și IX-XI (vineri, săptămâna 37)',
+      description: 'Ultima zi de școală pentru clasele I-VII și IX-XI (vineri, săptămâna 36)',
     },
-    
+
+    // Rusalii (50 zile după Paștele Ortodox)
+    {
+      title: 'Rusalii',
+      startDate: new Date('2027-06-20'),
+      endDate: new Date('2027-06-21'),
+      type: 'HOLIDAY' as const,
+      description: 'Rusalii (20-21 iunie 2027)',
+    },
+
     // Vacanța de vară
     {
       title: 'Vacanța de vară',
-      startDate: new Date('2026-06-20'),
-      endDate: new Date('2026-09-06'),
+      startDate: new Date('2027-06-19'),
+      endDate: new Date('2027-09-06'),
       type: 'VACATION' as const,
       description: 'Vacanța mare de vară',
     },
@@ -284,12 +291,12 @@ async function main() {
       data: event,
     })
   }
-  console.log('✅ Structura anului școlar 2025-2026 creată')
+  console.log('✅ Structura anului școlar 2026-2027 creată')
 
   console.log('🎉 Seeding complete!')
   console.log('')
   console.log('📊 Statistici:')
-  console.log(`   - 3 grupe de vacanță intersemestrială`)
+  console.log(`   - 3 grupe de vacanță intersemestrială (15 feb - 7 mar 2027)`)
   console.log(`   - 42 județe + București`)
   console.log(`   - ${commonEvents.length} evenimente comune`)
 }

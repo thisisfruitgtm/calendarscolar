@@ -48,7 +48,7 @@ export async function getCachedCountyBySlug(slug: string) {
           group: {
             include: {
               periods: {
-                where: { schoolYear: '2025-2026' },
+                where: { schoolYear: '2026-2027' },
                 orderBy: { startDate: 'asc' },
               },
             },

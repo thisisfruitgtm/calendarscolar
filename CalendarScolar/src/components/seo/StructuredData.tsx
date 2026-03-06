@@ -42,7 +42,7 @@ export function StructuredData({ county, events }: StructuredDataProps) {
   const webPageSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    name: `Calendar Școlar ${county.name} 2025-2026`,
+    name: `Calendar Școlar ${county.name} 2026-2027`,
     description: county.metaDescription,
     url: `${baseUrl}/judet/${county.slug}`,
     inLanguage: 'ro-RO',

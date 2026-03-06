@@ -75,7 +75,7 @@ export function CountyHero({ county, events }: CountyHeroProps) {
           </h1>
 
           <p className="mb-8 text-center text-lg text-slate-600 max-w-2xl mx-auto lg:text-xl">
-            Toate vacanțele și zilele libere pentru anul școlar 2025-2026 
+            Toate vacanțele și zilele libere pentru anul școlar 2026-2027 
             în județul {county.name}
           </p>
 

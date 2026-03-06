@@ -207,7 +207,7 @@ export function CountyInfo({ county, events }: CountyInfoProps) {
         <div className="space-y-3 text-sm text-slate-600">
           <p>
             Calendarul școlar pentru județul {county.name} include toate 
-            vacanțele și zilele libere pentru anul școlar 2025-2026. 
+            vacanțele și zilele libere pentru anul școlar 2026-2027. 
             Consultă programul complet pentru a planifica activitățile școlare.
           </p>
           

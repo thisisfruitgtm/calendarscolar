@@ -13,7 +13,7 @@ const settingsSchema = z.object({
   edupeduEnabled: z.boolean().optional(),
   maintenanceMode: z.boolean().optional(),
   maintenanceMessage: z.string().max(500).optional(),
-  schoolYear: z.string().regex(/^\d{4}-\d{4}$/, 'Format invalid (ex: 2025-2026)').optional(),
+  schoolYear: z.string().regex(/^\d{4}-\d{4}$/, 'Format invalid (ex: 2026-2027)').optional(),
 })
 
 export async function updateSettings(data: unknown) {
@@ -29,7 +29,7 @@ export async function updateSettings(data: unknown) {
     update: validated,
     create: {
       id: 'settings',
-      schoolYear: validated.schoolYear || '2025-2026',
+      schoolYear: validated.schoolYear || '2026-2027',
       ...validated,
     },
   })

@@ -12,7 +12,7 @@ export function Footer() {
             <h3 className="text-xl font-bold text-white mb-4">CalendarȘcolar.ro</h3>
             <p className="text-sm text-slate-400 leading-relaxed">
               Calendar școlar complet pentru toate cele 43 de județe. 
-              Planifică-ți vacanțele și organizează-te pentru tot anul școlar 2025-2026.
+              Planifică-ți vacanțele și organizează-te pentru tot anul școlar 2026-2027.
             </p>
           </div>
           

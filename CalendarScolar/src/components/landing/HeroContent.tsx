@@ -18,7 +18,7 @@ export function HeroContent({ counties, lastUpdate }: HeroContentProps) {
       <FadeInUp duration={700}>
         <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
           Calendar Școlar
-          <span className="block mt-2 text-blue-600">2025-2026</span>
+          <span className="block mt-2 text-blue-600">2026-2027</span>
         </h1>
       </FadeInUp>
       

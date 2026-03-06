@@ -31,8 +31,8 @@ export function SettingsForm({ settings }: SettingsFormProps) {
   
   // Form state
   const [adsEnabled, setAdsEnabled] = useState(settings?.adsEnabled ?? true)
-  const [calendarName, setCalendarName] = useState(settings?.calendarName || 'Calendar Școlar 2025-2026')
-  const [schoolYear, setSchoolYear] = useState(settings?.schoolYear || '2025-2026')
+  const [calendarName, setCalendarName] = useState(settings?.calendarName || 'Calendar Școlar 2026-2027')
+  const [schoolYear, setSchoolYear] = useState(settings?.schoolYear || '2026-2027')
   const [showCalendarDayNumbers, setShowCalendarDayNumbers] = useState(settings?.showCalendarDayNumbers ?? false)
   const [edupeduEnabled, setEdupeduEnabled] = useState(settings?.edupeduEnabled ?? true)
   const [maintenanceMode, setMaintenanceMode] = useState(settings?.maintenanceMode ?? false)
@@ -129,9 +129,9 @@ export function SettingsForm({ settings }: SettingsFormProps) {
                   id="schoolYear"
                   value={schoolYear}
                   onChange={(e) => setSchoolYear(e.target.value)}
-                  placeholder="2025-2026"
+                  placeholder="2026-2027"
                 />
-                <p className="text-xs text-slate-500">Format: YYYY-YYYY (ex: 2025-2026)</p>
+                <p className="text-xs text-slate-500">Format: YYYY-YYYY (ex: 2026-2027)</p>
               </div>
 
               <div className="flex items-center space-x-2">

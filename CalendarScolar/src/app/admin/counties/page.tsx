@@ -13,7 +13,7 @@ export default async function CountiesPage() {
         orderBy: { name: 'asc' },
       },
       periods: {
-        where: { schoolYear: '2025-2026' },
+        where: { schoolYear: '2026-2027' },
         orderBy: { startDate: 'asc' },
       },
     },

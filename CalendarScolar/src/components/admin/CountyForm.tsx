@@ -153,7 +153,7 @@ export function CountyForm({ county, groups }: CountyFormProps) {
         <Input
           id="metaTitle"
           {...register('metaTitle')}
-          placeholder="Calendar Școlar Timiș 2025-2026"
+          placeholder="Calendar Școlar Timiș 2026-2027"
         />
       </div>
 

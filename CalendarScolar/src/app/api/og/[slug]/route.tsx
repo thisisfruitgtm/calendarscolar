@@ -117,7 +117,7 @@ export async function GET(
                 lineHeight: 1.5,
               }}
             >
-              Toate vacanțele și zilele libere pentru anul școlar 2025-2026 în județul {county.name}
+              Toate vacanțele și zilele libere pentru anul școlar 2026-2027 în județul {county.name}
             </div>
 
             {/* Vacation card */}

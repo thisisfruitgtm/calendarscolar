@@ -86,7 +86,7 @@ export function VacationGroupForm({ group }: VacationGroupFormProps) {
         startDate: '',
         endDate: '',
         type: VacationType.INTERSEMESTER,
-        schoolYear: '2025-2026',
+        schoolYear: '2026-2027',
       },
     ])
   }
