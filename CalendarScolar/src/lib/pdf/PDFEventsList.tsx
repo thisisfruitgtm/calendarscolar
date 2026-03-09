@@ -73,7 +73,14 @@ function groupEvents(events: PDFEvent[]): EventGroup[] {
 }
 
 export function PDFEventsList({ events }: PDFEventsListProps) {
-  const groups = groupEvents(events)
+  // Show events from the 1st of the current month onwards
+  const now = new Date()
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+  const upcoming = events.filter((e) => {
+    const end = e.endDate ? new Date(e.endDate) : new Date(e.startDate)
+    return end >= monthStart
+  })
+  const groups = groupEvents(upcoming)
 
   return (
     <View style={styles.container}>
