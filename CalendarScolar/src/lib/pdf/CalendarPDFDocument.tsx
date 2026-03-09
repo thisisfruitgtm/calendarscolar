@@ -1,8 +1,8 @@
-import { Document, Page, View, StyleSheet } from '@react-pdf/renderer'
+import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer'
 import './fonts' // Side-effect: registers Inter font
 import { PDFHeader } from './PDFHeader'
 import { PDFMonthGrid } from './PDFMonthGrid'
-import { PDFLegend } from './PDFLegend'
+import { PDFEventsList } from './PDFEventsList'
 import { getSchoolYearMonths, PDFEvent } from './calendar-utils'
 import { PDF_COLORS } from './colors'
 
@@ -23,7 +23,7 @@ export function CalendarPDFDocument({
 }: CalendarPDFDocumentProps) {
   const months = getSchoolYearMonths(schoolYear)
 
-  // Split into 3 rows of 4 months
+  // 3 rows × 4 months
   const rows = [
     months.slice(0, 4),
     months.slice(4, 8),
@@ -45,22 +45,31 @@ export function CalendarPDFDocument({
           schoolYear={schoolYear}
         />
 
-        {/* 3 rows × 4 months */}
-        {rows.map((row, rowIdx) => (
-          <View key={rowIdx} style={styles.monthRow}>
-            {row.map((m, colIdx) => (
-              <PDFMonthGrid
-                key={colIdx}
-                year={m.year}
-                month={m.month}
-                monthName={m.name}
-                events={events}
-              />
+        {/* 2-column layout: events list | calendar grid */}
+        <View style={styles.body}>
+          {/* Left column: events + legend */}
+          <PDFEventsList events={events} schoolYear={schoolYear} />
+
+          {/* Right column: 3 rows × 4 months */}
+          <View style={styles.calendarGrid}>
+            {rows.map((row, rowIdx) => (
+              <View key={rowIdx} style={styles.monthRow}>
+                {row.map((m, colIdx) => (
+                  <PDFMonthGrid
+                    key={colIdx}
+                    year={m.year}
+                    month={m.month}
+                    monthName={m.name}
+                    events={events}
+                  />
+                ))}
+              </View>
             ))}
           </View>
-        ))}
+        </View>
 
-        <PDFLegend />
+        {/* Footer */}
+        <Text style={styles.footer}>calendarscolar.ro</Text>
       </Page>
     </Document>
   )
@@ -68,13 +77,29 @@ export function CalendarPDFDocument({
 
 const styles = StyleSheet.create({
   page: {
-    padding: 20,
+    padding: 16,
     fontFamily: 'Inter',
     backgroundColor: PDF_COLORS.WHITE,
   },
+  body: {
+    flexDirection: 'row',
+    flex: 1,
+    gap: 8,
+  },
+  calendarGrid: {
+    flex: 1,
+    gap: 4,
+  },
   monthRow: {
     flexDirection: 'row',
-    gap: 6,
+    gap: 4,
     flex: 1,
+  },
+  footer: {
+    fontSize: 6,
+    fontWeight: 600,
+    color: PDF_COLORS.TEXT_MUTED,
+    textAlign: 'right',
+    marginTop: 3,
   },
 })

@@ -62,7 +62,7 @@ export function PDFMonthGrid({ year, month, monthName, events }: PDFMonthGridPro
 
             const cellStyle = [
               styles.dayCell,
-              eventBg ? { backgroundColor: eventBg, borderRadius: 2 } : {},
+              eventBg ? { backgroundColor: eventBg, borderRadius: 1.5 } : {},
               !eventBg && isWeekend ? { backgroundColor: PDF_COLORS.WEEKEND_BG } : {},
             ]
 
@@ -98,28 +98,28 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 0.5,
     borderColor: PDF_COLORS.BORDER,
-    borderRadius: 4,
-    padding: 4,
+    borderRadius: 3,
+    padding: 3,
     backgroundColor: PDF_COLORS.WHITE,
   },
   monthName: {
-    fontSize: 7.5,
+    fontSize: 6.5,
     fontWeight: 600,
     color: PDF_COLORS.BRAND_BLUE,
     textAlign: 'center',
-    marginBottom: 3,
+    marginBottom: 2,
   },
   weekRow: {
     flexDirection: 'row',
-    gap: 1,
+    gap: 0.5,
   },
   headerCell: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: 1,
+    paddingVertical: 0.5,
   },
   headerText: {
-    fontSize: 5,
+    fontSize: 4.5,
     fontWeight: 600,
     color: PDF_COLORS.DAY_HEADER_TEXT,
   },
@@ -128,12 +128,12 @@ const styles = StyleSheet.create({
   },
   dayCell: {
     flex: 1,
-    height: 14,
+    height: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
   dayText: {
-    fontSize: 6.5,
+    fontSize: 6,
     fontWeight: 400,
     color: PDF_COLORS.TEXT_PRIMARY,
   },
