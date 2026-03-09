@@ -35,7 +35,7 @@ export function PDFMonthGrid({ year, month, monthName, events }: PDFMonthGridPro
       </View>
 
       {/* Weekday headers */}
-      <View style={styles.weekRow}>
+      <View style={styles.headerRow}>
         {WEEKDAY_HEADERS.map((day, i) => (
           <View key={i} style={styles.headerCell}>
             <Text style={[
@@ -97,12 +97,13 @@ export function PDFMonthGrid({ year, month, monthName, events }: PDFMonthGridPro
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
   },
   monthHeader: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    marginBottom: 3,
-    paddingBottom: 2,
+    marginBottom: 2,
+    paddingBottom: 1.5,
     borderBottomWidth: 1,
     borderBottomColor: PDF_COLORS.BRAND_BLUE,
   },
@@ -117,6 +118,11 @@ const styles = StyleSheet.create({
     color: PDF_COLORS.TEXT_MUTED,
   },
   weekRow: {
+    flexDirection: 'row',
+    flex: 1,
+    gap: 0.5,
+  },
+  headerRow: {
     flexDirection: 'row',
     gap: 0.5,
   },
@@ -135,7 +141,6 @@ const styles = StyleSheet.create({
   },
   dayCell: {
     flex: 1,
-    height: 13,
     alignItems: 'center',
     justifyContent: 'center',
   },
