@@ -30,6 +30,8 @@ const GROUP_COLORS: Record<string, string> = {
  * and the next request regenerates the PDF.
  */
 function buildDataHash(events: PDFEvent[], groupName: string | null): string {
+  // Include current month so cache invalidates when events list changes
+  const now = new Date()
   const payload = JSON.stringify({
     events: events.map(e => ({
       id: e.id,
@@ -38,6 +40,7 @@ function buildDataHash(events: PDFEvent[], groupName: string | null): string {
       type: e.type,
     })),
     group: groupName,
+    month: `${now.getFullYear()}-${now.getMonth()}`,
   })
   return createHash('md5').update(payload).digest('hex').slice(0, 12)
 }
