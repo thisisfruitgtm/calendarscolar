@@ -88,11 +88,11 @@ const styles = StyleSheet.create({
   },
   calendarGrid: {
     flex: 1,
-    gap: 4,
+    gap: 8,
   },
   monthRow: {
     flexDirection: 'row',
-    gap: 4,
+    gap: 8,
     flex: 1,
   },
   footer: {

@@ -72,9 +72,8 @@ function groupEvents(events: PDFEvent[]): EventGroup[] {
   return groups.filter((g) => g.events.length > 0)
 }
 
-export function PDFEventsList({ events, schoolYear }: PDFEventsListProps) {
-  const filtered = filterToSchoolYear(events, schoolYear)
-  const groups = groupEvents(filtered)
+export function PDFEventsList({ events }: PDFEventsListProps) {
+  const groups = groupEvents(events)
 
   return (
     <View style={styles.container}>

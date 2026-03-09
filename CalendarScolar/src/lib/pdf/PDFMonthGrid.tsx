@@ -28,10 +28,11 @@ export function PDFMonthGrid({ year, month, monthName, events }: PDFMonthGridPro
 
   return (
     <View style={styles.container}>
-      {/* Month name */}
-      <Text style={styles.monthName}>
-        {monthName} {year}
-      </Text>
+      {/* Month name with underline accent */}
+      <View style={styles.monthHeader}>
+        <Text style={styles.monthName}>{monthName}</Text>
+        <Text style={styles.monthYear}> {year}</Text>
+      </View>
 
       {/* Weekday headers */}
       <View style={styles.weekRow}>
@@ -62,7 +63,7 @@ export function PDFMonthGrid({ year, month, monthName, events }: PDFMonthGridPro
 
             const cellStyle = [
               styles.dayCell,
-              eventBg ? { backgroundColor: eventBg, borderRadius: 1.5 } : {},
+              eventBg ? { backgroundColor: eventBg, borderRadius: 2 } : {},
               !eventBg && isWeekend ? { backgroundColor: PDF_COLORS.WEEKEND_BG } : {},
             ]
 
@@ -96,18 +97,24 @@ export function PDFMonthGrid({ year, month, monthName, events }: PDFMonthGridPro
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderWidth: 0.5,
-    borderColor: PDF_COLORS.BORDER,
-    borderRadius: 3,
-    padding: 3,
-    backgroundColor: PDF_COLORS.WHITE,
+  },
+  monthHeader: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    marginBottom: 3,
+    paddingBottom: 2,
+    borderBottomWidth: 1,
+    borderBottomColor: PDF_COLORS.BRAND_BLUE,
   },
   monthName: {
-    fontSize: 6.5,
-    fontWeight: 600,
+    fontSize: 7,
+    fontWeight: 900,
     color: PDF_COLORS.BRAND_BLUE,
-    textAlign: 'center',
-    marginBottom: 2,
+  },
+  monthYear: {
+    fontSize: 6,
+    fontWeight: 400,
+    color: PDF_COLORS.TEXT_MUTED,
   },
   weekRow: {
     flexDirection: 'row',
@@ -128,12 +135,12 @@ const styles = StyleSheet.create({
   },
   dayCell: {
     flex: 1,
-    height: 12,
+    height: 13,
     alignItems: 'center',
     justifyContent: 'center',
   },
   dayText: {
-    fontSize: 6,
+    fontSize: 6.5,
     fontWeight: 400,
     color: PDF_COLORS.TEXT_PRIMARY,
   },
