@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: process.cwd(),
   },
+  serverExternalPackages: ['@react-pdf/renderer', '@react-pdf/font'],
   async headers() {
     return [
       {
