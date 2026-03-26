@@ -1,12 +1,14 @@
+import nextDynamic from 'next/dynamic'
 import { Hero } from '@/components/landing/Hero'
 import { Features } from '@/components/landing/Features'
-import { Subscribe } from '@/components/landing/Subscribe'
-import { LandingCalendar } from '@/components/landing/LandingCalendar'
 import { SeasonalHighlight } from '@/components/landing/SeasonalHighlight'
 import { LandingSEOContent } from '@/components/landing/LandingSEOContent'
 import { getCachedActiveEvents, getCachedActivePromos, getCachedSettings, getCachedActiveCounties } from '@/lib/cache'
 import { FadeInUp } from '@/components/ui/fade-in-up'
 import { HomeStructuredData } from '@/components/seo/HomeStructuredData'
+
+const LandingCalendar = nextDynamic(() => import('@/components/landing/LandingCalendar').then(m => ({ default: m.LandingCalendar })))
+const Subscribe = nextDynamic(() => import('@/components/landing/Subscribe').then(m => ({ default: m.Subscribe })))
 
 export const dynamic = 'force-dynamic'
 
