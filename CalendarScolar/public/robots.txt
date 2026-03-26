@@ -1,7 +1,13 @@
 User-agent: *
 Allow: /
+Allow: /api/og/
 Disallow: /admin/
-Disallow: /api/
+Disallow: /api/auth/
+Disallow: /api/calendar/
+Disallow: /api/upload/
+Disallow: /api/uploadthing/
+Disallow: /api/track-subscription-action
+Disallow: /api/edupedu-articles
 Disallow: /auth-cs7k9
 
 Sitemap: https://calendarscolar.ro/sitemap.xml
