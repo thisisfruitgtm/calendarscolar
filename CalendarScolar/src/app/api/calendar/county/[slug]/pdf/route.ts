@@ -160,6 +160,7 @@ export async function GET(
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="calendar-scolar-${slug}-${SCHOOL_YEAR}.pdf"`,
         'Cache-Control': 'public, max-age=86400, s-maxage=86400',
+        'X-Robots-Tag': 'noindex, nofollow',
       },
     })
   } catch (error) {

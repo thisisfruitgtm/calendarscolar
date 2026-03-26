@@ -59,6 +59,7 @@ export async function GET(request: Request) {
         'Content-Type': 'text/calendar; charset=utf-8',
         'Content-Disposition': 'attachment; filename="calendar-scolar.ics"',
         'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+        'X-Robots-Tag': 'noindex, nofollow',
       },
     })
   } catch (error) {

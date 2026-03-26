@@ -37,21 +37,30 @@ export async function generateMetadata({ params }: CountyPageProps): Promise<Met
   }
 
   const title = county.metaTitle || `Calendar Școlar ${county.name} 2026-2027`
-  const description = county.metaDescription || 
-    `Calendar școlar complet pentru județul ${county.name}. Vezi vacanțele, zilele libere și structura anului școlar 2026-2027.`
+  const intersemesterPeriod = county.group?.periods.find(p => p.type === 'INTERSEMESTER')
+  const groupSuffix = county.group ? ` | ${county.group.name}` : ''
+  const description = county.metaDescription || (
+    intersemesterPeriod
+      ? `Calendar școlar ${county.name} 2026-2027${groupSuffix}: vacanțe, zile libere și structura completă a anului școlar. Vacanță intersemestrială ${new Intl.DateTimeFormat('ro-RO', { day: 'numeric', month: 'long' }).format(new Date(intersemesterPeriod.startDate))} – ${new Intl.DateTimeFormat('ro-RO', { day: 'numeric', month: 'long' }).format(new Date(intersemesterPeriod.endDate))}. Descarcă PDF sau adaugă în calendar.`
+      : `Calendar școlar ${county.name} 2026-2027: toate vacanțele, zilele libere și structura anului școlar. Descarcă PDF sau sincronizează cu Google Calendar.`
+  )
 
   return {
     title,
     description,
     keywords: [
+      `calendar scolar ${county.name.toLowerCase()}`,
       `calendar școlar ${county.name}`,
-      `vacanțe școlare ${county.name}`,
+      `structura anului scolar 2026 ${county.name.toLowerCase()}`,
+      `vacanta intersemestriala 2027 ${county.name.toLowerCase()}`,
+      `cand incepe scoala 2026 ${county.name.toLowerCase()}`,
+      `vacante scolare ${county.name.toLowerCase()} 2026 2027`,
       `zile libere ${county.name}`,
-      `școli ${county.capitalCity}`,
+      `scoli ${county.capitalCity.toLowerCase()}`,
+      'calendar scolar 2026-2027',
       'calendar școlar 2026-2027',
-      'vacanța de iarnă',
-      'vacanța de primăvară',
-      'vacanța de vară',
+      'vacanta de vara 2027',
+      'structura an scolar 2026',
     ],
     openGraph: {
       title,

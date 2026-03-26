@@ -143,6 +143,7 @@ export async function GET(
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET',
         'Access-Control-Max-Age': '86400',
+        'X-Robots-Tag': 'noindex, nofollow',
       },
     })
   } catch (error) {

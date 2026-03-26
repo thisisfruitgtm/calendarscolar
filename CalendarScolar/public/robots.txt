@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
-Disallow: /api/auth/
+Disallow: /api/
 Disallow: /auth-cs7k9
 
 Sitemap: https://calendarscolar.ro/sitemap.xml
