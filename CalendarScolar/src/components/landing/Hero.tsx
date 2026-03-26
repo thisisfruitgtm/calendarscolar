@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { getCachedActiveCounties, getCachedSettingsMinimal } from '@/lib/cache'
 import { HeroContent } from './HeroContent'
 
@@ -19,17 +18,6 @@ export async function Hero() {
 
   return (
     <section className="relative bg-gradient-to-b from-blue-50 via-indigo-50 to-white py-16 sm:py-20">
-      {/* Background image */}
-      <Image
-        src="/hero.webp"
-        alt=""
-        fill
-        priority
-        quality={60}
-        className="object-cover opacity-20"
-        sizes="100vw"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-blue-50/90 via-indigo-50/90 to-white/90" />
       
       {/* Decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
