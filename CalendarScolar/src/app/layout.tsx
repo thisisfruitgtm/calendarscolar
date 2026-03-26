@@ -66,8 +66,6 @@ export default function RootLayout({
   return (
     <html lang="ro" suppressHydrationWarning>
       <head>
-        {/* Preload hero image to reduce LCP resource load delay */}
-        <link rel="preload" as="image" href="/hero.webp" type="image/webp" fetchPriority="high" />
         <Script id="matomo" strategy="afterInteractive">
           {`
             var _paq = window._paq = window._paq || [];

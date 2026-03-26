@@ -21,6 +21,7 @@ function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('ro-RO', {
     day: 'numeric',
     month: 'long',
+    timeZone: 'Europe/Bucharest',
   }).format(new Date(date))
 }
 
@@ -30,6 +31,7 @@ function formatFullDate(date: Date): string {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
+    timeZone: 'Europe/Bucharest',
   }).format(new Date(date))
 }
 
@@ -191,6 +193,7 @@ function getFirstDayOfMonth(year: number, month: number): number {
 function getDayName(date: Date): string {
   return new Intl.DateTimeFormat('ro-RO', {
     weekday: 'short',
+    timeZone: 'Europe/Bucharest',
   }).format(date)
 }
 
