@@ -329,6 +329,9 @@ function MonthCalendar({
   const firstDay = getFirstDayOfMonth(year, month)
   const weekDays = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
   const today = new Date()
+  const todayUTCDate = today.getUTCDate()
+  const todayUTCMonth = today.getUTCMonth()
+  const todayUTCYear = today.getUTCFullYear()
   
   // Calculate days from previous month
   const prevMonth = month === 0 ? 11 : month - 1
@@ -387,9 +390,9 @@ function MonthCalendar({
             {daysToShow.slice(weekIndex * 7, (weekIndex + 1) * 7).map(({ day, date, isCurrentMonth }, index) => {
               const event = getEventForDate(date, allEvents)
               const isToday = 
-                date.getDate() === today.getDate() &&
-                date.getMonth() === today.getMonth() &&
-                date.getFullYear() === today.getFullYear()
+                date.getUTCDate() === todayUTCDate &&
+                date.getUTCMonth() === todayUTCMonth &&
+                date.getUTCFullYear() === todayUTCYear
               
               return (
                 <div key={`${date.getTime()}-${index}`} className="flex-1">

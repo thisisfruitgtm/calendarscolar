@@ -322,7 +322,10 @@ function MonthCalendar({
   const daysInMonth = getDaysInMonth(year, month)
   const firstDay = getFirstDayOfMonth(year, month)
   const weekDays = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
-  const today = new Date()
+  const _today = new Date()
+  const todayDate = _today.getUTCDate()
+  const todayMonth = _today.getUTCMonth()
+  const todayYear = _today.getUTCFullYear()
   
   const prevMonth = month === 0 ? 11 : month - 1
   const prevYear = month === 0 ? year - 1 : year
@@ -371,9 +374,9 @@ function MonthCalendar({
             {daysToShow.slice(weekIndex * 7, (weekIndex + 1) * 7).map(({ day, date, isCurrentMonth }, index) => {
               const event = getEventForDate(date, allEvents)
               const isToday = 
-                date.getDate() === today.getDate() &&
-                date.getMonth() === today.getMonth() &&
-                date.getFullYear() === today.getFullYear()
+                date.getUTCDate() === todayDate &&
+                date.getUTCMonth() === todayMonth &&
+                date.getUTCFullYear() === todayYear
               
               return (
                 <div key={`${date.getTime()}-${index}`} className="flex-1">
@@ -497,8 +500,9 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
   // Calculate current month index based on today's date
   const [startYear, endYear] = schoolYear.split('-').map(Number)
   const today = new Date()
-  const todayYear = today.getFullYear()
-  const todayMonth = today.getMonth() // 0-11
+  const todayYear = today.getUTCFullYear()
+  const todayMonth = today.getUTCMonth() // 0-11, UTC to avoid SSR/client timezone mismatch
+  const todayDate = today.getUTCDate()
   
   // Find current month index or default to 0
   const currentMonthIndexFromDate = useMemo(() => {
@@ -545,8 +549,7 @@ export function LandingCalendar({ events, promos = [], schoolYear, showCalendarD
   }))
 
   // Filter events to show only future ones (from today onwards)
-  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-  todayStart.setHours(0, 0, 0, 0)
+  const todayStart = new Date(Date.UTC(todayYear, todayMonth, todayDate))
 
   const allEvents = [
     ...promoEvents,
